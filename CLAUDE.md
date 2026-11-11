@@ -292,7 +292,9 @@ must be connected to the project with the env prefix `PRIVATE_BLOB`, never the
 default `BLOB`, which is the public store's. `scripts/move-to-private-store.ts`
 moved what the public store held before it existed (backups, home photos,
 unpublished works' uploads); it lists by default and moves with `--apply`,
-archiving each public file to `.blob-archive/` before deleting it.
+archiving each public file to `.blob-archive/` before deleting it. The store
+was connected on 22 Oct 2026 and the move run on 11 Nov 2026 (three home
+photos); there is nothing left for it to move.
 
 ### TypeScript
 

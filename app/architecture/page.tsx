@@ -954,9 +954,29 @@ export default function ArchitecturePage() {
           in the code, sixteen medium and low findings fixed, among them an admin cookie that
           stayed valid for two weeks after logout, a race that could publish an Instagram
           post twice, and no daily limit on the emails the forms send. It also found the
-          private file store for backups and unpublished images had never been connected. A
+          private file store for backups and unpublished images had never been connected; it
+          was connected on 22 October, and on 11 November a one-off script moved what the
+          public store still held into it (three collectors&rsquo; photos of their homes). A
           manual test by a person is still the next step. <Code>/.well-known/security.txt</Code>
           {" "}tells anyone who finds a problem where to report it.
+        </p>
+        <p>
+          Three outside checks look at what any visitor&rsquo;s browser or mail server sees, and
+          were run by hand on 11 November 2026. <strong>Mozilla&rsquo;s HTTP Observatory</strong>
+          {" "}gives the headers <strong>A+</strong>, 130 out of 100, all 12 tests passed. Its
+          three suggestions were each declined for a reason: inline styles stay allowed because
+          React and <Code>next/image</Code> write <Code>style</Code> attributes (scripts stay
+          locked to a nonce); HSTS isn&rsquo;t preloaded because that would commit every
+          subdomain to HTTPS for good; and there is no Cross-Origin-Embedder-Policy because it
+          would block the locations map and analytics. <strong>SSL Labs</strong> gives the TLS
+          set-up an <strong>A</strong>: TLS&nbsp;1.3, post-quantum key exchange, and a CAA record
+          naming who may issue the domain&rsquo;s certificates. For email, SPF covers both
+          senders (Squarespace&rsquo;s forwarding on the domain, Resend on its{" "}
+          <Code>send.</Code> subdomain), Resend signs with DKIM, and DMARC is published with
+          reports going to two monitors. Its policy stays at <Code>p=none</Code>, monitoring
+          only, by choice: the site is the only sender and its mail passes, and the record
+          belongs to Squarespace&rsquo;s email-forwarding preset, which can&rsquo;t be edited
+          without risking the forwarding.
         </p>
         <h3 className="font-semibold text-gray-800">Static analysis</h3>
         <p>

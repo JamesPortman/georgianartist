@@ -19,13 +19,13 @@ variables.
 **Result.** No critical or high finding in the code. Every server action and
 admin page checks the session; the session can't be forged; there is no
 CSRF, open redirect, SQL injection, SSRF, path into the private store, or way
-to change a price. The serious finding is a **configuration gap**: the
-private Blob store the code was built for has never been connected (1). The
+to change a price. The serious finding was a **configuration gap**: the
+private Blob store the code was built for had never been connected (1), since fixed. The
 code findings are medium and low, and all but two are fixed in this change.
 
 ## Needs the owner
 
-**1. The private Blob store is not connected (high, configuration).**
+**1. The private Blob store was not connected (high, configuration). Fixed; see below.**
 `PRIVATE_BLOB_READ_WRITE_TOKEN` is set in no Vercel environment, so
 `lib/private-blob.ts` falls back to the public store, as it was written to do
 until the store existed. Since then:
@@ -40,14 +40,55 @@ Fix: create a second Blob store, connect it to the project with the prefix
 `PRIVATE_BLOB`, redeploy, then move existing backups, unpublished uploads
 and home photos into it and delete the public copies.
 
-**2. Outside checks not run.** The review's environment can't reach Mozilla
-Observatory, SSL Labs or public DNS. Run them by hand:
-developer.mozilla.org/observatory and ssllabs.com/ssltest for
-`www.georgianartist.com`, and mxtoolbox.com for SPF, DKIM and DMARC on
-`georgianartist.com`.
+**Fixed.** The store (`georgian-bay-artists-private`) was connected with the
+prefix `PRIVATE_BLOB` on 22 October 2026 and production redeployed; backups
+and new uploads have gone to it since. On 11 November
+`scripts/move-to-private-store.ts --apply` moved what the public store still
+held: three collectors' home photos, each archived locally, copied, repointed
+to `/media/homes/…` and its public copy deleted. No unpublished work had an
+image in the public store, and the older public backups had already aged out
+under the 7-day retention, which prunes both stores.
+
+**2. Outside checks.** The review's environment couldn't reach them, so they
+were run by hand on 11 November 2026:
+
+| Check | Result |
+|---|---|
+| Mozilla HTTP Observatory, `www.georgianartist.com` | **A+**, 130/100, 12/12 tests passed |
+| SSL Labs, `www.georgianartist.com` | **A**: TLS 1.3, post-quantum key exchange, CAA record; RSA 2048 certificate |
+| SPF, `georgianartist.com` | `v=spf1 include:mailgun.org ~all` (Squarespace forwarding), valid |
+| SPF, `send.georgianartist.com` | `v=spf1 include:amazonses.com ~all` (Resend's bounce domain), valid |
+| DKIM, selector `resend` | published |
+| DMARC, `_dmarc.georgianartist.com` | published, **`p=none`**, reports to Mailgun and OnDMARC |
+
+The Observatory's suggestions are declined on purpose: `style-src
+'unsafe-inline'` is needed for React's `style` attributes (`lib/csp.ts`; scripts
+use a nonce); HSTS preload and `includeSubDomains` are a decision for the whole
+domain (`lib/security-headers.ts`); Cross-Origin-Embedder-Policy would block the
+map and analytics. Subresource Integrity doesn't apply: every script is the
+site's own.
+
+**DMARC stays at `p=none` (accepted, 11 November 2026).** Mail that fails
+SPF and DKIM while claiming to be from `@georgianartist.com` is still
+delivered, so the address could be spoofed. Accepted because:
+- the website (Resend) is the only sender, and its mail passes DMARC even
+  when forwarded: a test message showed SPF, DKIM and DMARC pass, with DKIM
+  aligned on `georgianartist.com` (selector `resend`);
+- the `_dmarc` record belongs to Squarespace's Email Forwarding preset, which
+  Squarespace locks; removing the preset to rewrite it by hand could stop
+  `info@` forwarding;
+- the site sends little mail, and reports already go to Mailgun and OnDMARC.
+
+To revisit: ask Squarespace Support to set `p=quarantine` on the preset, or
+change it if the preset becomes editable. Check first with
+`dig +short TXT _dmarc.georgianartist.com`.
+
+DNS itself is one zone: the registry lists both `squarespacedns.com` and
+`p03.nsone.net` nameservers, and every one of them returns the same SOA
+(Squarespace's DNS runs on NS1) and the same records.
 
 **3. GitHub secret `BLOB_READ_WRITE_TOKEN`.** No workflow uses it any more
-(see 6). Delete it from the repository's Actions secrets. Rotating the
+(see 6). Done: the repository has no Actions secrets (checked 11 November 2026). Rotating the
 token is optional: it was readable only by code running in this
 repository's own CI.
 
@@ -113,5 +154,5 @@ scripts through `env:` only.
 
 What only the dashboards show: GitHub branch protection and default Actions
 token permissions, and Vercel's deployment protection. The outside checks
-in (2). A manual test by a person, which this review stands in for but
+in (2) were run by hand afterwards. A manual test by a person, which this review stands in for but
 doesn't replace.

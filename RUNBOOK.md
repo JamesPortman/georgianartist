@@ -45,7 +45,7 @@ empty; the script names them, so you can copy them in by hand.
 | Variable | From |
 |---|---|
 | `DATABASE_URL` | Neon → project → Connection details (pooled) |
-| `BLOB_READ_WRITE_TOKEN` | Vercel → Storage → the public Blob store (also a GitHub Actions secret) |
+| `BLOB_READ_WRITE_TOKEN` | Vercel → Storage → the public Blob store |
 | `PRIVATE_BLOB_READ_WRITE_TOKEN` | Vercel → Storage → the **private** Blob store (prefix `PRIVATE_BLOB`): backups, unpublished uploads, collectors' photos |
 | `RESEND_API_KEY` | Resend → API keys |
 | `SESSION_SECRET` | Random, ≥ 32 chars (`openssl rand -hex 32`); rotating it signs the admin out |
@@ -85,8 +85,14 @@ empty; the script names them, so you can copy them in by hand.
   went live, or opens a GitHub issue if it didn't.
 - **Locally.** Point `.env.local` at a Neon **dev branch** with
   `DATABASE_ALLOW_HOST` set to its host. The app refuses any other remote
-  database. To run a script against production, name production's host for
-  that one command.
+  database. The branch is `dev` in the `neon-teal-globe` project (created
+  11 Nov 2026 from `main`, auto-delete off), and Vercel's **Development**
+  `DATABASE_URL` points at it, so `vercel env pull .env.local` brings it;
+  `DATABASE_ALLOW_HOST` stays in `.env.local` across pulls. To refresh its
+  data: Neon → Branches → `dev` → Reset from parent. To run a script against
+  production, put production's `DATABASE_URL` in `.env.local` for that run
+  (scripts reload `.env.local` over the shell) and name production's host in
+  `DATABASE_ALLOW_HOST` on the command; pull again afterwards.
 - **Preview deployments** are off until all three are set: the Neon
   integration's preview branching (Vercel → Storage → Neon), `PRODUCTION_DATABASE_HOST`
   (all environments; production's Neon host), and `ENABLE_PREVIEWS=1` (Preview).

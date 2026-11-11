@@ -59,7 +59,6 @@ grep -vE '^(VERCEL|TURBO|NX)_' "$tmp/pulled.env" > "$tmp/secrets.env" || true
 
 {
   echo "# georgianartist.com Production environment, pulled $(date -u +%Y-%m-%dT%H:%MZ)"
-  echo "# GitHub Actions also holds BLOB_READ_WRITE_TOKEN (same value) for CI."
   cat "$tmp/secrets.env"
 } > "$tmp/out.env"
 
