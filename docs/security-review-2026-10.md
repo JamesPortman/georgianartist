@@ -23,20 +23,20 @@ to change a price. The serious finding was a **configuration gap**: the
 private Blob store the code was built for had never been connected (1), since fixed. The
 code findings are medium and low, and all but two are fixed in this change.
 
-## Needs the owner
+## Owner follow-ups (all closed, 11 November 2026)
 
-**1. The private Blob store was not connected (high, configuration). Fixed; see below.**
-`PRIVATE_BLOB_READ_WRITE_TOKEN` is set in no Vercel environment, so
-`lib/private-blob.ts` falls back to the public store, as it was written to do
-until the store existed. Since then:
-- the nightly catalogue backups (hidden works, collectors' credits, source
-  photos' coordinates) are written to the public store, protected only by a
-  random suffix in the URL;
-- images of works not yet published are public before the work is;
-- collectors' photos of their homes stay reachable by URL after the work is
-  hidden or the photo removed.
+**1. The private Blob store was not connected (high, configuration). Fixed.**
+At the time of the review `PRIVATE_BLOB_READ_WRITE_TOKEN` was set in no Vercel
+environment, so `lib/private-blob.ts` fell back to the public store, as it was
+written to do until the store existed. As a result:
+- the catalogue backups (hidden works, collectors' credits, source photos'
+  coordinates) were written to the public store, protected only by a random
+  suffix in the URL;
+- images of works not yet published were public before the work was;
+- collectors' photos of their homes stayed reachable by URL after the work
+  was hidden or the photo removed.
 
-Fix: create a second Blob store, connect it to the project with the prefix
+The fix: create a second Blob store, connect it to the project with the prefix
 `PRIVATE_BLOB`, redeploy, then move existing backups, unpublished uploads
 and home photos into it and delete the public copies.
 
@@ -49,7 +49,7 @@ to `/media/homes/…` and its public copy deleted. No unpublished work had an
 image in the public store, and the older public backups had already aged out
 under the 7-day retention, which prunes both stores.
 
-**2. Outside checks.** The review's environment couldn't reach them, so they
+**2. Outside checks. Done.** The review's environment couldn't reach them, so they
 were run by hand on 11 November 2026:
 
 | Check | Result |
@@ -87,7 +87,7 @@ DNS itself is one zone: the registry lists both `squarespacedns.com` and
 `p03.nsone.net` nameservers, and every one of them returns the same SOA
 (Squarespace's DNS runs on NS1) and the same records.
 
-**3. GitHub secret `BLOB_READ_WRITE_TOKEN`.** No workflow uses it any more
+**3. GitHub secret `BLOB_READ_WRITE_TOKEN`. Done.** No workflow uses it any more
 (see 6). Done: the repository has no Actions secrets (checked 11 November 2026). Rotating the
 token is optional: it was readable only by code running in this
 repository's own CI.
