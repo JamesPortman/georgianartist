@@ -1,0 +1,99 @@
+name: Visual baselines
+
+# Renders the reference screenshots for e2e/visual.spec.ts on GitHub's runner
+# and commits them to the branch you name. Run it by hand, from the Actions tab
+# or the API, after a change that is meant to look different:
+# the comparison only means anything if the references come from the same
+# machine type as the check, which a laptop isn't (fonts, anti-aliasing).
+#
+# A push made with this workflow's token starts no other workflow, so push
+# anything afterwards (or merge main in) to re-run the checks against the new
+# references.
+on:
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: "Branch to render and commit the screenshots to (never main)"
+        required: true
+
+permissions:
+  contents: write
+
+concurrency:
+  group: visual-baselines-${{ inputs.branch }}
+
+jobs:
+  render:
+    if: inputs.branch != 'main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    env:
+      CI: "true"
+      DATABASE_URL: postgresql://postgres:postgres@localhost:5432/test
+      # Test-only credentials (not secrets — the DB is throwaway).
+      ADMIN_PASSWORD: e2e-admin-password
+      SESSION_SECRET: e2e-session-secret-at-least-32-characters-long
+      # Set because Vercel's production build has one: the unit tests run
+      # there too, and a test that only passed with no secret set once broke
+      # the production deploy while CI stayed green (#190).
+      CRON_SECRET: e2e-cron-secret
+      # The passkey break-glass (lib/passkey.ts): keeps the password working
+      # while e2e/zz-admin-passkey.spec.ts has a passkey registered, so the
+      # other admin specs can still sign in. Never set in production unless
+      # every passkey device is lost.
+      ADMIN_PASSWORD_LOGIN: "1"
+
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ inputs.branch }}
+          # The token stays out of .git/config, where npm ci and the build
+          # (the branch's own code) could read it and push anywhere. Only the
+          # commit step below gets it (security review, October 2026).
+          persist-credentials: false
+
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 24
+          cache: npm
+
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - name: Build
+        run: npm run build
+      - run: npm run db:seed
+
+      - name: Render the references
+        run: npm run test:visual -- --update-snapshots
+
+      - name: Commit them
+        env:
+          BRANCH: ${{ inputs.branch }}
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+        run: |
+          git add e2e/__screenshots__
+          if git diff --cached --quiet; then
+            echo "The references already match; nothing to commit." >> "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+          git -c user.name="github-actions[bot]" -c user.email="41898282+github-actions[bot]@users.noreply.github.com" \
+            commit -m "Visual baselines: render on CI"
+          git push "https://x-access-token:${GH_TOKEN}@github.com/${REPO}.git" "HEAD:$BRANCH"
+          git show --stat --oneline HEAD >> "$GITHUB_STEP_SUMMARY"

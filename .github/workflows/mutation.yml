@@ -1,0 +1,152 @@
+# Mutation testing (Stryker, stryker.config.mjs): plants small bugs in the
+# code where an uncaught bug costs money, data or security, and checks the unit
+# tests notice each one. scripts/mutation-check.mjs fails the job if any
+# module's score is below its floor in stryker.config.mjs MODULES.
+#
+# On a pull request, only the modules it touches are mutated, and only the
+# tests related to them run against each mutant (scripts/mutation-scope.mjs):
+# a PR that touches none finishes in about a minute; one module takes a few.
+# Weekly and on demand, every module, which also catches what a PR can't: a
+# change to code a module merely imports.
+#
+# No cache between runs on purpose: Stryker's incremental mode can't see test
+# changes with the command runner, so it would keep crediting deleted tests.
+name: Mutation testing
+
+on:
+  # Every pull request, so the stryker check always reports and can be required
+  # on main (a path-filtered workflow never reports, and blocks the merge for
+  # good). The `changes` job below skips the run for a PR that can't affect a
+  # mutated module, which counts as passing.
+  pull_request:
+  schedule:
+    - cron: "17 7 * * 0" # Sundays 07:17 UTC (03:17 ET in summer)
+  workflow_dispatch:
+    inputs:
+      modules:
+        description: "Comma-separated MODULES keys (stryker.config.mjs); empty for all"
+        required: false
+        default: ""
+
+# issues: the weekly run opens one when a module falls below its floor, since a
+# scheduled run has nobody watching it.
+permissions:
+  contents: read
+  issues: write
+
+# A newer push to the same PR makes the running check worthless: cancel it.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  # Could this pull request change a mutation score? Only through the code,
+  # the tests or the mutation setup; scripts/mutation-scope.mjs then narrows it
+  # to the modules concerned.
+  changes:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      relevant: ${{ steps.diff.outputs.relevant }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+      - id: diff
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+        run: |
+          pattern='^(lib|app|__tests__)/|^stryker\.config\.mjs$|^scripts/mutation-[^/]*\.mjs$|^vitest\.(config\.mts|setup\.ts)$|^package-lock\.json$|^\.github/workflows/mutation\.yml$'
+          if git diff --name-only "$BASE_SHA" HEAD | grep -qE "$pattern"; then relevant=true; else relevant=false; fi
+          echo "relevant=$relevant" >> "$GITHUB_OUTPUT"
+
+  stryker:
+    needs: changes
+    # Skipped (which a required check counts as passing) only when the diff was
+    # read and touches none of the above. If it couldn't be read, it runs.
+    if: ${{ !cancelled() && !(needs.changes.result == 'success' && needs.changes.outputs.relevant == 'false') }}
+    runs-on: ubuntu-latest
+    # The full run is ~50 minutes on 4 cores; this private repo's runners have 2.
+    timeout-minutes: 150
+    env:
+      NODE_ENV: test
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0 # the PR's diff against its base
+
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 24
+          cache: npm
+
+      - run: npm ci
+
+      # Pull requests: the modules they touch, possibly none. Otherwise: the
+      # modules asked for, or all of them when none are named.
+      - name: Scope
+        id: scope
+        env:
+          EVENT: ${{ github.event_name }}
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          INPUT_MODULES: ${{ inputs.modules }}
+        run: |
+          if [ "$EVENT" = "pull_request" ]; then
+            modules="$(node scripts/mutation-scope.mjs "$BASE_SHA")"
+            [ -n "$modules" ] && run=1 || run=0
+          else
+            modules="$INPUT_MODULES"
+            run=1
+          fi
+          echo "modules=$modules" >> "$GITHUB_OUTPUT"
+          echo "run=$run" >> "$GITHUB_OUTPUT"
+          echo "Mutating: ${modules:-$([ "$run" = 1 ] && echo every module || echo nothing)}"
+
+      - name: Nothing to mutate
+        if: steps.scope.outputs.run != '1'
+        run: echo "This pull request touches no mutated module or its tests." >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Mutation test
+        if: steps.scope.outputs.run == '1'
+        env:
+          STRYKER_MUTATE: ${{ steps.scope.outputs.modules }}
+        run: node scripts/mutation-run.mjs
+
+      - name: Check scores against floors
+        id: check
+        if: steps.scope.outputs.run == '1'
+        run: node scripts/mutation-check.mjs | tee reports/mutation/summary.md; exit "${PIPESTATUS[0]}"
+
+      # A pull request's red check is seen by whoever opened it; a weekly one
+      # isn't, so it opens an issue (once: an open one is commented on instead).
+      - name: Open an issue
+        if: failure() && github.event_name != 'pull_request'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          EVENT: ${{ github.event_name }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          title="Mutation testing: a module is below its floor"
+          body="$(printf '%s\n' \
+            "The $EVENT mutation run failed: $RUN_URL" \
+            "" \
+            "$(cat reports/mutation/summary.md 2>/dev/null || echo 'No score summary: Stryker itself failed; read the run log.')" \
+            "" \
+            "The report artifact on the run lists each surviving mutant. A drop with no pull" \
+            "to blame usually means a change to code a module imports. Add or tighten tests;" \
+            "don't lower the floor (CLAUDE.md, Tests).")"
+          existing="$(gh issue list --state open --search "in:title \"$title\"" --json number --jq '.[0].number')"
+          if [ -n "$existing" ]; then
+            gh issue comment "$existing" --body "$body"
+          else
+            gh issue create --title "$title" --body "$body"
+          fi
+
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        if: always() && steps.scope.outputs.run == '1'
+        with:
+          name: mutation-report
+          path: reports/mutation/
+          retention-days: 30
+          if-no-files-found: ignore

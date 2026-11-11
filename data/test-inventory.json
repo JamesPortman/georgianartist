@@ -1,0 +1,3978 @@
+{
+  "unit": [
+    {
+      "file": "__tests__/admin-form-fields.test.ts",
+      "tests": [
+        {
+          "name": "admin forms send every tick-box the server reads › createProductAction: no field is read that its form never sends"
+        },
+        {
+          "name": "admin forms send every tick-box the server reads › updateProductAction: no field is read that its form never sends"
+        },
+        {
+          "name": "admin forms send every tick-box the server reads › the Sold tick-box exists on both forms"
+        },
+        {
+          "name": "admin forms send every tick-box the server reads › never tests a checkbox with !== \"off\""
+        },
+        {
+          "name": "a collector's photo is stored as theirs, not the artist's › re-encodes the file rather than editing it"
+        },
+        {
+          "name": "a collector's photo is stored as theirs, not the artist's › does not stamp the artist's copyright on it"
+        },
+        {
+          "name": "a collector's photo is stored as theirs, not the artist's › keeps it in its own folder, apart from the artist's work"
+        }
+      ]
+    },
+    {
+      "file": "__tests__/admin-password.test.ts",
+      "tests": [
+        {
+          "name": "passwordMatches › accepts exactly the password"
+        },
+        {
+          "name": "passwordMatches › refuses anything else, including a prefix or a different case"
+        },
+        {
+          "name": "passwordMatches › never signs in with an empty password, even if ADMIN_PASSWORD is empty or unset"
+        }
+      ]
+    },
+    {
+      "file": "__tests__/analytics-exclusion.test.ts",
+      "tests": [
+        {
+          "name": "analytics ingest exclusion › records an event from a browser that isn't excluded"
+        },
+        {
+          "name": "analytics ingest exclusion › drops an event from an excluded browser"
+        },
+        {
+          "name": "analytics ingest exclusion › looks the visitor up by cookie, never by city"
+        },
+        {
+          "name": "analytics ingest exclusion › still records when the exclusion lookup fails; a real visit must not be lost"
+        },
+        {
+          "name": "analytics ingest exclusion › drops excluded action events too, not just pageviews"
+        },
+        {
+          "name": "analytics ingest exclusion › never reaches the lookup for admin paths"
+        },
+        {
+          "name": "analytics ingest exclusion › returns 204 either way, so the page can't tell it was excluded"
+        },
+        {
+          "name": "isNonProductionRequest › drops localhost:3000"
+        },
+        {
+          "name": "isNonProductionRequest › drops localhost"
+        },
+        {
+          "name": "isNonProductionRequest › drops 127.0.0.1:3000"
+        },
+        {
+          "name": "isNonProductionRequest › drops [::1]:3000"
+        },
+        {
+          "name": "isNonProductionRequest › drops app.localhost:3000"
+        },
+        {
+          "name": "isNonProductionRequest › drops mymac.local"
+        },
+        {
+          "name": "isNonProductionRequest › drops georgianartist.test"
+        },
+        {
+          "name": "isNonProductionRequest › counts www.georgianartist.com"
+        },
+        {
+          "name": "isNonProductionRequest › counts georgianartist.com"
+        },
+        {
+          "name": "isNonProductionRequest › drops Vercel preview deployments whatever the hostname"
+        },
+        {
+          "name": "isNonProductionRequest › counts an unrecognised host rather than losing a real visitor"
+        },
+        {
+          "name": "isNonProductionRequest › counts a request with no Host header at all"
+        },
+        {
+          "name": "analytics ingest host gate › records a production request"
+        },
+        {
+          "name": "analytics ingest host gate › drops a localhost request before it reaches the database"
+        }
+      ]
+    },
+    {
+      "file": "__tests__/analytics.test.ts",
+      "tests": [
+        {
+          "name": "parseUserAgent: device › detects mobile"
+        },
+        {
+          "name": "parseUserAgent: device › detects tablet"
+        },
+        {
+          "name": "parseUserAgent: device › defaults to desktop"
+        },
+        {
+          "name": "parseUserAgent: browser › identifies browsers, preferring specific tokens"
+        },
+        {
+          "name": "parseUserAgent: os › identifies operating systems"
+        },
+        {
+          "name": "isBot › flags crawlers and tooling"
+        },
+        {
+          "name": "isBot › passes real browsers"
+        },
+        {
+          "name": "pctChange › formats a positive change with leading + and up = true"
+        },
+        {
+          "name": "pctChange › formats a negative change with the minus sign and up = false"
+        },
+        {
+          "name": "pctChange › treats no change as neither up nor down (null)"
+        },
+        {
+          "name": "pctChange › labels a brand-new period 'new' when previous was 0 and current > 0"
+        },
+        {
+          "name": "pctChange › returns n/a when both periods are 0 (no signal)"
+        },
+        {
+          "name": "pctChange › rounds fractional percents to the nearest whole number"
+        },
+        {
+          "name": "isoDay › returns YYYY-MM-DD in UTC"
+        },
+        {
+          "name": "fillDailySeries › emits exactly `days` buckets even when input is empty"
+        },
+        {
+          "name": "fillDailySeries › merges sparse server rows into the dense series"
+        },
+        {
+          "name": "fillDailySeries › coerces string-y counts coming back from $queryRaw to numbers"
+        },
+        {
+          "name": "fillDailySeries › handles a 90-day range without gaps"
+        },
+        {
+          "name": "isVisitorId › accepts the UUIDs the site sets"
+        },
+        {
+          "name": "isVisitorId › refuses anything else: missing, short, long, or with other characters"
+        },
+        {
+          "name": "withViewsTrend › averages each day with the six before it, using the lead-in days, then drops them"
+        },
+        {
+          "name": "withViewsTrend › doesn't dip toward zero at the start of a range that has a lead-in"
+        },
+        {
+          "name": "withViewsTrend › averages only the days that exist at the very start of the data (all time)"
+        },
+        {
+          "name": "withViewsTrend › keeps the raw daily values untouched"
+        }
+      ]
+    },
+    {
+      "file": "__tests__/AnalyticsTracker.test.tsx",
+      "tests": [
+        {
+          "name": "AnalyticsTracker › records a pageview for a real page"
+        },
+        {
+          "name": "AnalyticsTracker › does not record a pageview when the 404 page marked the path"
+        },
+        {
+          "name": "AnalyticsTracker › still records the next real page after a 404"
+        },
+        {
+          "name": "AnalyticsTracker › never records admin paths"
+        }
+      ]
+    },
+    {
+      "file": "__tests__/api-health.test.ts",
+      "tests": [
+        {
+          "name": "/api/health › answers 200 when the catalogue can be read, cached briefly at the edge"
+        },
+        {
+          "name": "/api/health › answers 503 when the database is down, and never caches it"
+        },
+        {
+          "name": "/api/health › answers 503 for an empty catalogue too; a site with no works is down to a visitor"
+        },
+        {
+          "name": "/api/health › leaks nothing: no counts, no error text"
+        }
+      ]
+    },
+    {
+      "file": "__tests__/archive-file.test.ts",
+      "tests": [
+        {
+          "name": "writeArchive › gives two runs on the same day their own files"
+        },
+        {
+          "name": "writeArchive › throws rather than overwrite, and leaves the first archive intact"
+        },
+        {
+          "name": "writeArchive › names the file to the second, in a form every filesystem accepts"
+        },
+        {
+          "name": "writeArchive › creates the directory if it doesn't exist yet"
+        }
+      ]
+    },
+    {
+      "file": "__tests__/artwork-references.test.ts",
+      "tests": [
+        {
+          "name": "artwork references › no page or component names a catalogue image by path"
+        },
+        {
+          "name": "artwork references › the gift shop packs carry no thumbnail field"
+        }
+      ]
+    },
+    {
+      "file": "__tests__/availability.test.ts",
+      "tests": [
+        {
+          "name": "matchesAvailability › includes sold-out work in the main gallery"
+        },
+        {
+          "name": "matchesAvailability › includes it in a category view too"
+        },
+        {
+          "name": "matchesAvailability › keeps it out of the __new__ view"
+        },
+        {
+          "name": "matchesAvailability › keeps it out of the __sale__ view"
+        },
+        {
+          "name": "matchesAvailability › shows only sold-out work in the archive view"
+        },
+        {
+          "name": "matchesAvailability › treats a missing flag as available"
+        },
+        {
+          "name": "soldOutMatches › finds sold-out works a search would otherwise have surfaced"
+        },
+        {
+          "name": "soldOutMatches › is case- and whitespace-insensitive"
+        },
+        {
+          "name": "soldOutMatches › never offers available work as an archive suggestion"
+        },
+        {
+          "name": "soldOutMatches › returns nothing for an empty query"
+        },
+        {
+          "name": "availabilitySchema › marks sold-out work SoldOut"
+        },
+        {
+          "name": "availabilitySchema › marks everything else InStock"
+        },
+        {
+          "name": "availabilitySchema › only ever emits real schema.org URLs"
+        },
+        {
+          "name": "excludesSoldOut › is true for __new__, a view about buying"
+        },
+        {
+          "name": "excludesSoldOut › is true for __sale__, a view about buying"
+        },
+        {
+          "name": "excludesSoldOut › is false for null"
+        },
+        {
+          "name": "excludesSoldOut › is false for Bruce Peninsula"
+        },
+        {
+          "name": "excludesSoldOut › is false for __soldout__"
+        },
+        {
+          "name": "soldOutLast › puts every sold-out work after every work for sale"
+        },
+        {
+          "name": "soldOutLast › keeps each group in the order the chosen sort left it"
+        },
+        {
+          "name": "soldOutLast › never lets a sold-out work sit between two for sale"
+        },
+        {
+          "name": "soldOutLast › treats a missing flag as for sale"
+        },
+        {
+          "name": "soldOutLast › does not mutate what it was given"
+        }
+      ]
+    },
+    {
+      "file": "__tests__/backup-format.test.ts",
+      "tests": [
+        {
+          "name": "fingerprint › ignores row order and key order"
+        },
+        {
+          "name": "fingerprint › sees a changed value, a missing row and a date that moved"
+        },
+        {
+          "name": "fingerprint › is a hex SHA-256 of the canonical rows, one per line"
+        },
+        {
+          "name": "fingerprint › canonicalises nested objects and arrays too"
+        },
+        {
+          "name": "fingerprint › treats a version 1 snapshot, which had no productSlugs, as having none"
+        },
+        {
+          "name": "restoreSnapshot › inserts every table with one statement each, and skips empty ones"
+        },
+        {
+          "name": "restoreSnapshot, every table › hands each table its own rows, as they round-trip through JSON"
+        },
+        {
+          "name": "buildSnapshot › reads every table, in a stable order so two snapshots diff cleanly, and stamps the snapshot"
+        }
+      ]
+    },
+    {
+      "file": "__tests__/backup.test.ts",
+      "tests": [
+        {
+          "name": "/api/cron/backup › writes to the private store when there is one, named by date and time"
+        },
+        {
+          "name": "/api/cron/backup › falls back to an unguessable name in the public store without one"
+        },
+        {
+          "name": "/api/cron/backup › prunes snapshots older than a week in both stores, and only those"
+        },
+        {
+          "name": "/api/cron/backup › emails the owner when the snapshot can't be written"
+        },
+        {
+          "name": "/api/cron/backup › refuses a request without the cron secret"
+        }
+      ]
+    },
+    {
+      "file": "__tests__/blob-cleanup.test.ts",
+      "tests": [
+        {
+          "name": "releaseBlob › deletes a blob nothing else references"
+        },
+        {
+          "name": "releaseBlob › keeps a blob another product shares; the epping/craigleith case"
+        },
+        {
+          "name": "releaseBlob › ignores the product being deleted when counting"
+        },
+        {
+          "name": "releaseBlob › keeps a blob a queued Instagram post still needs"
+        },
+        {
+          "name": "releaseBlob › keeps a blob a making-of film still needs"
+        },
+        {
+          "name": "releaseBlob › matches URLs ignoring any query string"
+        },
+        {
+          "name": "releaseBlob › leaves legacy repo paths alone; they aren't blobs"
+        },
+        {
+          "name": "releaseBlob › does nothing when there is no URL at all"
+        },
+        {
+          "name": "releaseBlob › keeps the blob rather than throwing when the delete fails"
+        },
+        {
+          "name": "countReferences › counts the same URL held in two places"
+        },
+        {
+          "name": "countReferences › counts zero when only the excluded product holds it"
+        },
+        {
+          "name": "isBlobUrl › https://x.public.blob.vercel-storage.com/inspiration/bruce-trail-abc123.jpg → true"
+        },
+        {
+          "name": "isBlobUrl › /paintings/scenic-caves.jpg → false"
+        },
+        {
+          "name": "isBlobUrl › https://www.georgianartist.com/paintings/x.jpg → false"
+        },
+        {
+          "name": "isBlobUrl ›  → false"
+        },
+        {
+          "name": "a collector's home photo › counts as a reference, so cleanup never deletes it out from under a page"
+        },
+        {
+          "name": "a collector's home photo › is released once the only painting that shows it lets go"
+        },
+        {
+          "name": "the catalogue's own images › are never deleted by an edit, even with nothing pointing at them"
+        },
+        {
+          "name": "the catalogue's own images › count a product's mockup as a reference"
+        }
+      ]
+    },
+    {
+      "file": "__tests__/blob-prune.test.ts",
+      "tests": [
+        {
+          "name": "which folders the pruner sweeps › covers every folder the admin uploads to"
+        },
+        {
+          "name": "which folders the pruner sweeps › gives every admin upload folder a grace period, since the file is written before its row"
+        },
+        {
+          "name": "which folders the pruner sweeps › reports a folder no area covers, and leaves the kept folders alone"
+        },
+        {
+          "name": "what counts as a reference in the repository › finds complete Blob URLs, without their query string"
+        },
+        {
+          "name": "what counts as a reference in the repository › does not count a repo path with the same name as a blob"
+        },
+        {
+          "name": "findOrphans › keeps anything a row or the repo references"
+        },
+        {
+          "name": "findOrphans › keeps an unreferenced upload younger than the grace period"
+        },
+        {
+          "name": "findOrphans › only considers blobs under the area's own folder"
+        },
+        {
+          "name": "findOrphans › compares URLs without their query string"
+        }
+      ]
+    },
+    {
+      "file": "__tests__/booking-reply-to.test.ts",
+      "tests": [
+        {
+          "name": "booking emails › sends exactly the two the handoff specifies"
+        },
+        {
+          "name": "booking emails › sets a Reply-To on the notification to James"
+        },
+        {
+          "name": "booking emails › sets a Reply-To on the autoresponder to the submitter"
+        },
+        {
+          "name": "booking emails › points the autoresponder's replies at a mailbox that is read"
+        },
+        {
+          "name": "booking emails › answers the notification back to whoever submitted it"
+        }
+      ]
+    },
+    {
+      "file": "__tests__/booking.test.ts",
+      "tests": [
+        {
+          "name": "formatBookingEmail › matches the body the handoff specifies, exactly"
+        },
+        {
+          "name": "formatBookingEmail › keeps a line for every field even when the optional ones are blank"
+        },
+        {
+          "name": "formatBookingEmail › preserves the order, so the eye lands in the same place every time"
+        },
+        {
+          "name": "formatBookingEmail › does not mangle multi-line notes"
+        },
+        {
+          "name": "checkBookingSubmission › passes a normal submission"
+        },
+        {
+          "name": "checkBookingSubmission › catches a filled honeypot"
+        },
+        {
+          "name": "checkBookingSubmission › catches a form completed impossibly fast"
+        },
+        {
+          "name": "checkBookingSubmission › allows a submission right on the threshold"
+        },
+        {
+          "name": "checkBookingSubmission › never rejects a real person over a missing signal › passes with no elapsedMs at all"
+        },
+        {
+          "name": "checkBookingSubmission › never rejects a real person over a missing signal › passes with a non-numeric elapsedMs"
+        },
+        {
+          "name": "checkBookingSubmission › never rejects a real person over a missing signal › passes with NaN"
+        },
+        {
+          "name": "checkBookingSubmission › never rejects a real person over a missing signal › passes with a negative clock"
+        },
+        {
+          "name": "checkBookingSubmission › never rejects a real person over a missing signal › passes with no honeypot field"
+        },
+        {
+          "name": "checkBookingSubmission › never rejects a real person over a missing signal › passes with a whitespace-only honeypot"
+        },
+        {
+          "name": "checkBookingSubmission › gives a human long enough to actually type"
+        }
+      ]
+    },
+    {
+      "file": "__tests__/BookingClient.test.tsx",
+      "tests": [
+        {
+          "name": "BookingClient › sends a numeric elapsedMs measured from mount"
+        },
+        {
+          "name": "BookingClient › sends the honeypot field so the server can read it"
+        },
+        {
+          "name": "BookingClient › measures from mount, so an immediate submit is still under the bot threshold"
+        }
+      ]
+    },
+    {
+      "file": "__tests__/brand-colour.test.ts",
+      "tests": [
+        {
+          "name": "brand colour › lib/brand.ts matches --color-brand in globals.css"
+        },
+        {
+          "name": "brand colour › lib/brand.ts matches --color-brand-hover in globals.css"
+        },
+        {
+          "name": "brand colour › lib/brand.ts matches --color-brand-tint in globals.css"
+        },
+        {
+          "name": "brand colour › defines the tokens inside @theme, so Tailwind generates the utilities"
+        },
+        {
+          "name": "no brand hex literals outside the definitions › every other file uses the token"
+        }
+      ]
+    },
+    {
+      "file": "__tests__/BuyNowButton.test.tsx",
+      "tests": [
+        {
+          "name": "BuyNowButton › renders a 'Buy Now' button"
+        },
+        {
+          "name": "BuyNowButton › clicking Buy Now reveals the enquiry form"
+        },
+        {
+          "name": "BuyNowButton › form shows the product title, size and price"
+        },
+        {
+          "name": "BuyNowButton › Cancel button hides the form and restores Buy Now"
+        },
+        {
+          "name": "BuyNowButton › shows confirmation after submitting the enquiry form"
+        },
+        {
+          "name": "BuyNowButton › posts the order as ids and choices, never the displayed title or price"
+        }
+      ]
+    },
+    {
+      "file": "__tests__/catalogue-cache.test.ts",
+      "tests": [
+        {
+          "name": "reviveDates › revives ISO strings under keys ending in At, at any depth"
+        },
+        {
+          "name": "reviveDates › leaves other strings alone, even ones that look like dates"
+        },
+        {
+          "name": "cacheKey › differs between deployments, so each starts with an empty cache"
+        },
+        {
+          "name": "cacheKey › is stable within a deployment and separate per query"
+        },
+        {
+          "name": "cacheKey › uses Vercel's deployment id, then the commit, and works with neither"
+        }
+      ]
+    },
+    {
+      "file": "__tests__/catalogue-images.test.ts",
+      "tests": [
+        {
+          "name": "catalogue paths › recognises the committed folders and nothing else"
+        },
+        {
+          "name": "catalogue paths › keeps the same path under catalogue/ on Blob"
+        },
+        {
+          "name": "catalogue paths › tells a migrated file from an admin upload"
+        },
+        {
+          "name": "mockupFor › is the painting's mockup on Blob"
+        },
+        {
+          "name": "mockupFor › is none without one, so the room view is composed in CSS (every admin upload)"
+        },
+        {
+          "name": "absoluteImageUrl › leaves a Blob URL alone instead of gluing the site's origin onto it"
+        },
+        {
+          "name": "absoluteImageUrl › puts a site path on the site's origin"
+        },
+        {
+          "name": "the deploy guard for removed image files › catches a row still naming a committed file, relative or on the site's origin"
+        }
+      ]
+    },
+    {
+      "file": "__tests__/client-error-reporter.test.tsx",
+      "tests": [
+        {
+          "name": "reportClientError › posts the error with this page's path and its kind"
+        },
+        {
+          "name": "reportClientError › skips an error with a digest: the server reported it already"
+        },
+        {
+          "name": "reportClientError › sends each error once, and at most five per page load"
+        },
+        {
+          "name": "reportClientError › never throws, even if the network call does"
+        },
+        {
+          "name": "ClientErrorReporter › reports an uncaught error from this site's own script"
+        },
+        {
+          "name": "ClientErrorReporter › ignores another origin's script: an extension's or an embed's"
+        },
+        {
+          "name": "ClientErrorReporter › reports a rejected promise only when its stack is this site's"
+        },
+        {
+          "name": "ClientErrorReporter › stops listening when unmounted"
+        }
+      ]
+    },
+    {
+      "file": "__tests__/client-error.test.ts",
+      "tests": [
+        {
+          "name": "parseClientError › keeps a well-formed report"
+        },
+        {
+          "name": "parseClientError › drops the query string from the path, which can carry anything"
+        },
+        {
+          "name": "parseClientError › refuses a path that isn't one of this site's"
+        },
+        {
+          "name": "parseClientError › refuses an unknown kind, so a report can't pose as a server error"
+        },
+        {
+          "name": "parseClientError › drops the noise every site sees"
+        },
+        {
+          "name": "parseClientError › refuses an empty message, a body that isn't an object, and an oversized body"
+        },
+        {
+          "name": "parseClientError › caps each field"
+        },
+        {
+          "name": "parseClientError › defaults a missing name, and stores no stack when none was sent"
+        },
+        {
+          "name": "parseClientError › becomes an Error carrying the browser's name, message and stack"
+        },
+        {
+          "name": "POST /api/client-error › records a report under its page and kind, and always answers 204"
+        },
+        {
+          "name": "POST /api/client-error › caps the emails these reports can send, in total, per day"
+        },
+        {
+          "name": "POST /api/client-error › records nothing over the per-address limit, or when the limiter is down"
+        },
+        {
+          "name": "POST /api/client-error › ignores bots and malformed reports without touching the limiter"
+        },
+        {
+          "name": "POST /api/client-error › still answers 204 if recording throws"
+        },
+        {
+          "name": "POST /api/client-error › keeps per-address and daily limits tight enough to bound the inbox"
+        }
+      ]
+    },
+    {
+      "file": "__tests__/client-ip.test.ts",
+      "tests": [
+        {
+          "name": "rateLimitAddress › keeps an IPv4 address as is"
+        },
+        {
+          "name": "rateLimitAddress › counts every address in one IPv6 /64 as one client"
+        },
+        {
+          "name": "rateLimitAddress › expands :: before cutting, wherever it sits"
+        },
+        {
+          "name": "rateLimitAddress › tells different /64s apart"
+        },
+        {
+          "name": "rateLimitAddress › treats an IPv4-mapped address as the IPv4 address"
+        },
+        {
+          "name": "rateLimitAddress › leaves anything it can't parse alone rather than merging it with others"
+        }
+      ]
+    },
+    {
+      "file": "__tests__/ContactClient.test.tsx",
+      "tests": [
+        {
+          "name": "ContactClient › renders the contact form"
+        },
+        {
+          "name": "ContactClient › does not show the confirmation message before submission"
+        },
+        {
+          "name": "ContactClient › shows a confirmation message after the form is submitted"
+        },
+        {
+          "name": "ContactClient › hides the form after submission"
+        }
+      ]
+    },
+    {
+      "file": "__tests__/cron-auth.test.ts",
+      "tests": [
+        {
+          "name": "isCronRequest › accepts exactly the bearer secret"
+        },
+        {
+          "name": "isCronRequest › refuses a wrong, partial or missing header"
+        },
+        {
+          "name": "isCronRequest › refuses everything when CRON_SECRET is unset, rather than letting anyone in"
+        }
+      ]
+    },
+    {
+      "file": "__tests__/csp.test.ts",
+      "tests": [
+        {
+          "name": "buildCsp › allows scripts only by nonce, never inline or by host"
+        },
+        {
+          "name": "buildCsp › keeps eval and blob workers to the admin, for the HEIC converter"
+        },
+        {
+          "name": "buildCsp › blocks framing, plugins and base-tag hijacking, and reports violations"
+        },
+        {
+          "name": "buildCsp › names every outside service the pages use"
+        },
+        {
+          "name": "buildCsp › only upgrades insecure requests when asked (enforcing, over HTTPS)"
+        },
+        {
+          "name": "buildCsp › is enforcing"
+        },
+        {
+          "name": "buildCsp › allows the Vercel toolbar's frame, and nothing else from vercel.live"
+        },
+        {
+          "name": "makeNonce › is fresh every time"
+        },
+        {
+          "name": "parseReports › reads the report-uri shape, keeping only the blocked origin"
+        },
+        {
+          "name": "parseReports › reads the Reporting API shape"
+        },
+        {
+          "name": "parseReports › drops reports about other sites' pages"
+        },
+        {
+          "name": "parseReports › caps how much one request can record"
+        },
+        {
+          "name": "parseReports › ignores junk"
+        }
+      ]
+    },
+    {
+      "file": "__tests__/data.test.ts",
+      "tests": [
+        {
+          "name": "products data › has no duplicate IDs"
+        },
+        {
+          "name": "products data › every product has a valid sizeType"
+        },
+        {
+          "name": "products data › every product has a non-empty title, image, and positive price"
+        },
+        {
+          "name": "products data › every product ID is URL-safe (lowercase, hyphens only)"
+        },
+        {
+          "name": "products data › every product image, mockup and inspiration photo is in the Blob catalogue"
+        },
+        {
+          "name": "photographs data › has no duplicate IDs"
+        },
+        {
+          "name": "photographs data › every photograph has a valid sizeType"
+        },
+        {
+          "name": "photographs data › every photograph has a non-empty title, image, and positive price"
+        },
+        {
+          "name": "photographs data › every photograph has positive naturalWidth and naturalHeight"
+        },
+        {
+          "name": "photographs data › no ID collides with a product ID"
+        },
+        {
+          "name": "blur placeholders › has one for every seeded catalogue image"
+        },
+        {
+          "name": "blur placeholders › alpine-ski-fall stays small"
+        },
+        {
+          "name": "blur placeholders › beaver-river-access stays small"
+        },
+        {
+          "name": "blur placeholders › blue-mountain-sunrise-painting stays small"
+        },
+        {
+          "name": "blur placeholders › blue-mountain-sunset-painting stays small"
+        },
+        {
+          "name": "blur placeholders › blue-mountain-trail-painting stays small"
+        },
+        {
+          "name": "blur placeholders › bridal-veil-falls-painting stays small"
+        },
+        {
+          "name": "blur placeholders › bruce-trail-epping stays small"
+        },
+        {
+          "name": "blur placeholders › bruce-trail stays small"
+        },
+        {
+          "name": "blur placeholders › council-beach stays small"
+        },
+        {
+          "name": "blur placeholders › delphi-point-painting stays small"
+        },
+        {
+          "name": "blur placeholders › inglis-falls stays small"
+        },
+        {
+          "name": "blur placeholders › local-farm-painting stays small"
+        },
+        {
+          "name": "blur placeholders › lora-bay stays small"
+        },
+        {
+          "name": "blur placeholders › manitoulin-island stays small"
+        },
+        {
+          "name": "blur placeholders › near-killarney stays small"
+        },
+        {
+          "name": "blur placeholders › northwinds-beach stays small"
+        },
+        {
+          "name": "blur placeholders › peasemarsh stays small"
+        },
+        {
+          "name": "blur placeholders › ravenna-canola-painting stays small"
+        },
+        {
+          "name": "blur placeholders › scenic-caves stays small"
+        },
+        {
+          "name": "blur placeholders › singhampton stays small"
+        },
+        {
+          "name": "blur placeholders › the-grotto-painting stays small"
+        },
+        {
+          "name": "blur placeholders › top-of-blue-mountain stays small"
+        },
+        {
+          "name": "blur placeholders › Delphi_Point stays small"
+        },
+        {
+          "name": "blur placeholders › Ravenna_Canola stays small"
+        },
+        {
+          "name": "blur placeholders › alpine-ski-fall-photo stays small"
+        },
+        {
+          "name": "blur placeholders › autumn-canopy stays small"
+        },
+        {
+          "name": "blur placeholders › beaver-river-access-photo stays small"
+        },
+        {
+          "name": "blur placeholders › blue-mountain-sunrise stays small"
+        },
+        {
+          "name": "blur placeholders › blue-mountain-sunset-2 stays small"
+        },
+        {
+          "name": "blur placeholders › blue-mountain-trail stays small"
+        },
+        {
+          "name": "blur placeholders › bridal-veil-falls stays small"
+        },
+        {
+          "name": "blur placeholders › bruce-trail-photo stays small"
+        },
+        {
+          "name": "blur placeholders › council-beach-photo stays small"
+        },
+        {
+          "name": "blur placeholders › inglis-falls-photo stays small"
+        },
+        {
+          "name": "blur placeholders › local-farm stays small"
+        },
+        {
+          "name": "blur placeholders › lora-bay-photo stays small"
+        },
+        {
+          "name": "blur placeholders › manitoulin-island-photo stays small"
+        },
+        {
+          "name": "blur placeholders › near-killarney-photo stays small"
+        },
+        {
+          "name": "blur placeholders › northwinds-beach-twilight stays small"
+        },
+        {
+          "name": "blur placeholders › scenic-caves-photo stays small"
+        },
+        {
+          "name": "blur placeholders › singhampton-photo stays small"
+        },
+        {
+          "name": "blur placeholders › snowy-owl-in-craigleith stays small"
+        },
+        {
+          "name": "blur placeholders › the-grotto stays small"
+        },
+        {
+          "name": "blur placeholders › top-of-blue-mountain-photo stays small"
+        },
+        {
+          "name": "blur placeholders › carries no embedded metadata"
+        },
+        {
+          "name": "blur placeholders › keeps the whole file small enough to ship in the bundle"
+        },
+        {
+          "name": "making-of seed › has films"
+        },
+        {
+          "name": "making-of seed › alpine-ski-fall names absolute Blob URLs for both video and poster"
+        },
+        {
+          "name": "making-of seed › beaver-river-access names absolute Blob URLs for both video and poster"
+        },
+        {
+          "name": "making-of seed › blue-mountain-sunrise names absolute Blob URLs for both video and poster"
+        },
+        {
+          "name": "making-of seed › blue-mountain-sunset names absolute Blob URLs for both video and poster"
+        },
+        {
+          "name": "making-of seed › blue-mountain-trail names absolute Blob URLs for both video and poster"
+        },
+        {
+          "name": "making-of seed › bridal-veil-falls names absolute Blob URLs for both video and poster"
+        },
+        {
+          "name": "making-of seed › bruce-trail-epping names absolute Blob URLs for both video and poster"
+        },
+        {
+          "name": "making-of seed › bruce-trail-grey-highlands names absolute Blob URLs for both video and poster"
+        },
+        {
+          "name": "making-of seed › council-beach names absolute Blob URLs for both video and poster"
+        },
+        {
+          "name": "making-of seed › delphi-point names absolute Blob URLs for both video and poster"
+        },
+        {
+          "name": "making-of seed › inglis-falls names absolute Blob URLs for both video and poster"
+        },
+        {
+          "name": "making-of seed › local-farm-sunflowers names absolute Blob URLs for both video and poster"
+        },
+        {
+          "name": "making-of seed › lora-bay names absolute Blob URLs for both video and poster"
+        },
+        {
+          "name": "making-of seed › manitoulin-island names absolute Blob URLs for both video and poster"
+        },
+        {
+          "name": "making-of seed › near-killarney names absolute Blob URLs for both video and poster"
+        },
+        {
+          "name": "making-of seed › northwinds-beach names absolute Blob URLs for both video and poster"
+        },
+        {
+          "name": "making-of seed › peasemarsh names absolute Blob URLs for both video and poster"
+        },
+        {
+          "name": "making-of seed › ravenna-canola names absolute Blob URLs for both video and poster"
+        },
+        {
+          "name": "making-of seed › scenic-caves names absolute Blob URLs for both video and poster"
+        },
+        {
+          "name": "making-of seed › singhampton names absolute Blob URLs for both video and poster"
+        },
+        {
+          "name": "making-of seed › the-grotto names absolute Blob URLs for both video and poster"
+        },
+        {
+          "name": "making-of seed › top-of-blue-mountain names absolute Blob URLs for both video and poster"
+        },
+        {
+          "name": "making-of seed › points every film at a product that exists in the seed"
+        },
+        {
+          "name": "making-of seed › has no duplicate ids"
+        },
+        {
+          "name": "making-of seed › gives every film a plausible duration"
+        }
+      ]
+    },
+    {
+      "file": "__tests__/db-guard.test.ts",
+      "tests": [
+        {
+          "name": "databaseRefusal › refuses a remote database off Vercel when nothing names it"
+        },
+        {
+          "name": "databaseRefusal › allows anything on Vercel, where each environment sets its own database"
+        },
+        {
+          "name": "databaseRefusal › allows a local database, as in CI and E2E"
+        },
+        {
+          "name": "databaseRefusal › allows no URL at all, since there is nothing to reach"
+        },
+        {
+          "name": "databaseRefusal › allows exactly the named host, and only that one"
+        },
+        {
+          "name": "databaseRefusal › allows production when it is named on purpose"
+        },
+        {
+          "name": "databaseRefusal › does not let a host prefix or suffix pass as a match"
+        },
+        {
+          "name": "databaseRefusal › fails closed on a URL it can't read"
+        },
+        {
+          "name": "assertDatabaseAllowed › throws on a refusal and is silent otherwise"
+        },
+        {
+          "name": "scripts › every script (scripts/, prisma/) that builds its own Prisma client checks the guard first"
+        },
+        {
+          "name": "build scripts › every guarded script the build runs says so, or Vercel's build would be refused"
+        },
+        {
+          "name": "preview deployments › refuse any database until production's host is named, so they can't guess"
+        },
+        {
+          "name": "preview deployments › refuse production, pooled or not: the case Neon preview branching exists to prevent"
+        },
+        {
+          "name": "preview deployments › allow their own Neon branch"
+        },
+        {
+          "name": "preview deployments › leave production deployments alone"
+        },
+        {
+          "name": "a pulled Vercel env file is not a deployment › a script refuses it: scripts never run on Vercel, so VERCEL is ignored"
+        },
+        {
+          "name": "a pulled Vercel env file is not a deployment › a script still accepts the host named on purpose"
+        },
+        {
+          "name": "a pulled Vercel env file is not a deployment › the build check refuses it without Vercel's CI=1"
+        },
+        {
+          "name": "a pulled Vercel env file is not a deployment › the build check still applies the preview rule on Vercel"
+        },
+        {
+          "name": "a pulled Vercel env file is not a deployment › the dev server refuses it: no deployment runs NODE_ENV=development"
+        },
+        {
+          "name": "a pulled Vercel env file is not a deployment › without VERCEL, no context trusts a remote database"
+        }
+      ]
+    },
+    {
+      "file": "__tests__/e2e-db-guard.test.ts",
+      "tests": [
+        {
+          "name": "databaseHost › reads the host out of a connection string"
+        },
+        {
+          "name": "databaseHost › unwraps a bracketed IPv6 literal"
+        },
+        {
+          "name": "databaseHost › returns null rather than throwing on nonsense"
+        },
+        {
+          "name": "isThrowawayDatabase › accepts the local hosts CI and a laptop container use"
+        },
+        {
+          "name": "isThrowawayDatabase › rejects production"
+        },
+        {
+          "name": "isThrowawayDatabase › fails closed on anything it cannot vouch for"
+        },
+        {
+          "name": "isThrowawayDatabase › is not fooled by a production host that merely mentions localhost"
+        },
+        {
+          "name": "assertThrowawayDatabase › passes for a throwaway database"
+        },
+        {
+          "name": "assertThrowawayDatabase › throws for production"
+        },
+        {
+          "name": "assertThrowawayDatabase › throws when DATABASE_URL is unset"
+        },
+        {
+          "name": "assertThrowawayDatabase › reads nothing from the environment"
+        },
+        {
+          "name": "assertThrowawayDatabase › lets an explicit override through"
+        },
+        {
+          "name": "assertThrowawayDatabase › does not treat any other override value as consent"
+        },
+        {
+          "name": "the refusal message › names the host, the damage, and the way out"
+        },
+        {
+          "name": "the refusal message › says so plainly when DATABASE_URL is simply missing"
+        }
+      ]
+    },
+    {
+      "file": "__tests__/e2e-imports.test.ts",
+      "tests": [
+        {
+          "name": "E2E specs use the shared test fixture › finds the specs"
+        },
+        {
+          "name": "E2E specs use the shared test fixture › abuse.spec.ts imports from ./test, not @playwright/test"
+        },
+        {
+          "name": "E2E specs use the shared test fixture › accessibility.spec.ts imports from ./test, not @playwright/test"
+        },
+        {
+          "name": "E2E specs use the shared test fixture › admin.spec.ts imports from ./test, not @playwright/test"
+        },
+        {
+          "name": "E2E specs use the shared test fixture › analytics.spec.ts imports from ./test, not @playwright/test"
+        },
+        {
+          "name": "E2E specs use the shared test fixture › api-validation.spec.ts imports from ./test, not @playwright/test"
+        },
+        {
+          "name": "E2E specs use the shared test fixture › csp.spec.ts imports from ./test, not @playwright/test"
+        },
+        {
+          "name": "E2E specs use the shared test fixture › featured-order.spec.ts imports from ./test, not @playwright/test"
+        },
+        {
+          "name": "E2E specs use the shared test fixture › forms.spec.ts imports from ./test, not @playwright/test"
+        },
+        {
+          "name": "E2E specs use the shared test fixture › giftshop.spec.ts imports from ./test, not @playwright/test"
+        },
+        {
+          "name": "E2E specs use the shared test fixture › inspiration.spec.ts imports from ./test, not @playwright/test"
+        },
+        {
+          "name": "E2E specs use the shared test fixture › interactions.spec.ts imports from ./test, not @playwright/test"
+        },
+        {
+          "name": "E2E specs use the shared test fixture › keyboard.spec.ts imports from ./test, not @playwright/test"
+        },
+        {
+          "name": "E2E specs use the shared test fixture › legacy-urls.spec.ts imports from ./test, not @playwright/test"
+        },
+        {
+          "name": "E2E specs use the shared test fixture › locations.spec.ts imports from ./test, not @playwright/test"
+        },
+        {
+          "name": "E2E specs use the shared test fixture › making-of.spec.ts imports from ./test, not @playwright/test"
+        },
+        {
+          "name": "E2E specs use the shared test fixture › newsletter.spec.ts imports from ./test, not @playwright/test"
+        },
+        {
+          "name": "E2E specs use the shared test fixture › photo-location.spec.ts imports from ./test, not @playwright/test"
+        },
+        {
+          "name": "E2E specs use the shared test fixture › photographs.spec.ts imports from ./test, not @playwright/test"
+        },
+        {
+          "name": "E2E specs use the shared test fixture › search-home.spec.ts imports from ./test, not @playwright/test"
+        },
+        {
+          "name": "E2E specs use the shared test fixture › static-pages.spec.ts imports from ./test, not @playwright/test"
+        },
+        {
+          "name": "E2E specs use the shared test fixture › upload.spec.ts imports from ./test, not @playwright/test"
+        },
+        {
+          "name": "E2E specs use the shared test fixture › visual.spec.ts imports from ./test, not @playwright/test"
+        },
+        {
+          "name": "E2E specs use the shared test fixture › zz-admin-instagram.spec.ts imports from ./test, not @playwright/test"
+        },
+        {
+          "name": "E2E specs use the shared test fixture › zz-admin-manage.spec.ts imports from ./test, not @playwright/test"
+        },
+        {
+          "name": "E2E specs use the shared test fixture › zz-admin-passkey.spec.ts imports from ./test, not @playwright/test"
+        },
+        {
+          "name": "E2E specs use the shared test fixture › zz-rate-limit.spec.ts imports from ./test, not @playwright/test"
+        }
+      ]
+    },
+    {
+      "file": "__tests__/email-subject.test.ts",
+      "tests": [
+        {
+          "name": "subjectLine › puts a name with line breaks on one line"
+        },
+        {
+          "name": "subjectLine › drops every control character, including tabs, NUL and Unicode line separators"
+        },
+        {
+          "name": "subjectLine › collapses runs of space and caps the length"
+        }
+      ]
+    },
+    {
+      "file": "__tests__/email-validation.test.ts",
+      "tests": [
+        {
+          "name": "validateEmail › rejects missing or malformed addresses (no MX lookup needed)"
+        },
+        {
+          "name": "validateEmail › rejects disposable domains"
+        },
+        {
+          "name": "validateEmail › rejects Gmail dot-abuse (4+ dots in the local part)"
+        },
+        {
+          "name": "validateEmail › accepts a well-formed address with a valid MX record"
+        },
+        {
+          "name": "validateEmail › rejects when the domain has no MX records"
+        },
+        {
+          "name": "validateEmail › rejects when the MX lookup throws (nonexistent domain)"
+        }
+      ]
+    },
+    {
+      "file": "__tests__/engagement-rank.test.ts",
+      "tests": [
+        {
+          "name": "engagement ranking › weights an order above a Buy Now open above a view"
+        },
+        {
+          "name": "engagement ranking › puts the most engaging work first, whatever its current position"
+        },
+        {
+          "name": "engagement ranking › leaves works with too few viewers in their current order, after the ranked ones"
+        },
+        {
+          "name": "engagement ranking › keeps sold-out work after everything for sale, however popular"
+        },
+        {
+          "name": "engagement ranking › breaks a tie by the current order, so reruns are stable"
+        }
+      ]
+    },
+    {
+      "file": "__tests__/error-report.test.ts",
+      "tests": [
+        {
+          "name": "errorDigest › uses Next's digest when there is one, so a React-wrapped error keeps its identity"
+        },
+        {
+          "name": "errorDigest › hashes the message otherwise, and never returns the raw message"
+        },
+        {
+          "name": "errorDigest › caps the stored message"
+        },
+        {
+          "name": "errorStack › keeps the top of the stack, capped"
+        },
+        {
+          "name": "errorStack › is null for a thrown value with no stack"
+        },
+        {
+          "name": "reportError › stores the stack fragment with the row"
+        },
+        {
+          "name": "reportError › emails when the row says this call claimed the alert"
+        },
+        {
+          "name": "reportError › stays quiet on a repeat within the day"
+        },
+        {
+          "name": "reportError › lets the caller veto the email, but still records the error"
+        },
+        {
+          "name": "reportError › gives back a vetoed claim, so the kind can still alert once the cap allows"
+        },
+        {
+          "name": "reportError › keeps the claim when the email goes out"
+        },
+        {
+          "name": "reportError › asks the veto only when this call claimed the alert"
+        },
+        {
+          "name": "reportError › never throws, even with the database down"
+        }
+      ]
+    },
+    {
+      "file": "__tests__/escape-html.test.ts",
+      "tests": [
+        {
+          "name": "escapeHtml › turns markup into text"
+        },
+        {
+          "name": "escapeHtml › escapes & first, so an existing entity is shown, not decoded"
+        },
+        {
+          "name": "escapeHtml › leaves ordinary titles alone"
+        }
+      ]
+    },
+    {
+      "file": "__tests__/Footer.test.tsx",
+      "tests": [
+        {
+          "name": "Footer › links to the Instagram account the cron posts to"
+        },
+        {
+          "name": "Footer › shows the handle as text, not just as a URL"
+        },
+        {
+          "name": "Footer › opens in a new tab without handing the target window a reference back"
+        },
+        {
+          "name": "Footer › links the pages kept out of the header menu"
+        },
+        {
+          "name": "Footer › credits James Portman from 2021, with the current year as the end"
+        }
+      ]
+    },
+    {
+      "file": "__tests__/form-email-abuse.test.ts",
+      "tests": [
+        {
+          "name": "/api/buy › builds both emails from the catalogue, not from what was posted"
+        },
+        {
+          "name": "/api/buy › repeats nothing the visitor typed in the confirmation"
+        },
+        {
+          "name": "/api/buy › refuses an order for a work that isn't in the catalogue, and sends nothing"
+        },
+        {
+          "name": "/api/buy › sends nothing, and says it failed, once the day's owner emails are used up"
+        },
+        {
+          "name": "/api/buy › sends nothing at all once the IP is over its limit"
+        },
+        {
+          "name": "/api/buy › still tells the owner when only the confirmation is held back"
+        },
+        {
+          "name": "/api/contact › repeats nothing the visitor typed in the confirmation"
+        },
+        {
+          "name": "/api/contact › sends nothing once the IP is over its limit"
+        },
+        {
+          "name": "/api/book › repeats nothing the visitor typed in the autoresponder"
+        },
+        {
+          "name": "/api/book › sends nothing once the IP is over its limit"
+        },
+        {
+          "name": "oversized and malformed input › refuses a body too big to be a real enquiry, on every form"
+        },
+        {
+          "name": "oversized and malformed input › refuses a field over its limit, with a reason a person can act on"
+        },
+        {
+          "name": "oversized and malformed input › answers a non-text field with a 400, not a crash"
+        },
+        {
+          "name": "oversized and malformed input › answers a body that isn't JSON with a 400, on every form"
+        },
+        {
+          "name": "form outcomes › counts a message as sent only once the owner's email has gone"
+        },
+        {
+          "name": "form outcomes › answers a caught bot exactly like a person, sends nothing, and counts it as spam"
+        },
+        {
+          "name": "form outcomes › says so when Resend refuses the owner's email, and sends no confirmation"
+        },
+        {
+          "name": "form outcomes › still succeeds when only the confirmation is refused: the owner has the message"
+        }
+      ]
+    },
+    {
+      "file": "__tests__/form-input.test.ts",
+      "tests": [
+        {
+          "name": "readFormBody › accepts a JSON object"
+        },
+        {
+          "name": "readFormBody › refuses a body over the cap before parsing it"
+        },
+        {
+          "name": "readFormBody › trusts a declared oversize length without reading the body"
+        },
+        {
+          "name": "readFormBody › refuses what isn't a JSON object"
+        },
+        {
+          "name": "readFormBody › accepts a body of exactly the cap, counted in bytes"
+        },
+        {
+          "name": "readFormBody › tells the visitor to shorten an oversize body"
+        },
+        {
+          "name": "checkFields › passes text within its limit, and absent or empty fields"
+        },
+        {
+          "name": "checkFields › passes a null field, and text of exactly its limit"
+        },
+        {
+          "name": "checkFields › calls an over-long note a note"
+        },
+        {
+          "name": "checkFields › refuses text over its limit, naming the field and the limit"
+        },
+        {
+          "name": "checkFields › refuses a field that isn't text rather than crashing on it"
+        }
+      ]
+    },
+    {
+      "file": "__tests__/form-owner-cap.test.ts",
+      "tests": [
+        {
+          "name": "allowOwnerEmail › counts every form against one shared daily total"
+        },
+        {
+          "name": "allowOwnerEmail › allows up to the limit, then refuses"
+        },
+        {
+          "name": "allowOwnerEmail › alerts the owner once, on the first enquiry over the limit"
+        },
+        {
+          "name": "allowOwnerEmail › lets the enquiry through when the database can't be reached"
+        }
+      ]
+    },
+    {
+      "file": "__tests__/form-rate-limit.test.ts",
+      "tests": [
+        {
+          "name": "limitKey › never contains the raw IP or email address"
+        },
+        {
+          "name": "limitKey › is stable, so repeat submissions count against the same row"
+        },
+        {
+          "name": "limitKey › treats an address the same whatever its case or padding"
+        },
+        {
+          "name": "limitKey › keeps each scope separate"
+        },
+        {
+          "name": "LIMITS › lets a real customer through: at least two submissions, and a confirmation"
+        },
+        {
+          "name": "mailbox › counts +tag variants of one address as one inbox"
+        },
+        {
+          "name": "mailbox › ignores dots at Gmail only, and treats googlemail as gmail"
+        }
+      ]
+    },
+    {
+      "file": "__tests__/ga.test.ts",
+      "tests": [
+        {
+          "name": "Google Analytics › loads only on the production deployment"
+        },
+        {
+          "name": "Google Analytics › keeps analytics and turns advertising off"
+        }
+      ]
+    },
+    {
+      "file": "__tests__/GalleryGrid.test.tsx",
+      "tests": [
+        {
+          "name": "GalleryGrid › puts sold-out work in its own section under a heading"
+        },
+        {
+          "name": "GalleryGrid › renders the work for sale before the sold-out section"
+        },
+        {
+          "name": "GalleryGrid › leaves the heading out when nothing is sold out"
+        },
+        {
+          "name": "GalleryGrid › shows a plain grid in the Sold-out filter view"
+        },
+        {
+          "name": "GalleryGrid image priority › marks the first two cards for sale, and nothing in the sold-out section below them"
+        },
+        {
+          "name": "GalleryGrid image priority › marks the first sold-out cards when they are all there is"
+        }
+      ]
+    },
+    {
+      "file": "__tests__/gift-shop-sold-out.test.ts",
+      "tests": [
+        {
+          "name": "gift shop pack builders › offer visible work that is still for sale"
+        },
+        {
+          "name": "gift shop pack builders › never offer a sold-out work"
+        },
+        {
+          "name": "getVisibleWorks › leaves out sold-out work when asked for work for sale (the gift shop thumbnails)"
+        },
+        {
+          "name": "getVisibleWorks › still includes it by default (the share image)"
+        }
+      ]
+    },
+    {
+      "file": "__tests__/health.test.ts",
+      "tests": [
+        {
+          "name": "transition › null → false gives null (first run, healthy: nothing to say)"
+        },
+        {
+          "name": "transition › null → true gives failed (first run, broken: say so)"
+        },
+        {
+          "name": "transition › false → true gives failed (healthy → broken)"
+        },
+        {
+          "name": "transition › true → true gives null (still broken: already said)"
+        },
+        {
+          "name": "transition › true → false gives recovered (broken → healthy)"
+        },
+        {
+          "name": "transition › false → false gives null (still healthy)"
+        },
+        {
+          "name": "transition › unknown → true gives failed (state unreadable and broken: report rather than risk silence)"
+        },
+        {
+          "name": "transition › unknown → false gives null (state unreadable but healthy)"
+        },
+        {
+          "name": "checkPage › passes a 200 that rendered the storefront"
+        },
+        {
+          "name": "checkPage › fails an error status"
+        },
+        {
+          "name": "checkPage › fails a 200 that didn't render the storefront"
+        },
+        {
+          "name": "checkPage › fails when the request itself fails"
+        },
+        {
+          "name": "checkDatabase › fails an empty catalogue, not only an unreachable one"
+        },
+        {
+          "name": "/api/cron/health › refuses a request without the cron secret, and checks nothing"
+        },
+        {
+          "name": "/api/cron/health › is quiet while everything passes"
+        },
+        {
+          "name": "/api/cron/health › emails once when a page breaks, not on every run after"
+        },
+        {
+          "name": "/api/cron/health › emails once more on recovery, marked as good news"
+        },
+        {
+          "name": "/api/cron/health › still emails when the database is down and state can't be recorded"
+        }
+      ]
+    },
+    {
+      "file": "__tests__/home-photo.test.ts",
+      "tests": [
+        {
+          "name": "prepareHomePhoto › removes GPS from a PNG"
+        },
+        {
+          "name": "prepareHomePhoto › removes GPS from a JPEG"
+        },
+        {
+          "name": "prepareHomePhoto › removes GPS from a WEBP"
+        },
+        {
+          "name": "prepareHomePhoto › always writes a JPEG, whatever arrived"
+        },
+        {
+          "name": "prepareHomePhoto › turns a sideways phone photo upright before dropping the flag that said so"
+        },
+        {
+          "name": "prepareHomePhoto › refuses a file it cannot read, rather than publishing it as-is"
+        }
+      ]
+    },
+    {
+      "file": "__tests__/HomePhotoField.test.tsx",
+      "tests": [
+        {
+          "name": "HomePhotoField › offers an upload and a credit line on a painting with no photo yet"
+        },
+        {
+          "name": "HomePhotoField › has nothing to remove when there is no photo"
+        },
+        {
+          "name": "HomePhotoField › shows the existing photo and credit when editing"
+        },
+        {
+          "name": "HomePhotoField › can remove it in one tick, which hides the preview and the credit"
+        }
+      ]
+    },
+    {
+      "file": "__tests__/image-copyright.test.ts",
+      "tests": [
+        {
+          "name": "embedCopyright › writes the notice into both EXIF and XMP"
+        },
+        {
+          "name": "embedCopyright › keeps the rights holder and the credit line as separate claims"
+        },
+        {
+          "name": "embedCopyright › never touches the pixels"
+        },
+        {
+          "name": "embedCopyright › keeps APP0/JFIF first, as the format requires"
+        },
+        {
+          "name": "embedCopyright › preserves segments it doesn't own, like the comment"
+        },
+        {
+          "name": "embedCopyright › replaces existing EXIF rather than appending a second copy"
+        },
+        {
+          "name": "embedCopyright › replaces existing XMP rather than appending a second copy"
+        },
+        {
+          "name": "embedCopyright › preserves the ICC colour profile the browser canvas attaches"
+        },
+        {
+          "name": "embedCopyright › puts our segments between APP0 and APP2, the order the format expects"
+        },
+        {
+          "name": "embedCopyright › is idempotent; re-running produces a byte-identical file"
+        },
+        {
+          "name": "embedCopyright › rolls the end year over on its own"
+        },
+        {
+          "name": "embedCopyright › never costs someone their upload › returns an empty buffer unchanged instead of throwing"
+        },
+        {
+          "name": "embedCopyright › never costs someone their upload › returns a PNG unchanged instead of throwing"
+        },
+        {
+          "name": "embedCopyright › never costs someone their upload › returns plain text unchanged instead of throwing"
+        },
+        {
+          "name": "embedCopyright › never costs someone their upload › returns a truncated JPEG unchanged instead of throwing"
+        },
+        {
+          "name": "embedCopyright › never costs someone their upload › returns a JPEG with a bad segment length unchanged instead of throwing"
+        },
+        {
+          "name": "embedCopyright › never costs someone their upload › returns a JPEG that never reaches its scan unchanged instead of throwing"
+        },
+        {
+          "name": "stripMetadata › removes EXIF, XMP and ICC but keeps the pixels"
+        },
+        {
+          "name": "stripMetadata › drops the comment segment too"
+        },
+        {
+          "name": "stripMetadata › keeps the tables and headers needed to decode"
+        },
+        {
+          "name": "stripMetadata › makes output independent of metadata; the whole point"
+        },
+        {
+          "name": "stripMetadata › is idempotent"
+        },
+        {
+          "name": "stripMetadata › returns an empty buffer unchanged"
+        },
+        {
+          "name": "stripMetadata › returns a PNG unchanged"
+        },
+        {
+          "name": "stripMetadata › returns a truncated JPEG unchanged"
+        }
+      ]
+    },
+    {
+      "file": "__tests__/instagram-caption-context.test.ts",
+      "tests": [
+        {
+          "name": "buildProductContext price range › quotes landscape from one scale, not sale-floor to regular-ceiling"
+        },
+        {
+          "name": "buildProductContext price range › quotes square from one scale, not sale-floor to regular-ceiling"
+        },
+        {
+          "name": "buildProductContext price range › quotes panoramic from one scale, not sale-floor to regular-ceiling"
+        },
+        {
+          "name": "buildProductContext price range › quotes ultrawide from one scale, not sale-floor to regular-ceiling"
+        },
+        {
+          "name": "buildProductContext price range › quotes portrait from one scale, not sale-floor to regular-ceiling"
+        },
+        {
+          "name": "buildProductContext price range › quotes diptych from one scale, not sale-floor to regular-ceiling"
+        },
+        {
+          "name": "buildProductContext price range › never quotes a landscape regular price as the ceiling"
+        },
+        {
+          "name": "buildProductContext price range › never quotes a square regular price as the ceiling"
+        },
+        {
+          "name": "buildProductContext price range › never quotes a panoramic regular price as the ceiling"
+        },
+        {
+          "name": "buildProductContext price range › never quotes a ultrawide regular price as the ceiling"
+        },
+        {
+          "name": "buildProductContext price range › never quotes a portrait regular price as the ceiling"
+        },
+        {
+          "name": "buildProductContext price range › never quotes a diptych regular price as the ceiling"
+        },
+        {
+          "name": "buildProductContext price range › matches what the ultrawide detail page shows a buyer"
+        },
+        {
+          "name": "buildProductContext price range › falls back to the product's own price when there is only one size"
+        },
+        {
+          "name": "captionPriceIsStale › catches the exact bug that shipped; sale floor against regular ceiling"
+        },
+        {
+          "name": "captionPriceIsStale › passes a caption that quotes the current range"
+        },
+        {
+          "name": "captionPriceIsStale › reads a price range as the same claim, however Claude punctuated it (case 0)"
+        },
+        {
+          "name": "captionPriceIsStale › reads a price range as the same claim, however Claude punctuated it (case 1)"
+        },
+        {
+          "name": "captionPriceIsStale › reads a price range as the same claim, however Claude punctuated it (case 2)"
+        },
+        {
+          "name": "captionPriceIsStale › reads a price range as the same claim, however Claude punctuated it (case 3)"
+        },
+        {
+          "name": "captionPriceIsStale › leaves a caption that names no range alone"
+        },
+        {
+          "name": "captionPriceIsStale › does not treat a single-size work's flat price as a stale range"
+        },
+        {
+          "name": "captionPriceIsStale › flags the old range for every landscape work in the queue"
+        },
+        {
+          "name": "captionPriceIsStale › flags the old range for every square work in the queue"
+        },
+        {
+          "name": "captionPriceIsStale › flags the old range for every panoramic work in the queue"
+        },
+        {
+          "name": "captionPriceIsStale › flags the old range for every ultrawide work in the queue"
+        },
+        {
+          "name": "captionPriceIsStale › flags the old range for every portrait work in the queue"
+        },
+        {
+          "name": "captionPriceIsStale › flags the old range for every diptych work in the queue"
+        }
+      ]
+    },
+    {
+      "file": "__tests__/instagram-publish-flow.test.ts",
+      "tests": [
+        {
+          "name": "only production publishes › refuses on a preview deployment, touching nothing"
+        },
+        {
+          "name": "only production publishes › refuses on a development deployment, touching nothing"
+        },
+        {
+          "name": "only production publishes › publishes on production"
+        },
+        {
+          "name": "only production publishes › publishes on a laptop (no VERCEL_ENV)"
+        },
+        {
+          "name": "before the post is claimed › asks only whether this post's work is visible"
+        },
+        {
+          "name": "before the post is claimed › skips the work check for a post tied to no work"
+        },
+        {
+          "name": "before the post is claimed › emails from the cron by default when the work is hidden, saying it was not published"
+        },
+        {
+          "name": "before the post is claimed › emails from the cron by default when the work is gone, saying it was not published"
+        },
+        {
+          "name": "before the post is claimed › holds a repainted work: back to Pending Review, emailed from the cron only"
+        },
+        {
+          "name": "before the post is claimed › records a first fingerprint for a post that had none, and only then"
+        },
+        {
+          "name": "claiming and publishing › publishes nothing when another run claimed the post first"
+        },
+        {
+          "name": "claiming and publishing › claims the post, records its container, publishes, then records the post: in that order"
+        },
+        {
+          "name": "claiming and publishing › sends a reel as a reel, never through the image path"
+        },
+        {
+          "name": "claiming and publishing › sends a video file, whatever its type as a reel, never through the image path"
+        },
+        {
+          "name": "claiming and publishing › sends an ordinary image through the image path"
+        },
+        {
+          "name": "when the container can't be made › returns the post to the queue and discards nothing it didn't make"
+        },
+        {
+          "name": "when the container can't be made › emails from the cron that it will retry"
+        },
+        {
+          "name": "when media_publish errors › requeues a container Meta reports EXPIRED, and says so"
+        },
+        {
+          "name": "when media_publish errors › requeues a container Meta reports ERROR, and says so"
+        },
+        {
+          "name": "when media_publish errors › records a post Meta says went live, even when its media id can't be found"
+        },
+        {
+          "name": "when media_publish errors › leaves an undecided post in posting, and emails whoever called, since it may be live"
+        },
+        {
+          "name": "recording a post that is live › retries the write twice, waiting 0.4 s then 1.2 s, and succeeds on the third"
+        },
+        {
+          "name": "recording a post that is live › after three failed writes, says plainly that the post IS live"
+        },
+        {
+          "name": "recording a post that is live › reports a live post with no media id as an empty id, not a made-up one"
+        },
+        {
+          "name": "recording a post that is live › names the work in the alert when a post that errored turns out live but can't be recorded"
+        },
+        {
+          "name": "recording a post that is live › leaves the media id out of that alert when there isn't one"
+        },
+        {
+          "name": "reconcilePosting › requeues a claim with no container only once it is older than 15 minutes"
+        },
+        {
+          "name": "reconcilePosting › looks up an old claim with no container by its caption"
+        },
+        {
+          "name": "reconcilePosting › searches from the claim time for a published container"
+        },
+        {
+          "name": "reconcilePosting › reports unknown, not posted, when the post is live but can't be recorded"
+        },
+        {
+          "name": "reconcilePosting › reports unknown with the reason when asking Meta throws an Error"
+        },
+        {
+          "name": "reconcilePosting › reports unknown with the reason when asking Meta throws anything else"
+        }
+      ]
+    },
+    {
+      "file": "__tests__/instagram-publish-hidden.test.ts",
+      "tests": [
+        {
+          "name": "publishQueuedPost: a work that is no longer listed › holds the post for a hidden work, and publishes nothing"
+        },
+        {
+          "name": "publishQueuedPost: a work that is no longer listed › holds the post for a work deleted from the catalogue"
+        },
+        {
+          "name": "publishQueuedPost: a work that is no longer listed › emails from the cron, because nobody is watching when it runs"
+        },
+        {
+          "name": "publishQueuedPost: a work that is no longer listed › does not email from Post now: the reason goes back to the screen instead"
+        },
+        {
+          "name": "publishQueuedPost: posts the check must not block › lets a visible work through to the next check"
+        },
+        {
+          "name": "publishQueuedPost: posts the check must not block › does not look up a work for a post that isn't tied to one"
+        }
+      ]
+    },
+    {
+      "file": "__tests__/instagram-publish-reconcile.test.ts",
+      "tests": [
+        {
+          "name": "publishing › records the container before calling media_publish"
+        },
+        {
+          "name": "publishing › records a post that went live although media_publish errored"
+        },
+        {
+          "name": "publishing › publishes a ready container that never went out, with the same container"
+        },
+        {
+          "name": "publishing › requeues when the container expired or failed, since nothing went live"
+        },
+        {
+          "name": "publishing › leaves the row in posting, container kept, when Meta can't say"
+        },
+        {
+          "name": "reconcilePosting, for a row a previous run left behind › requeues a claim that never got a container once it is stale"
+        },
+        {
+          "name": "reconcilePosting, for a row a previous run left behind › leaves a fresh claim alone; it may still be publishing"
+        },
+        {
+          "name": "reconcilePosting, for a row a previous run left behind › finds a pre-container row on the account by its caption"
+        },
+        {
+          "name": "reconcilePosting, for a row a previous run left behind › leaves a pre-container row for a person when it isn't on the account"
+        },
+        {
+          "name": "reconcilePosting, for a row a previous run left behind › waits on a container Meta is still processing"
+        }
+      ]
+    },
+    {
+      "file": "__tests__/json-ld.test.ts",
+      "tests": [
+        {
+          "name": "safeJsonLd › neutralizes a </script> breakout in string values"
+        },
+        {
+          "name": "safeJsonLd › round-trips identically through JSON.parse"
+        },
+        {
+          "name": "safeJsonLd › escapes U+2028/U+2029 line separators"
+        },
+        {
+          "name": "safeJsonLd › leaves ordinary product data unchanged"
+        }
+      ]
+    },
+    {
+      "file": "__tests__/legacy-urls.test.ts",
+      "tests": [
+        {
+          "name": "resolveLegacySlug › matches lora-bay by id"
+        },
+        {
+          "name": "resolveLegacySlug › matches northwinds-beach by id"
+        },
+        {
+          "name": "resolveLegacySlug › matches manitoulin-island by id"
+        },
+        {
+          "name": "resolveLegacySlug › matches blue-mountain-sunset by title, where the id alone would not"
+        },
+        {
+          "name": "resolveLegacySlug › matches alpine-ski-club-fall by title, where the id alone would not"
+        },
+        {
+          "name": "resolveLegacySlug › matches beaver-river-access-point-2 by title, where the id alone would not"
+        },
+        {
+          "name": "resolveLegacySlug › matches bruce-trail-in-the-grey-highlands by title, where the id alone would not"
+        },
+        {
+          "name": "resolveLegacySlug › follows a rename only a human could know about"
+        },
+        {
+          "name": "resolveLegacySlug › refuses to guess › lone-tree keeps its 404 rather than landing on the wrong painting"
+        },
+        {
+          "name": "resolveLegacySlug › refuses to guess › lake-huron-shore keeps its 404 rather than landing on the wrong painting"
+        },
+        {
+          "name": "resolveLegacySlug › refuses to guess › after-the-storm keeps its 404 rather than landing on the wrong painting"
+        },
+        {
+          "name": "resolveLegacySlug › refuses to guess › blue-mountain-in-distance keeps its 404 rather than landing on the wrong painting"
+        },
+        {
+          "name": "resolveLegacySlug › refuses to guess › nottawasaga-winter keeps its 404 rather than landing on the wrong painting"
+        },
+        {
+          "name": "resolveLegacySlug › refuses to guess › ravenna-sunset keeps its 404 rather than landing on the wrong painting"
+        },
+        {
+          "name": "resolveLegacySlug › refuses to guess › tobermory keeps its 404 rather than landing on the wrong painting"
+        },
+        {
+          "name": "resolveLegacySlug › refuses to guess › algonquin-park-meadow keeps its 404 rather than landing on the wrong painting"
+        },
+        {
+          "name": "resolveLegacySlug › refuses to guess › milk-dip-cup-92wf6-gc7e4-ctxtn-mk6 keeps its 404 rather than landing on the wrong painting"
+        },
+        {
+          "name": "resolveLegacySlug › refuses to guess › country-feast-set-3nybt-gnw4d-4jmt8 keeps its 404 rather than landing on the wrong painting"
+        },
+        {
+          "name": "resolveLegacySlug › refuses to guess › aluminum-beaver-river-summary keeps its 404 rather than landing on the wrong painting"
+        },
+        {
+          "name": "resolveLegacySlug › never redirects to a hidden work; that would just be a slower 404"
+        },
+        {
+          "name": "resolveLegacySlug › sends photographs to /photographs and paintings to /products"
+        },
+        {
+          "name": "resolveLegacySlug › handles junk input ()"
+        },
+        {
+          "name": "resolveLegacySlug › handles junk input (---)"
+        },
+        {
+          "name": "resolveLegacySlug › handles junk input (aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa)"
+        },
+        {
+          "name": "resolveLegacySlug › resolves nothing against an empty catalogue rather than throwing"
+        },
+        {
+          "name": "legacyOutcome › redirects a visible work"
+        },
+        {
+          "name": "legacyOutcome › is 404, not 410, for a work that is only hidden, since it may come back"
+        },
+        {
+          "name": "legacyOutcome › is 410 Gone when nothing in the catalogue matches"
+        },
+        {
+          "name": "legacyOutcome › holds the same match floor for hidden works, so a near miss is still gone"
+        }
+      ]
+    },
+    {
+      "file": "__tests__/line-chart.test.tsx",
+      "tests": [
+        {
+          "name": "LineChart › draws and labels the 7-day average when the data has it"
+        },
+        {
+          "name": "LineChart › draws no average line without trend data"
+        }
+      ]
+    },
+    {
+      "file": "__tests__/MakingOfVideo.test.tsx",
+      "tests": [
+        {
+          "name": "MakingOfVideo › puts no <video> on the page until the film is asked for"
+        },
+        {
+          "name": "MakingOfVideo › serves the still through the image optimiser, not straight off Blob"
+        },
+        {
+          "name": "MakingOfVideo › reserves the film's real shape so the page doesn't jump"
+        },
+        {
+          "name": "MakingOfVideo › falls back to 4:3 for a film nobody has measured"
+        },
+        {
+          "name": "MakingOfVideo › mounts the player, already playing, once the facade is clicked"
+        },
+        {
+          "name": "MakingOfVideo › routes the player's own poster through the optimiser"
+        },
+        {
+          "name": "MakingOfVideo › still links to the file, so it does something with JavaScript off"
+        },
+        {
+          "name": "MakingOfVideo › leaves modified clicks to the browser"
+        },
+        {
+          "name": "MakingOfVideo › shows the heading, runtime and description"
+        },
+        {
+          "name": "MakingOfVideo › formats a runtime over a minute as m:ss"
+        },
+        {
+          "name": "MakingOfVideo › omits the heading block when heading is null"
+        },
+        {
+          "name": "MakingOfVideo › survives a film with no poster, description or runtime"
+        }
+      ]
+    },
+    {
+      "file": "__tests__/media-fingerprint.test.ts",
+      "tests": [
+        {
+          "name": "mediaHasChanged › blocks when the media genuinely changed"
+        },
+        {
+          "name": "mediaHasChanged › allows when it is byte-identical"
+        },
+        {
+          "name": "mediaHasChanged › allows when there is no baseline; a row queued before fingerprints existed"
+        },
+        {
+          "name": "mediaHasChanged › allows when the current value cannot be read; a HEAD failure must not block a post"
+        },
+        {
+          "name": "mediaHasChanged › allows when neither is known"
+        },
+        {
+          "name": "mediaHasChanged › notices a size change even when the etag is missing"
+        },
+        {
+          "name": "fetchMediaFingerprint › combines etag and length"
+        },
+        {
+          "name": "fetchMediaFingerprint › works from length alone when no etag is served"
+        },
+        {
+          "name": "fetchMediaFingerprint › returns null when the server offers neither header"
+        },
+        {
+          "name": "fetchMediaFingerprint › returns null on a non-OK response rather than throwing"
+        },
+        {
+          "name": "fetchMediaFingerprint › returns null when the request throws; never propagates into the cron"
+        },
+        {
+          "name": "fetchMediaFingerprint › uses HEAD, so it never downloads a 15MB reel to check it"
+        }
+      ]
+    },
+    {
+      "file": "__tests__/media-route.test.ts",
+      "tests": [
+        {
+          "name": "/media › serves a visible work's upload, cacheable, with what the repaint check reads"
+        },
+        {
+          "name": "/media › serves a visible work's its image to the public"
+        },
+        {
+          "name": "/media › serves a visible work's its inspiration photo to the public"
+        },
+        {
+          "name": "/media › serves a visible work's a collector's photo to the public"
+        },
+        {
+          "name": "/media › decides without reading the session when a visible work uses the file"
+        },
+        {
+          "name": "/media › is a 404 to the public for a hidden work's image, without reading the store"
+        },
+        {
+          "name": "/media › is a 404 to the public for a hidden work's collector photo, without reading the store"
+        },
+        {
+          "name": "/media › is a 404 to the public for a file no work uses, without reading the store"
+        },
+        {
+          "name": "/media › serves a hidden work's upload to the signed-in admin, never cached"
+        },
+        {
+          "name": "/media › never reaches anything outside the upload folders, even for the admin: backups/catalog-2026-10-01T05-00.json"
+        },
+        {
+          "name": "/media › never reaches anything outside the upload folders, even for the admin: paintings/../backups/catalog.json"
+        },
+        {
+          "name": "/media › never reaches anything outside the upload folders, even for the admin: homes/sub/dir.jpg"
+        },
+        {
+          "name": "/media › never reaches anything outside the upload folders, even for the admin: other/file.jpg"
+        },
+        {
+          "name": "/media › is a 404 when there is no private store"
+        },
+        {
+          "name": "/media › is a 404 when the file is missing from the store"
+        },
+        {
+          "name": "/media › is a 404 when the file is answered with an error"
+        },
+        {
+          "name": "/media › labels a file the store has no type for as plain bytes"
+        },
+        {
+          "name": "/media › is never prerendered: every request asks the database"
+        }
+      ]
+    },
+    {
+      "file": "__tests__/mutation-scripts.test.ts",
+      "tests": [
+        {
+          "name": "MODULES › names files that exist, each with a floor between 0 and 100"
+        },
+        {
+          "name": "scopeFor › takes a module the PR changes"
+        },
+        {
+          "name": "scopeFor › takes a module whose related test the PR changes, even one reaching it through a route"
+        },
+        {
+          "name": "scopeFor › takes nothing for a PR that touches no module or its tests"
+        },
+        {
+          "name": "scopeFor › only looks up related tests when the PR changes a test"
+        },
+        {
+          "name": "scopeFor › takes every module when stryker.config.mjs changes"
+        },
+        {
+          "name": "scopeFor › takes every module when scripts/mutation-scope.mjs changes"
+        },
+        {
+          "name": "scopeFor › takes every module when scripts/mutation-check.mjs changes"
+        },
+        {
+          "name": "scopeFor › takes every module when scripts/mutation-run.mjs changes"
+        },
+        {
+          "name": "scopeFor › takes every module when .github/workflows/mutation.yml changes"
+        },
+        {
+          "name": "scopeFor › takes every module when vitest.config.mts changes"
+        },
+        {
+          "name": "scopeFor › takes every module when vitest.setup.ts changes"
+        },
+        {
+          "name": "scopeFor › takes every module when package-lock.json changes"
+        },
+        {
+          "name": "checkScores › passes at the floor, counting a timeout as killed and an untested mutant as missed"
+        },
+        {
+          "name": "checkScores › fails a module below its floor, even when another is well above"
+        },
+        {
+          "name": "checkScores › ignores mutants that were never scored (ignored, pending)"
+        },
+        {
+          "name": "checkScores › fails a run where mutants could not run at all"
+        },
+        {
+          "name": "checkScores › suggests raising a floor the module has clearly outgrown"
+        },
+        {
+          "name": "mergeReports › keeps every module's files, so no module's score is dropped from the check"
+        },
+        {
+          "name": "mergeReports › refuses to merge nothing"
+        },
+        {
+          "name": "slug › gives every module a distinct, safe report name"
+        }
+      ]
+    },
+    {
+      "file": "__tests__/name-validation.test.ts",
+      "tests": [
+        {
+          "name": "validateName › rejects empty / too-short / non-string names"
+        },
+        {
+          "name": "validateName › accepts legitimate single-word names (mononyms / first-name-only)"
+        },
+        {
+          "name": "validateName › accepts normal full names with spaces"
+        },
+        {
+          "name": "validateName › rejects long single-word gibberish (no space, >20 chars)"
+        },
+        {
+          "name": "validateName › allows a long name as long as it contains a space"
+        }
+      ]
+    },
+    {
+      "file": "__tests__/Navigation.test.tsx",
+      "tests": [
+        {
+          "name": "Navigation › holds the storefront's seven links, Contact last, then For Artists apart"
+        },
+        {
+          "name": "Navigation › leaves Architecture to the footer"
+        },
+        {
+          "name": "Navigation › renders the site name as a link to /"
+        },
+        {
+          "name": "Navigation › highlights the active route"
+        }
+      ]
+    },
+    {
+      "file": "__tests__/Newsletter.test.tsx",
+      "tests": [
+        {
+          "name": "Newsletter › renders the signup form"
+        },
+        {
+          "name": "Newsletter › does not show the confirmation before submission"
+        },
+        {
+          "name": "Newsletter › shows a confirmation after the form is submitted"
+        },
+        {
+          "name": "Newsletter › posts the email to the Kit form endpoint"
+        }
+      ]
+    },
+    {
+      "file": "__tests__/next-config-images.test.ts",
+      "tests": [
+        {
+          "name": "image optimizer sources › are this site's own Blob store only, named exactly"
+        },
+        {
+          "name": "image optimizer sources › have no wildcard, which would serve any Vercel customer's images on this site's quota"
+        }
+      ]
+    },
+    {
+      "file": "__tests__/og-image.test.ts",
+      "tests": [
+        {
+          "name": "site Open Graph image › answers with the image itself, not a redirect to it"
+        },
+        {
+          "name": "site Open Graph image › names the work it rendered, so staleness stays checkable end to end"
+        },
+        {
+          "name": "site Open Graph image › serves exactly the dimensions the meta tag advertises"
+        },
+        {
+          "name": "site Open Graph image › letterboxes rather than cropping, so the whole work survives"
+        },
+        {
+          "name": "site Open Graph image › gives up on a stalled source instead of running to the platform limit"
+        },
+        {
+          "name": "site Open Graph image › declares those same dimensions in the document head"
+        },
+        {
+          "name": "site Open Graph image › still answers at the declared size when the source cannot be read"
+        },
+        {
+          "name": "site Open Graph image › caches the degraded card briefly, so a transient failure is not sticky"
+        },
+        {
+          "name": "site Open Graph image › says so in the logs when it falls back"
+        },
+        {
+          "name": "site Open Graph image › redirects only when sharp itself cannot encode anything"
+        },
+        {
+          "name": "site Open Graph image › serves nothing rather than something broken when the catalogue is empty"
+        }
+      ]
+    },
+    {
+      "file": "__tests__/order.test.ts",
+      "tests": [
+        {
+          "name": "resolveOrder: prints › takes the title and price from the catalogue and the price table"
+        },
+        {
+          "name": "resolveOrder: prints › ignores a title and price smuggled in beside the ids"
+        },
+        {
+          "name": "resolveOrder: prints › marks a frame quote the way the page does"
+        },
+        {
+          "name": "resolveOrder: prints › refuses a size this work isn't offered in"
+        },
+        {
+          "name": "resolveOrder: prints › refuses lone-tree (sold out, hidden or unknown)"
+        },
+        {
+          "name": "resolveOrder: prints › refuses hidden-one (sold out, hidden or unknown)"
+        },
+        {
+          "name": "resolveOrder: prints › refuses no-such-work (sold out, hidden or unknown)"
+        },
+        {
+          "name": "resolveOrder: single cards › prices a greeting card from the fixed table"
+        },
+        {
+          "name": "resolveOrder: single cards › prices a postcard card from the fixed table"
+        },
+        {
+          "name": "resolveOrder: single cards › refuses an unknown card type and a sold-out work"
+        },
+        {
+          "name": "resolveOrder: gift packs › builds the month list from catalogue titles, in the order chosen"
+        },
+        {
+          "name": "resolveOrder: gift packs › refuses the wrong number of images, repeats, and unavailable ones"
+        },
+        {
+          "name": "resolveOrder: gift packs › refuses an unknown pack"
+        },
+        {
+          "name": "resolveOrder: malformed input › refuses null"
+        },
+        {
+          "name": "resolveOrder: malformed input › refuses \"print\""
+        },
+        {
+          "name": "resolveOrder: malformed input › refuses {}"
+        },
+        {
+          "name": "resolveOrder: malformed input › refuses {\"kind\":\"print\"}"
+        },
+        {
+          "name": "resolveOrder: malformed input › refuses {\"kind\":\"refund\"}"
+        },
+        {
+          "name": "resolveOrder: the reason given › no order: Missing order"
+        },
+        {
+          "name": "resolveOrder: the reason given › a string: Missing order"
+        },
+        {
+          "name": "resolveOrder: the reason given › an unknown kind: Missing order"
+        },
+        {
+          "name": "resolveOrder: the reason given › a print with no work: Missing order"
+        },
+        {
+          "name": "resolveOrder: the reason given › a print with an empty id: Missing order"
+        },
+        {
+          "name": "resolveOrder: the reason given › a print with no size: Missing order"
+        },
+        {
+          "name": "resolveOrder: the reason given › an id over 200 characters: Missing order"
+        },
+        {
+          "name": "resolveOrder: the reason given › a card with no work: Missing order"
+        },
+        {
+          "name": "resolveOrder: the reason given › a pack whose images aren't a list: Missing order"
+        },
+        {
+          "name": "resolveOrder: the reason given › a pack with a non-text image id: Missing order"
+        },
+        {
+          "name": "resolveOrder: the reason given › accepts an id of exactly 200 characters"
+        },
+        {
+          "name": "resolveOrder: the reason given › names an unavailable work, an unoffered size and an unknown pack"
+        },
+        {
+          "name": "resolveOrder: the reason given › refuses a work whose size type has no price table, without throwing"
+        },
+        {
+          "name": "resolveOrder: the reason given › asks for the right number of different images before looking any up"
+        },
+        {
+          "name": "resolveOrder: the reason given › lists a calendar by month, all twelve, in the order chosen"
+        },
+        {
+          "name": "resolveOrder: the reason given › numbers any other pack's images from 1, and names the pack"
+        }
+      ]
+    },
+    {
+      "file": "__tests__/passkey-actions.test.ts",
+      "tests": [
+        {
+          "name": "sign-in options › issues a challenge for this site, requiring the person, and keeps it in the session"
+        },
+        {
+          "name": "sign-in options › prefers the forwarded host, which is the address the browser used"
+        },
+        {
+          "name": "sign-in options › refuses an address that isn't this site, without issuing anything"
+        },
+        {
+          "name": "sign-in options › refuses while locked out (30s left), saying for how long"
+        },
+        {
+          "name": "sign-in options › refuses while locked out (61s left), saying for how long"
+        },
+        {
+          "name": "sign-in options › refuses while locked out (0s left), saying for how long"
+        },
+        {
+          "name": "sign-in › signs in on a verified answer to this session's challenge, and records the new counter"
+        },
+        {
+          "name": "sign-in › passes no transports for a passkey stored without them"
+        },
+        {
+          "name": "sign-in › uses the challenge once: it is cleared before anything else is checked"
+        },
+        {
+          "name": "sign-in › refuses when no challenge was issued, without asking the library"
+        },
+        {
+          "name": "sign-in › refuses when the challenge is stale, without asking the library"
+        },
+        {
+          "name": "sign-in › refuses, and counts a failure, for a passkey this admin never registered"
+        },
+        {
+          "name": "sign-in › refuses, and counts a failure, when the signature doesn't verify"
+        },
+        {
+          "name": "sign-in › refuses, and counts a failure, when the library throws"
+        },
+        {
+          "name": "sign-in › treats a malformed answer, with no id, as an unregistered passkey rather than crashing"
+        },
+        {
+          "name": "sign-in › refuses an address that isn't this site"
+        },
+        {
+          "name": "registering a passkey › needs a signed-in admin for every step"
+        },
+        {
+          "name": "registering a passkey › asks for a discoverable passkey that requires the person, excluding ones already registered"
+        },
+        {
+          "name": "registering a passkey › excludes a stored passkey without transports as just its id"
+        },
+        {
+          "name": "registering a passkey › stores a verified passkey, with a trimmed label"
+        },
+        {
+          "name": "registering a passkey › names an unlabelled passkey, cuts a long label, and stores no empty transports"
+        },
+        {
+          "name": "registering a passkey › stores transports [\"usb\",\"nfc\"] as \"usb,nfc\""
+        },
+        {
+          "name": "registering a passkey › stores transports undefined as null"
+        },
+        {
+          "name": "registering a passkey › stores nothing when the answer isn't verified"
+        },
+        {
+          "name": "registering a passkey › stores nothing when the answer comes back without its details"
+        },
+        {
+          "name": "registering a passkey › stores nothing when the answer makes the library throw"
+        },
+        {
+          "name": "registering a passkey › refuses a stale or missing challenge, and uses it once"
+        },
+        {
+          "name": "registering a passkey › refuses an address that isn't this site for options"
+        },
+        {
+          "name": "registering a passkey › refuses an address that isn't this site to register"
+        },
+        {
+          "name": "registering a passkey › removes a passkey, and doesn't fail if it was already gone"
+        }
+      ]
+    },
+    {
+      "file": "__tests__/passkey.test.ts",
+      "tests": [
+        {
+          "name": "relyingParty › uses the registrable domain, so a passkey made on www. works on the bare domain too"
+        },
+        {
+          "name": "relyingParty › works on localhost, with its port, for local runs and CI"
+        },
+        {
+          "name": "relyingParty › matches the host whatever its case or surrounding space, keeping the port in the origin"
+        },
+        {
+          "name": "relyingParty › refuses any other host rather than binding a passkey to it"
+        },
+        {
+          "name": "relyingParty › refuses other subdomains, which a dangling DNS record could hand to someone else"
+        },
+        {
+          "name": "ADMIN_USER_ID › never changes: every registered passkey is stored against it"
+        },
+        {
+          "name": "passwordLoginAllowed › allows the password only until a passkey exists"
+        },
+        {
+          "name": "passwordLoginAllowed › lets the break-glass switch it back on, and only the exact value does"
+        },
+        {
+          "name": "challengeIsFresh › accepts a challenge inside its five minutes, and nothing else"
+        },
+        {
+          "name": "loginAction › signs in with the password while no passkey exists"
+        },
+        {
+          "name": "loginAction › refuses even the right password once a passkey exists"
+        },
+        {
+          "name": "loginAction › gives the same answer for a wrong password, so it reveals nothing"
+        },
+        {
+          "name": "loginAction › accepts the password again under the break-glass"
+        },
+        {
+          "name": "loginAction › fails closed when it can't tell whether a passkey exists"
+        }
+      ]
+    },
+    {
+      "file": "__tests__/private-blob.test.ts",
+      "tests": [
+        {
+          "name": "uploadMedia › uses the private store, and returns a /media path, once it exists"
+        },
+        {
+          "name": "uploadMedia › falls back to the public store, as before, without one"
+        },
+        {
+          "name": "mediaPathname › /media/homes/lora-bay-abc.jpg → homes/lora-bay-abc.jpg"
+        },
+        {
+          "name": "mediaPathname › /media/inspiration/x_1.jpg?v=2 → inspiration/x_1.jpg"
+        },
+        {
+          "name": "mediaPathname › /media/backups/catalog.json → null"
+        },
+        {
+          "name": "mediaPathname › /media/paintings/../backups/x.json → null"
+        },
+        {
+          "name": "mediaPathname › /media/paintings/a/b.jpg → null"
+        },
+        {
+          "name": "mediaPathname › /paintings/x.jpg → null"
+        },
+        {
+          "name": "mediaPathname › https://x.public.blob.vercel-storage.com/homes/x.jpg → null"
+        },
+        {
+          "name": "deleteMedia › deletes by pathname with the private token, and nothing outside the upload folders"
+        }
+      ]
+    },
+    {
+      "file": "__tests__/private-move.test.ts",
+      "tests": [
+        {
+          "name": "movablePathname › takes upload-folder files from a public store"
+        },
+        {
+          "name": "movablePathname › leaves the catalogue, other folders, site paths and nothing alone"
+        },
+        {
+          "name": "movablePathname › refuses a pathname /media would not serve"
+        },
+        {
+          "name": "planMoves › moves only the home photo of a published work"
+        },
+        {
+          "name": "planMoves › moves every upload of a hidden work"
+        },
+        {
+          "name": "planMoves › skips what is already private or not an upload"
+        }
+      ]
+    },
+    {
+      "file": "__tests__/product-slug.test.ts",
+      "tests": [
+        {
+          "name": "productPath › serves a never-renamed work at its id, and a renamed one at its slug"
+        },
+        {
+          "name": "slugProblem › accepts lora-bay"
+        },
+        {
+          "name": "slugProblem › accepts a"
+        },
+        {
+          "name": "slugProblem › accepts blue-mountain-sunset-2"
+        },
+        {
+          "name": "slugProblem › refuses \"\""
+        },
+        {
+          "name": "slugProblem › refuses \"Lora-Bay\""
+        },
+        {
+          "name": "slugProblem › refuses \"lora bay\""
+        },
+        {
+          "name": "slugProblem › refuses \"lora--bay\""
+        },
+        {
+          "name": "slugProblem › refuses \"-lora\""
+        },
+        {
+          "name": "slugProblem › refuses \"lora-\""
+        },
+        {
+          "name": "slugProblem › refuses \"lora/bay\""
+        },
+        {
+          "name": "slugProblem › refuses \"xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\""
+        },
+        {
+          "name": "slugProblem › accepts a slug of exactly 80 characters, and says why it refuses"
+        },
+        {
+          "name": "findWorkBySlug › finds a renamed work by its new slug"
+        },
+        {
+          "name": "findWorkBySlug › finds a never-renamed work by its id"
+        },
+        {
+          "name": "findWorkBySlug › redirects a retired slug to the work's current page"
+        },
+        {
+          "name": "findWorkBySlug › does not serve a renamed work at its id any more; that is the retired slug's job"
+        },
+        {
+          "name": "findWorkBySlug › is a 404 for a retired slug whose work is hidden, not a redirect to a page that 404s"
+        },
+        {
+          "name": "findWorkBySlug › keeps paintings and photographs apart for current slugs"
+        },
+        {
+          "name": "slugTakenBy › refuses another work's current slug, or its id when never renamed"
+        },
+        {
+          "name": "slugTakenBy › refuses another work's retired slug, which would take over its old links"
+        },
+        {
+          "name": "slugTakenBy › lets a work take back one of its own retired slugs"
+        },
+        {
+          "name": "slugTakenBy › allows a slug nothing uses"
+        }
+      ]
+    },
+    {
+      "file": "__tests__/product-utils.test.ts",
+      "tests": [
+        {
+          "name": "deriveSizeType › classifies by aspect ratio"
+        },
+        {
+          "name": "deriveSizeType › uses correct boundaries"
+        },
+        {
+          "name": "deriveSizeType › falls back to the first available type when the guess isn't offered"
+        },
+        {
+          "name": "standardPrice › returns the lowest sale price for a size type"
+        },
+        {
+          "name": "standardPrice › returns a positive price for every known size type"
+        },
+        {
+          "name": "standardPrice › returns 0 for an unknown size type"
+        },
+        {
+          "name": "standardPrice of a name Object.prototype holds › is 0, not a TypeError"
+        },
+        {
+          "name": "slugify › produces URL-safe, lowercase, hyphenated ids"
+        },
+        {
+          "name": "slugify › never returns an empty slug"
+        },
+        {
+          "name": "slugify › never ends in a hyphen when the 60-character cut lands after a word"
+        },
+        {
+          "name": "slugify › always yields a value matching the product ID pattern"
+        },
+        {
+          "name": "sizeLabelWithCm › rounds inches to whole centimetres"
+        },
+        {
+          "name": "sizeLabelWithCm › adds the centimetres in the label's height × width order"
+        },
+        {
+          "name": "sizeLabelWithCm › keeps an existing note inside the same brackets"
+        },
+        {
+          "name": "sizeLabelWithCm › matches every label's inches for every size sold"
+        }
+      ]
+    },
+    {
+      "file": "__tests__/ProductCard.test.tsx",
+      "tests": [
+        {
+          "name": "ProductCard › renders the product title"
+        },
+        {
+          "name": "ProductCard › renders the starting price"
+        },
+        {
+          "name": "ProductCard › links to /products/{id} by default"
+        },
+        {
+          "name": "ProductCard › links to a custom basePath when provided"
+        },
+        {
+          "name": "ProductCard › renders the product image with the correct alt text"
+        },
+        {
+          "name": "ProductCard: sold out › shows a price for work that is still for sale"
+        },
+        {
+          "name": "ProductCard: sold out › replaces the price with Sold out"
+        },
+        {
+          "name": "ProductCard: sold out › drops the New and Sale badges rather than stacking them"
+        },
+        {
+          "name": "ProductCard: sold out › still links through to the work's page"
+        },
+        {
+          "name": "ProductCard image priority › loads lazily unless asked, and eagerly for a card at the top of the page"
+        }
+      ]
+    },
+    {
+      "file": "__tests__/ProductDetailClient-home-photo.test.tsx",
+      "tests": [
+        {
+          "name": "a collector's photo, enlarged › keeps the collector's credit"
+        },
+        {
+          "name": "a collector's photo, enlarged › is still described as a photo of a collector's home"
+        },
+        {
+          "name": "a collector's photo, enlarged › shows no credit line when the collector asked not to be named"
+        },
+        {
+          "name": "a collector's photo, enlarged › does not carry the credit onto the painting itself"
+        },
+        {
+          "name": "the room mockup › is the Blob copy for a migrated painting"
+        },
+        {
+          "name": "the room mockup › falls back to the CSS room view when a painting has none (every admin upload)"
+        }
+      ]
+    },
+    {
+      "file": "__tests__/properties.test.ts",
+      "tests": [
+        {
+          "name": "slugify › always produces a slug the admin will accept"
+        },
+        {
+          "name": "slugify › is idempotent: a slug slugifies to itself"
+        },
+        {
+          "name": "slugify › keeps every letter and digit of a short ASCII title, in order"
+        },
+        {
+          "name": "slugProblem › accepts exactly the well-formed slugs up to SLUG_MAX"
+        },
+        {
+          "name": "productPath › puts photographs and everything else under their own section, with the slug last"
+        },
+        {
+          "name": "deriveSizeType › never depends on resolution, only on the shape"
+        },
+        {
+          "name": "deriveSizeType › always returns a size type the work is offered in"
+        },
+        {
+          "name": "deriveSizeType › gets wider as the image gets wider"
+        },
+        {
+          "name": "standardPrice › is the lowest price on offer for the size type, and 0 for an unknown one"
+        },
+        {
+          "name": "checkFields › never throws, whatever JSON arrives"
+        },
+        {
+          "name": "checkFields › passes text within every limit, and refuses one field over its limit"
+        },
+        {
+          "name": "checkFields › refuses anything that isn't text, except an absent or empty field"
+        },
+        {
+          "name": "readFormBody › accepts a JSON object, refuses everything else, and never throws"
+        },
+        {
+          "name": "readFormBody › refuses any body over the size limit, counted in bytes, not characters"
+        },
+        {
+          "name": "resolveOrder › never throws, and every price comes from the catalogue, never from the request"
+        },
+        {
+          "name": "resolveOrder › refuses a print of a hidden or sold-out work, and prices an available one at its size"
+        },
+        {
+          "name": "resolveOrder › accepts a pack only with exactly its count of different, available images"
+        },
+        {
+          "name": "parseClientError › never throws, and anything it accepts is bounded, on this site, and without a query"
+        }
+      ]
+    },
+    {
+      "file": "__tests__/rate-limit.test.ts",
+      "tests": [
+        {
+          "name": "login limiter › keys on an HMAC of the address, never the address"
+        },
+        {
+          "name": "login limiter › allows an address with no failures, or fewer than the limit"
+        },
+        {
+          "name": "login limiter › locks out at the limit, and says how long is left"
+        },
+        {
+          "name": "login limiter › forgets a window that has expired"
+        },
+        {
+          "name": "login limiter › records failures in the database and clears them on success"
+        },
+        {
+          "name": "login limiter › fails open when the database is down"
+        }
+      ]
+    },
+    {
+      "file": "__tests__/reel-poll-budget.test.ts",
+      "tests": [
+        {
+          "name": "reel poll budget vs function timeouts › app/api/cron/instagram/route.ts leaves room to publish after the poll"
+        },
+        {
+          "name": "reel poll budget vs function timeouts › app/admin/instagram/page.tsx leaves room to publish after the poll"
+        },
+        {
+          "name": "reel poll budget vs function timeouts › keeps both publishing segments on the same timeout"
+        },
+        {
+          "name": "reel poll budget vs function timeouts › still allows several poll attempts"
+        }
+      ]
+    },
+    {
+      "file": "__tests__/refresh-catalogue.test.ts",
+      "tests": [
+        {
+          "name": "refreshCatalogueAction › expires the catalogue tag and every page under the root layout"
+        },
+        {
+          "name": "refreshCatalogueAction › sends a caller with no session to sign in, and expires nothing"
+        }
+      ]
+    },
+    {
+      "file": "__tests__/reorder.test.ts",
+      "tests": [
+        {
+          "name": "reorderProductsAction › writes the whole order in a single UPDATE … FROM (VALUES …)"
+        },
+        {
+          "name": "reorderProductsAction › does nothing for an empty list rather than sending an empty VALUES"
+        }
+      ]
+    },
+    {
+      "file": "__tests__/season.test.ts",
+      "tests": [
+        {
+          "name": "currentSeason › maps spring months"
+        },
+        {
+          "name": "currentSeason › maps summer months"
+        },
+        {
+          "name": "currentSeason › maps fall months"
+        },
+        {
+          "name": "currentSeason › maps winter months"
+        }
+      ]
+    },
+    {
+      "file": "__tests__/security-headers.test.ts",
+      "tests": [
+        {
+          "name": "security headers › are applied to every route"
+        },
+        {
+          "name": "security headers › give API responses a policy that allows nothing"
+        },
+        {
+          "name": "security headers › give image paths, and their 404s, a policy that allows nothing"
+        },
+        {
+          "name": "security headers › forbid other sites from framing the pages"
+        },
+        {
+          "name": "security headers › stop content sniffing and trim referrers"
+        },
+        {
+          "name": "security headers › switch off browser features the site never uses"
+        },
+        {
+          "name": "security headers › isolate the site's windows and responses from other origins"
+        },
+        {
+          "name": "security headers › don't advertise the framework"
+        },
+        {
+          "name": "security headers › leave HSTS to Vercel"
+        }
+      ]
+    },
+    {
+      "file": "__tests__/security-txt.test.ts",
+      "tests": [
+        {
+          "name": "/.well-known/security.txt › has the fields RFC 9116 requires: Contact and Expires"
+        },
+        {
+          "name": "/.well-known/security.txt › expires within a year, as the RFC recommends"
+        },
+        {
+          "name": "/.well-known/security.txt › is served as plain text, with every non-comment line a known field"
+        }
+      ]
+    },
+    {
+      "file": "__tests__/server-actions-auth.test.ts",
+      "tests": [
+        {
+          "name": "server actions without a session › app/actions/admin.ts: every action sends a caller with no session to sign in, untouched"
+        },
+        {
+          "name": "server actions without a session › app/actions/instagram.ts: every action sends a caller with no session to sign in, untouched"
+        },
+        {
+          "name": "server actions without a session › app/actions/analytics.ts: every action sends a caller with no session to sign in, untouched"
+        },
+        {
+          "name": "server actions without a session › app/actions/passkey.ts: every action sends a caller with no session to sign in, untouched"
+        },
+        {
+          "name": "server actions without a session › the sign-in actions are the only ones exempt, and still exist"
+        }
+      ]
+    },
+    {
+      "file": "__tests__/server-event.test.ts",
+      "tests": [
+        {
+          "name": "pageOf › uses the page the form was posted from"
+        },
+        {
+          "name": "pageOf › falls back with no Referer"
+        },
+        {
+          "name": "pageOf › falls back with a malformed one"
+        },
+        {
+          "name": "pageOf › falls back with an API path"
+        },
+        {
+          "name": "pageOf › falls back with an admin path"
+        }
+      ]
+    },
+    {
+      "file": "__tests__/session-expiry.test.ts",
+      "tests": [
+        {
+          "name": "admin session expiry › is accepted within eight hours and refused after"
+        }
+      ]
+    },
+    {
+      "file": "__tests__/session.test.ts",
+      "tests": [
+        {
+          "name": "sessionOptions › is an http-only, same-site cookie that lasts one working day, sealed with SESSION_SECRET"
+        },
+        {
+          "name": "sessionOptions › is sent over plain http only outside production (local runs, CI)"
+        },
+        {
+          "name": "getAdminSession › opens the session from this request's cookies with those options"
+        }
+      ]
+    },
+    {
+      "file": "__tests__/showcase.test.ts",
+      "tests": [
+        {
+          "name": "distinctShowcases › gives every gift-shop card a different work"
+        },
+        {
+          "name": "distinctShowcases › uses the calendar's chosen painting while it's for sale"
+        },
+        {
+          "name": "distinctShowcases › falls back to an automatic pick once that painting is hidden or sold out"
+        },
+        {
+          "name": "distinctShowcases › is stable: the same catalogue gives the same picks"
+        },
+        {
+          "name": "distinctShowcases › repeats only when there are fewer works than cards, and never crashes on none"
+        },
+        {
+          "name": "distinctShowcases › names the preference by product id, never by image path"
+        }
+      ]
+    },
+    {
+      "file": "__tests__/site-config.test.ts",
+      "tests": [
+        {
+          "name": "site identity lives in one file › no source file hard-codes the brand"
+        },
+        {
+          "name": "site identity lives in one file › no source file hard-codes the artist"
+        },
+        {
+          "name": "site identity lives in one file › no source file hard-codes the domain"
+        },
+        {
+          "name": "site identity lives in one file › no source file hard-codes the ownerEmail"
+        },
+        {
+          "name": "site identity lives in one file › no source file hard-codes the phone"
+        },
+        {
+          "name": "site identity lives in one file › no source file hard-codes the ga4"
+        },
+        {
+          "name": "site identity lives in one file › no source file hard-codes the instagram"
+        },
+        {
+          "name": "borrowed words live in the config too › no component hard-codes the collector's name"
+        },
+        {
+          "name": "the derived values still resolve correctly › builds the mail From header from the brand and domain"
+        },
+        {
+          "name": "the derived values still resolve correctly › strips the www for prose"
+        },
+        {
+          "name": "the derived values still resolve correctly › keeps the copyright claim pointed at the same values"
+        },
+        {
+          "name": "the derived values still resolve correctly › separates the public address from the inbox that receives notifications"
+        },
+        {
+          "name": "the derived values still resolve correctly › has a canonical url with no trailing slash"
+        }
+      ]
+    },
+    {
+      "file": "__tests__/site-content.test.tsx",
+      "tests": [
+        {
+          "name": "Testimonial › renders the quote and who said it"
+        },
+        {
+          "name": "Testimonial › renders nothing at all when there is no testimonial"
+        },
+        {
+          "name": "PressStrip › cites the publication and links to it"
+        },
+        {
+          "name": "PressStrip › names the article and the date"
+        },
+        {
+          "name": "PressStrip › renders nothing at all when there is no press mention"
+        }
+      ]
+    },
+    {
+      "file": "__tests__/storefront-chrome.test.tsx",
+      "tests": [
+        {
+          "name": "StorefrontChrome › shows the banner, nav and footer on /"
+        },
+        {
+          "name": "StorefrontChrome › shows the banner, nav and footer on /photographs"
+        },
+        {
+          "name": "StorefrontChrome › shows the banner, nav and footer on /products/lora-bay"
+        },
+        {
+          "name": "StorefrontChrome › shows the banner, nav and footer on /contact"
+        },
+        {
+          "name": "StorefrontChrome › shows the banner, nav and footer on /for-artists"
+        },
+        {
+          "name": "StorefrontChrome › shows the banner, nav and footer on /architectures"
+        },
+        {
+          "name": "StorefrontChrome › drops only the banner on /architecture"
+        },
+        {
+          "name": "StorefrontChrome › drops only the banner on /architecture/tests"
+        },
+        {
+          "name": "StorefrontChrome › drops all of it on /admin"
+        },
+        {
+          "name": "StorefrontChrome › drops all of it on /admin/analytics"
+        },
+        {
+          "name": "StorefrontChrome › drops all of it on /book"
+        }
+      ]
+    },
+    {
+      "file": "__tests__/track-actions.test.ts",
+      "tests": [
+        {
+          "name": "/api/track actions › records buy_open"
+        },
+        {
+          "name": "/api/track actions › records newsletter_submit"
+        },
+        {
+          "name": "/api/track actions › records product_click"
+        },
+        {
+          "name": "/api/track actions › records outbound_click"
+        },
+        {
+          "name": "/api/track actions › records soldout_enquiry"
+        },
+        {
+          "name": "/api/track actions › drops contact_submit from a browser"
+        },
+        {
+          "name": "/api/track actions › drops buy_submit from a browser"
+        },
+        {
+          "name": "/api/track actions › drops spam_blocked from a browser"
+        },
+        {
+          "name": "/api/track actions › drops made_up from a browser"
+        }
+      ]
+    },
+    {
+      "file": "__tests__/track-rate-limit.test.ts",
+      "tests": [
+        {
+          "name": "/api/track rate limit › records events up to the limit, then drops them silently"
+        },
+        {
+          "name": "/api/track rate limit › still records the event if the limiter itself is down"
+        }
+      ]
+    },
+    {
+      "file": "__tests__/version.test.ts",
+      "tests": [
+        {
+          "name": "/api/version › reports the deployed commit, uncached"
+        },
+        {
+          "name": "/api/version › reports null outside Vercel"
+        }
+      ]
+    }
+  ],
+  "e2e": [
+    {
+      "file": "e2e/abuse.spec.ts",
+      "tests": [
+        {
+          "name": "reflected input stays text: /?q=%22%3E%3Cimg%20src%3Dx%20onerror%3D%"
+        },
+        {
+          "name": "reflected input stays text: /photographs?q=%22%3E%3Cimg%20src%3Dx%20"
+        },
+        {
+          "name": "reflected input stays text: /?category=%22%3E%3Cimg%20src%3Dx%20oner"
+        },
+        {
+          "name": "reflected input stays text: /products/%22%3E%3Cimg%20src%3Dx%20onerr"
+        },
+        {
+          "name": "reflected input stays text: /home/p/%22%3E%3Cimg%20src%3Dx%20onerror"
+        },
+        {
+          "name": "the public form APIs refuse an oversized body on the real server"
+        },
+        {
+          "name": "an admin page without a session is never served, only redirected"
+        },
+        {
+          "name": "security.txt tells a finder where to report, and stays current"
+        }
+      ]
+    },
+    {
+      "file": "e2e/accessibility.spec.ts",
+      "tests": [
+        {
+          "name": "a11y: Paintings gallery (/)"
+        },
+        {
+          "name": "a11y: Painting detail (/products/council-beach)"
+        },
+        {
+          "name": "a11y: Photographs gallery (/photographs)"
+        },
+        {
+          "name": "a11y: Photograph detail (/photographs/ravenna-canola-photo)"
+        },
+        {
+          "name": "a11y: Locations map (/locations)"
+        },
+        {
+          "name": "a11y: Making Of (/making-of)"
+        },
+        {
+          "name": "a11y: Gift shop (/gift-shop)"
+        },
+        {
+          "name": "a11y: Gift shop pack builder (/gift-shop/card-pack)"
+        },
+        {
+          "name": "a11y: About (/about)"
+        },
+        {
+          "name": "a11y: FAQ & Contact (/contact)"
+        },
+        {
+          "name": "a11y: For Artists (/for-artists)"
+        },
+        {
+          "name": "a11y: Architecture (/architecture)"
+        },
+        {
+          "name": "a11y: Test inventory (/architecture/tests)"
+        },
+        {
+          "name": "a11y: Book a chat (/book)"
+        },
+        {
+          "name": "a11y: mobile menu open"
+        },
+        {
+          "name": "a11y: Buy Now order form open"
+        }
+      ]
+    },
+    {
+      "file": "e2e/admin.spec.ts",
+      "tests": [
+        {
+          "name": "admin login rejects a wrong password"
+        },
+        {
+          "name": "admin login accepts the correct password and reaches the product list"
+        },
+        {
+          "name": "unauthenticated access to the admin redirects to login"
+        },
+        {
+          "name": "a signed-out admin redirect carries no admin data"
+        }
+      ]
+    },
+    {
+      "file": "e2e/analytics.spec.ts",
+      "tests": [
+        {
+          "name": "a public page view is recorded, by path only"
+        },
+        {
+          "name": "the admin is never tracked"
+        },
+        {
+          "name": "the dashboard can stop counting this browser, and count it again"
+        }
+      ]
+    },
+    {
+      "file": "e2e/api-validation.spec.ts",
+      "tests": [
+        {
+          "name": "/api/buy rejects a request with missing required fields"
+        },
+        {
+          "name": "/api/buy silently accepts honeypot submissions without sending"
+        },
+        {
+          "name": "/api/buy refuses an order the catalogue can't back, before sending anything"
+        },
+        {
+          "name": "/api/contact rejects a request with missing required fields"
+        },
+        {
+          "name": "/api/contact rejects a single-word spam message"
+        }
+      ]
+    },
+    {
+      "file": "e2e/csp.spec.ts",
+      "tests": [
+        {
+          "name": "every page is served with the policy and a fresh nonce"
+        },
+        {
+          "name": "no CSP violations on /"
+        },
+        {
+          "name": "no CSP violations on /products/council-beach"
+        },
+        {
+          "name": "no CSP violations on /photographs"
+        },
+        {
+          "name": "no CSP violations on /photographs/ravenna-canola-photo"
+        },
+        {
+          "name": "no CSP violations on /locations"
+        },
+        {
+          "name": "no CSP violations on /making-of"
+        },
+        {
+          "name": "no CSP violations on /gift-shop"
+        },
+        {
+          "name": "no CSP violations on /gift-shop/calendar"
+        },
+        {
+          "name": "no CSP violations on /about"
+        },
+        {
+          "name": "no CSP violations on /contact"
+        },
+        {
+          "name": "no CSP violations on /for-artists"
+        },
+        {
+          "name": "no CSP violations on /architecture"
+        },
+        {
+          "name": "no CSP violations on /architecture/tests"
+        },
+        {
+          "name": "no CSP violations on /book"
+        },
+        {
+          "name": "no CSP violations on /admin/login"
+        },
+        {
+          "name": "no CSP violations when a film is played"
+        },
+        {
+          "name": "no CSP violations across the signed-in admin"
+        }
+      ]
+    },
+    {
+      "file": "e2e/featured-order.spec.ts",
+      "tests": [
+        {
+          "name": "/: Featured shows the catalogue order, sold-out last"
+        },
+        {
+          "name": "/photographs: Featured shows the catalogue order, sold-out last"
+        }
+      ]
+    },
+    {
+      "file": "e2e/forms.spec.ts",
+      "tests": [
+        {
+          "name": "contact form renders all fields and submit button"
+        },
+        {
+          "name": "contact form shows confirmation after successful submission"
+        },
+        {
+          "name": "contact form shows error message on API failure"
+        },
+        {
+          "name": "Buy Now button expands into an enquiry form"
+        },
+        {
+          "name": "Buy Now Cancel button restores the Buy Now button"
+        },
+        {
+          "name": "Buy Now form shows confirmation after successful submission"
+        },
+        {
+          "name": "Buy Now form shows error message on API failure"
+        },
+        {
+          "name": "booking form confirms after a successful submission"
+        },
+        {
+          "name": "booking form offers other ways to reach James when sending fails"
+        },
+        {
+          "name": "without JavaScript › /: every form posts"
+        },
+        {
+          "name": "without JavaScript › /contact: every form posts"
+        },
+        {
+          "name": "without JavaScript › /book: every form posts"
+        },
+        {
+          "name": "without JavaScript › /products/lora-bay: every form posts"
+        },
+        {
+          "name": "without JavaScript › a contact form sent before JavaScript runs keeps its fields out of the URL"
+        }
+      ]
+    },
+    {
+      "file": "e2e/giftshop.spec.ts",
+      "tests": [
+        {
+          "name": "gift shop landing shows three clickable pack cards, none coming soon"
+        },
+        {
+          "name": "calendar builder: selecting 12 images fills the months and completes"
+        },
+        {
+          "name": "calendar order submits the twelve chosen images, in order, as ids"
+        },
+        {
+          "name": "card pack builder uses numbered slots and supports deselect"
+        },
+        {
+          "name": "postcard pack builder requires 10 selections"
+        },
+        {
+          "name": "gift shop thumbnails come from visible artwork and all load"
+        },
+        {
+          "name": "the site's social preview image is served directly, from a work that is for sale"
+        },
+        {
+          "name": "card-pack order submits its 6 chosen images, in order, as ids"
+        },
+        {
+          "name": "postcard-pack order submits its 10 chosen images, in order, as ids"
+        }
+      ]
+    },
+    {
+      "file": "e2e/inspiration.spec.ts",
+      "tests": [
+        {
+          "name": "a painting with an inspiration photo shows the switcher thumbnail + map"
+        },
+        {
+          "name": "a painting without an inspiration photo shows no inspiration thumbnail"
+        }
+      ]
+    },
+    {
+      "file": "e2e/interactions.spec.ts",
+      "tests": [
+        {
+          "name": "size selector updates the displayed price"
+        },
+        {
+          "name": "Buy Now form shows the selected size and price"
+        },
+        {
+          "name": "category filter shows only matching paintings"
+        },
+        {
+          "name": "sort dropdown reorders the gallery"
+        },
+        {
+          "name": "related paintings section shows other paintings in the same category"
+        },
+        {
+          "name": "Buy Now form submits and shows confirmation"
+        },
+        {
+          "name": "unknown URL shows custom 404 page with link back to gallery"
+        },
+        {
+          "name": "a work's image opens full-screen and closes with the button or Escape"
+        }
+      ]
+    },
+    {
+      "file": "e2e/keyboard.spec.ts",
+      "tests": [
+        {
+          "name": "the first Tab reaches a skip link, which jumps past the menu to the page"
+        },
+        {
+          "name": "the phone menu says whether it is open, and Escape closes it"
+        },
+        {
+          "name": "the image viewer is a dialog that keeps focus and gives it back"
+        }
+      ]
+    },
+    {
+      "file": "e2e/legacy-urls.spec.ts",
+      "tests": [
+        {
+          "name": "an old Squarespace URL for a live work redirects permanently to its page"
+        },
+        {
+          "name": "an old URL nothing matches is 410 Gone, not a redirect home"
+        }
+      ]
+    },
+    {
+      "file": "e2e/locations.spec.ts",
+      "tests": [
+        {
+          "name": "locations page plots the works that have coordinates"
+        },
+        {
+          "name": "works sharing a location share one pin, labelled with how many"
+        },
+        {
+          "name": "the location list focuses the map and links to the work"
+        },
+        {
+          "name": "Locations is reachable from the navigation"
+        },
+        {
+          "name": "a place with a film links to that film on Making Of"
+        },
+        {
+          "name": "?work= opens that work's pin, and its popup links to the film"
+        },
+        {
+          "name": "an unknown ?work= just shows the whole map"
+        }
+      ]
+    },
+    {
+      "file": "e2e/making-of.spec.ts",
+      "tests": [
+        {
+          "name": "the making-of page lists every published film"
+        },
+        {
+          "name": "no film and no full-size still is fetched before anyone presses play"
+        },
+        {
+          "name": "the stills go through the image optimiser"
+        },
+        {
+          "name": "clicking play mounts the player and asks for the film"
+        },
+        {
+          "name": "every film links through to its finished print"
+        },
+        {
+          "name": "a work's own page shows its film"
+        },
+        {
+          "name": "the photograph a painting came from is shown on the painting, not vice versa"
+        },
+        {
+          "name": "a work without a film shows no player"
+        },
+        {
+          "name": "Making Of is reachable from the navigation"
+        },
+        {
+          "name": "a film links to the spot on the map where its painting was made"
+        }
+      ]
+    },
+    {
+      "file": "e2e/newsletter.spec.ts",
+      "tests": [
+        {
+          "name": "newsletter signup shows confirmation on success"
+        },
+        {
+          "name": "newsletter signup shows an error message when the subscribe fails"
+        }
+      ]
+    },
+    {
+      "file": "e2e/photo-location.spec.ts",
+      "tests": [
+        {
+          "name": "a photograph with GPS shows the location map"
+        },
+        {
+          "name": "a panoramic photograph also shows the location map"
+        },
+        {
+          "name": "a photograph without GPS shows no location map"
+        }
+      ]
+    },
+    {
+      "file": "e2e/photographs.spec.ts",
+      "tests": [
+        {
+          "name": "photographs gallery shows all photographs"
+        },
+        {
+          "name": "photographs category filter shows only matching photographs"
+        },
+        {
+          "name": "photographs sort dropdown reorders the gallery"
+        },
+        {
+          "name": "clicking a photograph card navigates to the detail page"
+        },
+        {
+          "name": "back button on photograph detail returns to the gallery"
+        },
+        {
+          "name": "Buy Now on photograph detail submits and shows confirmation"
+        }
+      ]
+    },
+    {
+      "file": "e2e/search-home.spec.ts",
+      "tests": [
+        {
+          "name": "search box narrows the gallery and clear filters restores it"
+        },
+        {
+          "name": "New Arrivals and On Sale filter options narrow the gallery"
+        },
+        {
+          "name": "home page shows the collector testimonial"
+        }
+      ]
+    },
+    {
+      "file": "e2e/static-pages.spec.ts",
+      "tests": [
+        {
+          "name": "For Artists is reachable from the header and shows the pitch"
+        },
+        {
+          "name": "Architecture is in the footer and covers the system section by section"
+        },
+        {
+          "name": "no word runs into the inline formatting before it"
+        },
+        {
+          "name": "every kind of response carries the security headers"
+        },
+        {
+          "name": "the old FAQ address lands on the FAQ, now part of FAQ & Contact"
+        },
+        {
+          "name": "FAQ accordion opens and closes on click"
+        },
+        {
+          "name": "the numbered Architecture sections start collapsed and open from their headings"
+        },
+        {
+          "name": "the test inventory is linked from Architecture and lists every test by name"
+        },
+        {
+          "name": "sitemap.xml lists static, gift-shop, and product pages"
+        },
+        {
+          "name": "product detail page carries Product JSON-LD with an offer"
+        },
+        {
+          "name": "In a Room switcher toggles the room mockup view"
+        },
+        {
+          "name": "mobile hamburger menu opens and navigates"
+        }
+      ]
+    },
+    {
+      "file": "e2e/upload.spec.ts",
+      "tests": [
+        {
+          "name": "admin can upload a new painting and it appears in the list"
+        }
+      ]
+    },
+    {
+      "file": "e2e/visual.spec.ts",
+      "tests": [
+        {
+          "name": "desktop › gallery looks as it did"
+        },
+        {
+          "name": "desktop › painting looks as it did"
+        },
+        {
+          "name": "desktop › photographs looks as it did"
+        },
+        {
+          "name": "desktop › gift-shop looks as it did"
+        },
+        {
+          "name": "desktop › about looks as it did"
+        },
+        {
+          "name": "phone › gallery looks as it did"
+        },
+        {
+          "name": "phone › painting looks as it did"
+        },
+        {
+          "name": "phone › photographs looks as it did"
+        },
+        {
+          "name": "phone › gift-shop looks as it did"
+        },
+        {
+          "name": "phone › about looks as it did"
+        }
+      ]
+    },
+    {
+      "file": "e2e/zz-admin-instagram.spec.ts",
+      "tests": [
+        {
+          "name": "approving schedules a post on a Mon/Wed/Fri, and unapproving puts it back"
+        },
+        {
+          "name": "skipping takes a post out of the queue for good"
+        }
+      ]
+    },
+    {
+      "file": "e2e/zz-admin-manage.spec.ts",
+      "tests": [
+        {
+          "name": "toggling a painting invisible removes it from the public site and gift-shop pool"
+        },
+        {
+          "name": "editing a painting's price in the admin updates the public card"
+        },
+        {
+          "name": "admin column sort orders by title; ⠿ returns to draggable manual order"
+        },
+        {
+          "name": "drag-to-reorder moves a row and persists; restored after"
+        }
+      ]
+    },
+    {
+      "file": "e2e/zz-admin-passkey.spec.ts",
+      "tests": [
+        {
+          "name": "register a passkey, then sign in with it instead of the password"
+        }
+      ]
+    },
+    {
+      "file": "e2e/zz-rate-limit.spec.ts",
+      "tests": [
+        {
+          "name": "admin login locks out after 5 failed attempts"
+        }
+      ]
+    }
+  ]
+}

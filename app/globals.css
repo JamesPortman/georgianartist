@@ -1,0 +1,46 @@
+@import "tailwindcss";
+
+/*
+ * The brand palette, defined once.
+ *
+ * These were 170-odd hex literals spelled out inside Tailwind classes, which
+ * is why the site had FOUR different hover greens — #245026, #234d24, #244d26
+ * and #1e4220 — all doing the same job on the same kind of button. Nobody
+ * chose four; each was typed from memory at a different time.
+ *
+ * As `@theme` entries Tailwind generates the utilities from them, so
+ * `bg-brand`, `text-brand`, `border-brand/30` and `hover:bg-brand-hover` all
+ * work, and the colour has one definition instead of one per usage.
+ *
+ * `lib/brand.ts` carries the same three values for the few places that need a
+ * colour as a JavaScript string rather than a class — chart strokes, map
+ * markers. This file is the source of truth; a test fails the build if the two
+ * drift apart.
+ */
+@theme {
+  --color-brand: #2c5f2e;
+  --color-brand-hover: #245026;
+  --color-brand-tint: #f0f7f0;
+}
+
+:root {
+  --background: #fafafa;
+  --foreground: #1a1a1a;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: Georgia, "Times New Roman", serif;
+}
+
+/* Base-layer so Tailwind's utilities can still win. Unlayered CSS beats
+   layered CSS regardless of specificity, so an unlayered `a { color: inherit }`
+   silently overrode every text-* utility on a link — brand-green links rendered
+   in the inherited colour, and white-on-green buttons came out white-on-white. */
+@layer base {
+  a {
+    text-decoration: none;
+    color: inherit;
+  }
+}

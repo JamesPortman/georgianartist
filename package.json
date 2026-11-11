@@ -1,0 +1,91 @@
+{
+  "name": "newsite",
+  "version": "0.1.0",
+  "private": true,
+  "engines": {
+    "node": "24.x"
+  },
+  "scripts": {
+    "dev": "next dev",
+    "postinstall": "prisma generate",
+    "build": "prisma generate && NODE_ENV=test vitest run --reporter=default --reporter=json --outputFile.json=.vitest-results.json && node scripts/test-inventory.mjs .vitest-results.json && tsx scripts/assert-build-database.ts && prisma db push && tsx scripts/assert-catalogue-on-blob.ts && next build",
+    "tests:inventory": "NODE_ENV=test vitest run --reporter=default --reporter=json --outputFile.json=.vitest-results.json && node scripts/test-inventory.mjs .vitest-results.json",
+    "start": "next start",
+    "lint": "eslint",
+    "test": "NODE_ENV=test vitest run",
+    "test:watch": "NODE_ENV=test vitest",
+    "test:e2e": "playwright test --project=chromium",
+    "test:visual": "playwright test --project=visual",
+    "test:mutation": "node scripts/mutation-run.mjs",
+    "db:migrate": "prisma migrate dev",
+    "db:seed": "tsx prisma/seed.ts",
+    "db:push": "prisma db push",
+    "db:studio": "prisma studio",
+    "db:export": "tsx scripts/export-catalog.ts",
+    "backup:drill": "tsx scripts/backup-drill.ts",
+    "analytics:purge-excluded": "tsx scripts/purge-excluded-analytics.ts",
+    "catalogue:rank-by-engagement": "tsx scripts/rank-by-engagement.ts",
+    "images:copyright": "tsx scripts/embed-copyright.ts",
+    "images:backfill-blob": "tsx scripts/backfill-blob-copyright.ts",
+    "blobs:prune": "tsx scripts/prune-orphan-blobs.ts",
+    "secrets:backup": "bash scripts/secrets-backup.sh",
+    "instagram:generate": "tsx scripts/instagram/generate-posts.ts",
+    "instagram:backfill-fingerprints": "tsx scripts/instagram/backfill-fingerprints.ts",
+    "instagram:queue-reels": "tsx scripts/instagram/queue-reels.ts"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.131.0",
+    "@neondatabase/serverless": "^1.2.0",
+    "@prisma/adapter-neon": "^7.10.0",
+    "@prisma/adapter-pg": "^7.10.0",
+    "@prisma/client": "^7.10.0",
+    "@simplewebauthn/browser": "^14.0.0",
+    "@simplewebauthn/server": "^14.0.3",
+    "@vercel/blob": "^2.8.0",
+    "disposable-email-domains": "^1.0.62",
+    "exifr": "^7.1.3",
+    "heic2any": "^0.0.4",
+    "iron-session": "^9.0.1",
+    "leaflet": "^1.9.4",
+    "next": "^16.4.2",
+    "pg": "^8.23.1",
+    "react": "19.3.0",
+    "react-dom": "19.3.0",
+    "resend": "^6.32.0",
+    "sharp": "^0.35.5"
+  },
+  "devDependencies": {
+    "@axe-core/playwright": "^4.13.0",
+    "@playwright/test": "^1.63.0",
+    "@stryker-mutator/core": "^10.0.0",
+    "@tailwindcss/postcss": "^4.3.3",
+    "@testing-library/dom": "^10.4.2",
+    "@testing-library/react": "^16.3.3",
+    "@types/leaflet": "^1.9.22",
+    "@types/node": "^24.19.2",
+    "@types/pg": "^8.23.1",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "@types/ws": "^8.18.2",
+    "@vitejs/plugin-react": "^6.1.2",
+    "audit-ci": "^7.1.0",
+    "eslint": "^9",
+    "eslint-config-next": "^16.4.2",
+    "fast-check": "^4.10.2",
+    "jsdom": "^30.1.2",
+    "prisma": "^7.10.0",
+    "tailwindcss": "^4.3.3",
+    "tsx": "^4.23.15",
+    "typescript": "^6",
+    "vitest": "^5.0.3",
+    "ws": "^8.22.0"
+  },
+  "overrides": {
+    "typed-rest-client": {
+      "qs": "^6.16.0"
+    },
+    "@vercel/cli-config": {
+      "zod": "^4.6.6"
+    }
+  }
+}

@@ -1,0 +1,14 @@
+# What the Semgrep code scan (.github/workflows/static-analysis.yml) skips.
+# Having this file replaces Semgrep's built-in ignore list, so the usual
+# suspects are repeated here.
+:include .gitignore
+node_modules/
+.next/
+coverage/
+playwright-report/
+test-results/
+
+# The booking page's design handoff, kept for reference in #141. Nothing in it
+# is served or imported by the site, and support.js is a generated third-party
+# runtime ("do not edit"), so a finding there isn't ours to fix.
+design_handoff_booking_page/

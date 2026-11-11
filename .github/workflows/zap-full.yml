@@ -1,0 +1,154 @@
+name: Active security scan (weekly)
+
+# OWASP ZAP's *active* scans, which attack rather than just watch:
+#   - the full scan spiders the site and sends attack payloads to every page
+#     and form it finds (SQL injection, cross-site scripting, path traversal,
+#     header injection, command injection and the rest of ZAP's active rules);
+#   - the API scan does the same to the JSON endpoints in .zap/public-api.yaml,
+#     which the forms call from JavaScript and a crawler can't see.
+#
+# Against a throwaway CI build and database, never production: nothing is
+# emailed (no Resend key here) and nothing real is touched. It takes about
+# half an hour, so it runs weekly rather than on every pull request, plus on
+# any PR that changes the scan itself. Findings are triaged in .zap/rules.tsv
+# like the baseline scan's: fix it, or accept it there with the reason.
+#
+# This is the automated part of a penetration test. The targeted part is our
+# own abuse tests (e2e/abuse.spec.ts, __tests__/server-actions-auth.test.ts);
+# no manual test by a third party has been done (/architecture §10).
+
+on:
+  schedule:
+    - cron: "0 8 * * 0" # Sundays, 08:00 UTC
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - .github/workflows/zap-full.yml
+      - .zap/**
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  ZAP_IMAGE: zaproxy/zap-stable:2.17.0
+
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    env:
+      DATABASE_URL: postgresql://postgres:postgres@localhost:5432/test
+      # Test-only values: the database is throwaway.
+      ADMIN_PASSWORD: e2e-admin-password
+      SESSION_SECRET: e2e-session-secret-at-least-32-characters-long
+      CRON_SECRET: e2e-cron-secret
+      # Email goes to a local stub (started below) that accepts everything, so
+      # a valid submission completes and the attacks exercise the whole
+      # handler. Without a key the Resend client threw at the send step, and
+      # every well-formed request ended in a 500. Nothing leaves the runner.
+      RESEND_API_KEY: re_scan_stub
+      RESEND_BASE_URL: http://localhost:3999
+
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 24
+          cache: npm
+
+      - run: npm ci
+
+      # The production build without the unit suite (e2e.yml runs that).
+      - name: Build
+        run: npx prisma generate && npx prisma db push && npx next build
+
+      - name: Seed the test database
+        run: npm run db:seed
+
+      - name: Start the site
+        run: |
+          node -e "require('http').createServer((q, s) => { require('fs').appendFileSync('emails.log', q.method + ' ' + q.url + '\\n'); s.writeHead(200, { 'content-type': 'application/json' }); s.end('{\\\"id\\\":\\\"stub\\\"}'); }).listen(3999)" &
+          npm run start > next.log 2>&1 &
+          for i in $(seq 60); do curl -sf -o /dev/null http://localhost:3000 && break; sleep 1; done
+          # Every form and the admin login are rate-limited per IP, and the
+          # scanner is one IP: within seconds every attack would get a 429
+          # and never reach the validation it is meant to test. Keep the
+          # limiter empty for the scan's duration. This database only.
+          ( while sleep 3; do
+              PGPASSWORD=postgres psql -h localhost -U postgres -d test -qc 'DELETE FROM "FormRateLimit"' >/dev/null 2>&1
+            done ) &
+          mkdir -p zap && cp .zap/rules.tsv .zap/public-api.yaml zap/ && chmod -R a+rwx zap
+
+      - name: Active scan of the pages (ZAP full scan)
+        id: full
+        continue-on-error: true
+        run: |
+          docker run --rm --network host -v "$PWD/zap:/zap/wrk:rw" "$ZAP_IMAGE" \
+            zap-full-scan.py -t http://localhost:3000 -c rules.tsv -m 3 \
+              -z "-config scanner.maxScanDurationInMins=25" \
+              -r full-report.html -w full-report.md -J full-report.json
+
+      - name: Active scan of the JSON endpoints (ZAP API scan)
+        id: api
+        continue-on-error: true
+        run: |
+          docker run --rm --network host -v "$PWD/zap:/zap/wrk:rw" "$ZAP_IMAGE" \
+            zap-api-scan.py -t public-api.yaml -f openapi -O http://localhost:3000 -c rules.tsv \
+              -z "-config scanner.maxScanDurationInMins=15" \
+              -r api-report.html -w api-report.md -J api-report.json
+
+      - name: Reports
+        if: always()
+        run: |
+          for f in full api; do
+            [ -f "zap/$f-report.md" ] && { echo "## ZAP $f scan"; cat "zap/$f-report.md"; } >> "$GITHUB_STEP_SUMMARY"
+          done
+          echo "Emails the forms tried to send during the scan (all to the local stub): $(wc -l < emails.log 2>/dev/null || echo 0)" >> "$GITHUB_STEP_SUMMARY"
+          true
+
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        if: always()
+        with:
+          name: zap-active-reports
+          path: |
+            zap/
+            next.log
+          retention-days: 30
+          if-no-files-found: ignore
+
+      - name: Fail on any untriaged finding
+        run: |
+          echo "full scan: ${{ steps.full.outcome }}, API scan: ${{ steps.api.outcome }}"
+          [ "${{ steps.full.outcome }}" = success ] && [ "${{ steps.api.outcome }}" = success ]
+
+      # A scheduled run has nobody watching: open an issue so a finding is seen.
+      - name: Open an issue
+        if: failure() && github.event_name == 'schedule'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          gh issue create --title "Weekly active security scan found something" \
+            --body "The weekly ZAP active scan failed: $RUN_URL. Read the run summary and the zap-active-reports artifact, then fix the finding or triage it in .zap/rules.tsv with the reason."

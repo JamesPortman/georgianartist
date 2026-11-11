@@ -1,0 +1,70 @@
+name: Static analysis
+
+# Two scans that read the code rather than run it, alongside the E2E workflow
+# (they run in parallel, so they add no wall-clock time to a pull request):
+#
+#   Gitleaks — every commit in the history, for credentials: API keys, tokens,
+#              private keys, connection strings. Output is redacted.
+#   Semgrep  — the source, against the TypeScript, React, Next.js, OWASP Top 10
+#              and secrets rulesets, plus the workflow and Dependabot files.
+#
+# Either one fails the run on any finding. CodeQL and GitHub's own secret
+# scanning would need GitHub Advanced Security on a private repository; these
+# are free and need no account. Tools are pinned (Gitleaks by version and
+# checksum, Semgrep by image tag). Semgrep's rulesets come from its registry at
+# run time, so a newly published rule can raise a new finding — triage it like
+# any other: fix it, or exclude the path in .semgrepignore with the reason.
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+# A newer push to the same PR makes the running check worthless: cancel it
+# rather than pay for both. Pushes to main are never cancelled; each is a
+# deploy and deserves its own run. (Actions minutes ran out on 28 Sep 2026.)
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+permissions:
+  contents: read
+
+env:
+  GITLEAKS_VERSION: 8.30.1
+  GITLEAKS_SHA256: 551f6fc83ea457d62a0d98237cbad105af8d557003051f41f3e7ca7b3f2470eb
+  SEMGREP_IMAGE: semgrep/semgrep:1.178.0
+
+jobs:
+  secrets:
+    name: Secret scan (Gitleaks)
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0 # the whole history: a secret removed later is still in it
+
+      - name: Install Gitleaks (pinned, checksum-verified)
+        run: |
+          curl -sSfL -o gitleaks.tgz \
+            "https://github.com/gitleaks/gitleaks/releases/download/v${GITLEAKS_VERSION}/gitleaks_${GITLEAKS_VERSION}_linux_x64.tar.gz"
+          echo "${GITLEAKS_SHA256}  gitleaks.tgz" | sha256sum -c -
+          tar -xzf gitleaks.tgz gitleaks
+
+      - name: Scan every commit for secrets
+        run: ./gitleaks git --redact --no-banner --exit-code 1 .
+
+  code:
+    name: Code scan (Semgrep)
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Scan the source
+        run: |
+          docker run --rm -v "$PWD:/src" -w /src "$SEMGREP_IMAGE" \
+            semgrep scan --metrics=off --error \
+              --config p/typescript --config p/react --config p/nextjs \
+              --config p/owasp-top-ten --config p/secrets

@@ -1,0 +1,76 @@
+name: Smoke test (production)
+
+# After every production deploy, check that the commit Vercel just deployed is
+# the one live on the domain, and that the pages a visitor reaches work
+# (scripts/smoke.mjs). Also runs when Vercel reports the deploy itself failed:
+# a failed deploy keeps serving the previous build, every page still 200, and
+# nothing looks wrong (#190). Either way, a failure opens an issue, because a
+# workflow started by Vercel's bot has nobody to email.
+#
+# Read-only against production: GET requests, no forms, nothing written.
+
+on:
+  deployment_status:
+  workflow_dispatch:
+    inputs:
+      commit:
+        description: "Commit expected to be live (leave blank to skip that check)"
+        required: false
+
+permissions:
+  contents: read
+  issues: write
+
+env:
+  # The live domain (siteConfig.url in data/siteConfig.ts).
+  SITE_URL: https://www.georgianartist.com
+
+jobs:
+  smoke:
+    # Production only, and only once the deploy has finished one way or the
+    # other; Vercel also reports "pending" and "in_progress", and preview
+    # deployments, which this site doesn't make.
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      (github.event.deployment.environment == 'Production' &&
+       contains(fromJSON('["success", "failure", "error"]'), github.event.deployment_status.state))
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      EXPECTED: ${{ github.event.deployment.sha || inputs.commit }}
+
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 24
+
+      - name: Vercel reported the deploy failed
+        if: github.event.deployment_status.state == 'failure' || github.event.deployment_status.state == 'error'
+        run: |
+          echo "::error::Vercel's production deploy of ${EXPECTED::7} failed; the site is still serving the previous build."
+          exit 1
+
+      - name: Smoke-test the live site
+        run: node scripts/smoke.mjs "$SITE_URL" "$EXPECTED"
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+
+      - name: Open an issue
+        if: failure()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          VERCEL_URL: ${{ github.event.deployment_status.target_url }}
+        run: |
+          gh issue create \
+            --title "Production deploy of ${EXPECTED::7} failed its post-deploy check" \
+            --body "$(printf '%s\n' \
+              "The post-deploy smoke test failed for commit \`${EXPECTED:-unknown}\`." \
+              "" \
+              "- Smoke test run: $RUN_URL" \
+              "- Vercel deployment: ${VERCEL_URL:-n/a}" \
+              "" \
+              "If Vercel's build failed, the site is still serving the previous deployment." \
+              "Read the build log before anything else; see the run summary for which check failed.")"

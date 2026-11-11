@@ -1,0 +1,329 @@
+/*
+ * Booking page — the "Industry" design system from the handoff bundle.
+ *
+ * Ported rather than copied: only the classes this page composes, with the
+ * flier's yellow-ground / black-ink theme fed through the same tokens so the
+ * components re-colour together.
+ *
+ * Everything is scoped under `.booking` rather than `:root`. The handoff says
+ * to set the tokens on ":root (or the equivalent theme layer)" — in a shared
+ * codebase the page wrapper IS that layer. On :root these would repaint the
+ * whole storefront, which is Tailwind v4 with a green brand.
+ *
+ * Non-negotiables from the handoff, all load-bearing:
+ *   - square corners everywhere (radius 0 — do not round)
+ *   - cards and the form are transparent hairline frames, never filled
+ *   - the four `+` registration marks stay on every framed element
+ *   - the submit button is the single solid object on the page
+ */
+
+.booking {
+  --color-bg: #fdf8e3; /* page ground, warm paper */
+  --color-surface: #f7f0d2; /* tinted panel (success message) */
+  --color-text: #1d1f20; /* near-black ink */
+  --color-accent: #1d1f20; /* the accent IS black in this scheme */
+  --color-accent-600: #3c3d3f; /* hover */
+  --color-accent-700: #141516; /* pressed */
+  --color-divider: #1d1f20; /* hairline rules and frames */
+  --color-muted: #6f7375; /* muted mark + corner marks */
+  --color-secondary: #4a4b4d; /* secondary text */
+  --color-card-body: #424244;
+  --input-fill: #fffdf3;
+
+  min-height: 100vh;
+  box-sizing: border-box;
+  padding: clamp(20px, 5vw, 56px);
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-family: var(--font-booking-body), system-ui, sans-serif;
+}
+
+.booking *,
+.booking *::before,
+.booking *::after {
+  box-sizing: border-box;
+}
+
+.booking-inner {
+  max-width: 980px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: clamp(22px, 3vw, 34px);
+}
+
+.booking a {
+  color: var(--color-text);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.booking a:hover {
+  color: var(--color-accent-600);
+}
+
+/* Never the browser default ring. */
+.booking :focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+/* — condensed display type — */
+.booking-display {
+  font-family: var(--font-booking-heading), system-ui, sans-serif;
+}
+
+/* — masthead — */
+.booking-masthead {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px;
+  border-bottom: 1px solid var(--color-divider);
+  padding-bottom: 12px;
+}
+.booking-wordmark {
+  font-weight: 600;
+  font-size: clamp(22px, 3vw, 30px);
+  line-height: 1;
+  letter-spacing: -0.01em;
+}
+.booking-wordmark span {
+  color: var(--color-muted);
+}
+.booking-standfirst {
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 1.35;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  text-align: right;
+}
+
+/* — hero — */
+.booking-hero {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.booking-kicker {
+  font-weight: 600;
+  font-size: 15px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--color-secondary);
+}
+.booking-hero h1 {
+  margin: 0;
+  font-weight: 700;
+  font-size: clamp(40px, 7vw, 72px);
+  line-height: 0.92;
+  letter-spacing: -0.025em;
+  text-wrap: balance;
+}
+.booking-hero p {
+  margin: 0;
+  font-size: clamp(16px, 2vw, 19px);
+  line-height: 1.45;
+  max-width: 46em;
+  text-wrap: pretty;
+}
+
+/* — price band — */
+.booking-price {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 8px 16px;
+  border-top: 1px solid var(--color-divider);
+  border-bottom: 1px solid var(--color-divider);
+  padding: 11px 0;
+}
+.booking-price-figure {
+  flex: none;
+  font-weight: 700;
+  font-size: clamp(28px, 4vw, 40px);
+  line-height: 1;
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+}
+.booking-price-terms {
+  /* min-width:0 so it wraps inside the rule instead of overflowing it */
+  flex: 1 1 auto;
+  min-width: 0;
+  font-weight: 600;
+  font-size: 15px;
+  line-height: 1.4;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+}
+
+/* — blueprint frame + registration marks — */
+.blueprint {
+  position: relative;
+  border: 1px solid var(--color-divider);
+  border-radius: 0;
+}
+.blueprint > .corner {
+  position: absolute;
+  width: 11px;
+  height: 11px;
+  color: color-mix(in srgb, var(--color-text) 55%, transparent);
+}
+.blueprint > .corner::before,
+.blueprint > .corner::after {
+  content: "";
+  position: absolute;
+  background: currentColor;
+}
+.blueprint > .corner::before {
+  left: 5px;
+  top: 0;
+  width: 1px;
+  height: 100%;
+}
+.blueprint > .corner::after {
+  top: 5px;
+  left: 0;
+  width: 100%;
+  height: 1px;
+}
+.blueprint > .corner.tl { top: -6px; left: -6px; }
+.blueprint > .corner.tr { top: -6px; right: -6px; }
+.blueprint > .corner.bl { bottom: -6px; left: -6px; }
+.blueprint > .corner.br { bottom: -6px; right: -6px; }
+
+/* — cards: transparent line drawings, never filled — */
+.booking .card {
+  display: flex;
+  flex-direction: column;
+  gap: 6.8px;
+  padding: 10.2px;
+  background: transparent;
+}
+.booking .card-title {
+  font-family: var(--font-booking-heading), system-ui, sans-serif;
+  font-weight: 600;
+  font-size: 19px;
+  line-height: 1.2;
+}
+.booking .card-body {
+  margin: 0;
+  font-size: 15px;
+  opacity: 1;
+  color: var(--color-card-body);
+  flex: 1;
+}
+
+/* — form — */
+.booking-form {
+  gap: 18px;
+  padding: clamp(18px, 3vw, 28px);
+}
+.booking-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr));
+  gap: 18px;
+}
+.booking .field > label {
+  display: block;
+  margin-bottom: 5px;
+  font-family: var(--font-booking-heading), system-ui, sans-serif;
+  font-weight: 600;
+  font-size: 14px;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  color: var(--color-text);
+}
+.booking .input {
+  width: 100%;
+  /* 16px, not smaller: anything less triggers iOS zoom-on-focus.
+     44px is the minimum comfortable touch target. */
+  font-size: 16px;
+  min-height: 44px;
+  padding: 6px 10px;
+  font-family: inherit;
+  color: var(--color-text);
+  caret-color: var(--color-accent);
+  background: var(--input-fill);
+  border: 1px solid var(--color-divider);
+  border-radius: 0;
+}
+.booking textarea.input {
+  line-height: 1.45;
+  resize: vertical;
+}
+
+/* — action row — */
+.booking-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 16px;
+}
+.booking .btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  cursor: pointer;
+  white-space: nowrap;
+  font-family: var(--font-booking-heading), system-ui, sans-serif;
+  font-weight: 700;
+  font-size: 20px;
+  line-height: 1.2;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  padding: 13px 26px;
+  min-height: 52px;
+  border-radius: 0;
+}
+/* The one solid object on the page. */
+.booking .btn-primary {
+  background: var(--color-accent);
+  color: var(--color-bg);
+  border: 1px solid var(--color-accent);
+}
+.booking .btn-primary:hover:not(:disabled) {
+  background: var(--color-accent-600);
+}
+.booking .btn-primary:active:not(:disabled) {
+  background: var(--color-accent-700);
+}
+.booking .btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+.booking-fallback {
+  font-size: 15px;
+  line-height: 1.4;
+  color: var(--color-secondary);
+}
+.booking-fallback strong {
+  font-weight: 600;
+}
+
+/* — result panels: success and error share the geometry — */
+.booking-panel {
+  border: 1px solid var(--color-divider);
+  background: var(--color-surface);
+  padding: 14px 16px;
+  font-size: 16px;
+  line-height: 1.45;
+}
+
+/* — FAQ — */
+.booking-faq {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr));
+  gap: 20px;
+}
+
+/* The honeypot: off-screen rather than display:none, which some bots skip. */
+.booking-hp {
+  position: absolute;
+  left: -9999px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}

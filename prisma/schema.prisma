@@ -1,0 +1,267 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+// In Prisma 7 the connection URL lives in prisma.config.ts, not here.
+datasource db {
+  provider = "postgresql"
+}
+
+model Product {
+  /// Permanent. Blob filenames, analytics, Instagram posts and films key on it.
+  id               String   @id
+  /// The URL (lib/product-path.ts). Null means the id is the slug, i.e. never
+  /// renamed. A rename keeps the old slug in ProductSlug, which redirects.
+  /// Unique in practice, enforced by slugTakenBy() on the one write path (the
+  /// admin), not by a constraint: `prisma db push` refuses to add a unique
+  /// constraint without --accept-data-loss, which the build must never pass.
+  slug             String?
+  /// "painting" | "photograph"
+  type             String
+  title            String
+  image            String
+  category         String
+  /// Maps to sizeOptions lookup in data/products.ts
+  sizeType         String
+  /// Base display price (starting from)
+  price            Int
+  description      String?
+  /// base64 blur placeholder (uploaded products); seeded ones use data/blurs.ts
+  blurDataURL      String?
+  /// Optional "inspiration" photo behind a painting + the GPS spot it was taken
+  /// The "In a Room" mockup on Blob (catalogue/mockups/<id>.jpg), set by
+  /// scripts/migrate-catalogue-to-blob.ts. Null: the committed public/mockups
+  /// file for a /paintings/ image, or the CSS composite (lib/catalogue-images.ts).
+  mockupImage      String?
+  inspirationImage String?
+  inspirationLat   Float?
+  inspirationLng   Float?
+  /// A collector's own photo of the work hanging in their home. Replaces the
+  /// generated "In a Room" mockup on the work's page when present. The
+  /// photograph is theirs, not the artist's: it is stored with its metadata
+  /// stripped (a phone photo's GPS is their home address) and without the
+  /// artist's copyright notice.
+  homePhoto        String?
+  /// How the collector asked to be credited, e.g. "Gino C.".
+  homePhotoCredit  String?
+  isNew            Boolean  @default(false)
+  onSale           Boolean  @default(false)
+  /// The limited edition is exhausted. The work keeps its page and stays
+  /// indexed — it just stops being offered. Distinct from `visible`, which
+  /// removes it from the site entirely.
+  soldOut          Boolean  @default(false)
+  visible          Boolean  @default(true)
+  sortOrder        Int      @default(0)
+  /// Photographs only — required for panoramic detection
+  naturalWidth     Int?
+  naturalHeight    Int?
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  @@index([slug])
+}
+
+model AnalyticsEvent {
+  id        String   @id @default(cuid())
+  /// "pageview" | "action"
+  kind      String
+  /// For actions: "buy_open" | "buy_submit" | "contact_submit" | "spam_blocked" | "product_click" | "outbound_click" | "newsletter_submit" | "soldout_enquiry". Null for pageviews.
+  /// buy_submit, contact_submit and spam_blocked are written by the form routes, not the browser (lib/server-event.ts).
+  action    String?
+  /// URL path the event occurred on (e.g. "/products/singhampton-winter")
+  path      String
+  /// Optional product/photograph id the event relates to
+  productId String?
+  /// document.referrer at first page of the visit (external referrers only)
+  referrer  String?
+  /// Anonymous first-party cookie id — for unique-visitor counts. Not PII.
+  visitorId String
+  /// "mobile" | "tablet" | "desktop"
+  device    String
+  browser   String?
+  os        String?
+  /// Coarse geo from Vercel edge headers — no raw IP is ever stored
+  country   String?
+  city      String?
+  createdAt DateTime @default(now())
+
+  @@index([createdAt])
+  @@index([kind, createdAt])
+  @@index([action])
+  @@index([productId])
+  @@index([visitorId])
+}
+
+model InstagramPost {
+  id          String    @id @default(cuid())
+  /// "painting" | "photograph" | "voting" | "press" | "reel"
+  type        String
+  /// Null for posts not tied to a catalogue work (voting, press)
+  productId   String?
+  /// Absolute media URL — image, or an mp4 for a "reel" post (Blob URL, or a
+  /// full georgianartist.com path for images committed to the repo)
+  imageUrl    String
+  caption     String
+  /// "pending" | "approved" | "posting" | "posted" | "skipped"
+  /// "posting" is a transient in-flight state set while publishing. A row left
+  /// in it is reconciled against Meta by containerId (lib/instagram-publish.ts)
+  /// on the next cron run, and only waits for a person if Meta can't say.
+  status      String    @default("pending")
+  /// Next open Mon/Wed/Fri slot — set when approved
+  scheduledAt DateTime?
+  postedAt    DateTime?
+  /// Instagram media ID returned by the Graph API after publishing
+  instagramId String?
+  /// The media container this publish attempt created, stored before
+  /// media_publish is called. Meta publishes a container at most once, so it is
+  /// the idempotency key: its status says whether the attempt went live.
+  containerId String?
+  /// When the row was claimed into "posting". A claim with no containerId
+  /// after a while never reached media_publish, so it is safe to requeue.
+  postingStartedAt DateTime?
+  /// Fingerprint (etag|content-length) of imageUrl at the moment the caption
+  /// was written. The cron re-reads it before publishing and refuses if it
+  /// changed — a repaint replaces the file behind an unchanged URL, which
+  /// silently invalidates the caption without anything looking broken.
+  mediaFingerprint String?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+/// A short "making of" film for a piece of work. productId is optional so a
+/// video can be published before its painting is in the catalogue — it links
+/// itself up as soon as a product with that id exists.
+model MakingOf {
+  id          String   @id
+  title       String
+  /// Blob URL — videos are large media, so unlike images they are not committed
+  videoUrl    String
+  /// Final frame — the finished work — so the player isn't a blank box before playback
+  posterUrl   String?
+  /// A line or two about the piece, shown under the player
+  description String?
+  /// Matches Product.id when the work is on the site; null while it isn't
+  productId   String?
+  seconds     Int?
+  visible     Boolean  @default(true)
+  sortOrder   Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([productId])
+}
+
+/// Browsers whose traffic is not counted — the artist's own, mostly.
+///
+/// Keyed on the anonymous analytics cookie rather than on city or IP. The
+/// obvious filter, "drop everything from Wasaga Beach", is wrong twice over:
+/// Wasaga Beach is a real Georgian Bay town whose residents are plausible
+/// customers, and the owner's own cookie has been seen from Ottawa and Little
+/// Current too. The cookie follows the person; the city does not.
+model ExcludedVisitor {
+  /// Value of the gba_vid cookie for that browser
+  visitorId String   @id
+  /// Free text so a row means something a year later ("James — desktop Chrome")
+  label     String?
+  createdAt DateTime @default(now())
+}
+
+/// The admin's passkeys (WebAuthn credentials; lib/passkey.ts). Once one exists
+/// the admin signs in with a passkey only and the password stops working,
+/// unless ADMIN_PASSWORD_LOGIN=1 is set in Vercel as a break-glass.
+model AdminPasskey {
+  /// The credential ID, base64url — what the authenticator presents at sign-in
+  id           String    @id
+  /// COSE public key, base64url. Only the public half ever reaches the server.
+  publicKey    String
+  /// Signature counter; synced passkeys (iCloud, Google) always report 0
+  counter      Int       @default(0)
+  /// Comma-separated hints: internal, hybrid, usb, …
+  transports   String?
+  /// Free text, e.g. "MacBook Air" — so a lost device can be found and removed
+  label        String
+  /// "multiDevice" when the passkey syncs (iCloud Keychain), "singleDevice" otherwise
+  deviceType   String
+  backedUp     Boolean
+  createdAt    DateTime  @default(now())
+  lastUsedAt   DateTime?
+}
+
+/// Rate-limit counters for the public forms (lib/form-rate-limit.ts). One row
+/// per key; the key is an HMAC of an IP or email address, never the raw value.
+/// Rows older than a day are deleted by the daily prune cron.
+model FormRateLimit {
+  key         String   @id
+  windowStart DateTime
+  count       Int
+
+  @@index([windowStart])
+}
+
+/// Content-Security-Policy violations reported by browsers (/api/csp-report),
+/// aggregated: one row per directive + blocked origin + page, with a count.
+/// Read it before switching the policy from report-only to enforcing
+/// (lib/csp.ts). Rows unseen for 30 days are pruned by the daily cron.
+model CspViolation {
+  /// sha256 of directive|blocked|page
+  key       String   @id
+  directive String
+  /// The blocked resource's origin, or a keyword such as "inline" or "eval"
+  blocked   String
+  /// Path of the page it happened on
+  page      String
+  sample    String?
+  count     Int
+  firstSeen DateTime
+  lastSeen  DateTime
+
+  @@index([lastSeen])
+}
+
+/// Server errors, one row per kind (instrumentation.ts → lib/error-report.ts).
+/// Next reports every uncaught error in a page render, route handler or server
+/// action; the row counts repeats, and the owner is emailed once per kind per
+/// day rather than once per request.
+model ErrorReport {
+  /// Next's error digest, or a hash of the message when there isn't one
+  digest    String   @id
+  message   String
+  /// The path it first happened on
+  path      String
+  /// "render" | "route" | "action" | "middleware" | …
+  kind      String
+  /// The top of the stack the first time it threw (capped), so the row says
+  /// where without waiting for the email. Null for rows from before the column.
+  stack     String?
+  count     Int
+  firstSeen DateTime
+  lastSeen  DateTime
+  /// When the owner was last emailed about it
+  alertedAt DateTime?
+
+  @@index([lastSeen])
+}
+
+/// The last result of the site health check (app/api/cron/health). One row,
+/// id "site". Kept so the check emails on a change — failing, then recovered —
+/// rather than on every run while something stays broken.
+model HealthState {
+  id        String   @id
+  failing   Boolean
+  /// When `failing` last flipped — how long an outage lasted.
+  changedAt DateTime
+  checkedAt DateTime
+  /// The last run's report, for looking at in the database.
+  detail    String?
+}
+
+/// Slugs a work used to be served at. /products/<old> and /photographs/<old>
+/// redirect permanently to the work's current page (lib/product-lookup.ts).
+/// A slug is either some work's current slug or a row here, never both.
+model ProductSlug {
+  slug      String   @id
+  productId String
+  createdAt DateTime @default(now())
+
+  @@index([productId])
+}

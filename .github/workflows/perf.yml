@@ -1,0 +1,104 @@
+name: Performance
+
+# A performance budget: Lighthouse CI (lighthouserc.json) loads five key pages
+# of a production build as a simulated phone, three times each, and fails the
+# pull request if the median run goes past a limit: the performance score,
+# when the main image appears (LCP), layout shift (CLS), main-thread blocking
+# (TBT) and JavaScript size. Speed Insights measures real visitors after a
+# change ships; this stops a slowdown before it does. The numbers are
+# simulated, so the limits sit a margin past today's, to catch a real
+# regression rather than noise.
+on:
+  # Every pull request, never a path filter: the job below skips itself for a
+  # Markdown-only change (see CLAUDE.md, "CI minutes").
+  pull_request:
+  push:
+    branches: [main]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+permissions:
+  contents: read
+
+jobs:
+  changes:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      code: ${{ steps.diff.outputs.code }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+      - id: diff
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+        run: |
+          if git diff --name-only "$BASE_SHA" HEAD | grep -qv '\.md$'; then code=true; else code=false; fi
+          echo "code=$code" >> "$GITHUB_OUTPUT"
+
+  lighthouse:
+    needs: changes
+    # Skipped only when the diff was read and is Markdown alone.
+    if: ${{ !cancelled() && !(needs.changes.result == 'success' && needs.changes.outputs.code == 'false') }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    env:
+      CI: "true"
+      DATABASE_URL: postgresql://postgres:postgres@localhost:5432/test
+      # Test-only values (the database is throwaway); the pages need a session
+      # secret to render, nothing else.
+      SESSION_SECRET: e2e-session-secret-at-least-32-characters-long
+      ADMIN_PASSWORD: e2e-admin-password
+
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 24
+          cache: npm
+
+      - run: npm ci
+
+      # The production build without the unit suite (e2e.yml runs that).
+      - name: Build
+        run: npx prisma generate && npx prisma db push && npx next build
+
+      - run: npm run db:seed
+
+      # Pinned: a new Lighthouse release can move every score, which should be a
+      # deliberate upgrade, not a red PR about something else.
+      - name: Lighthouse CI
+        run: npx --yes @lhci/cli@0.15.1 autorun
+
+      - name: Summary
+        if: always()
+        run: '[ -f lhci-reports/manifest.json ] && node scripts/lhci-summary.mjs | tee -a "$GITHUB_STEP_SUMMARY" || true'
+
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        if: always()
+        with:
+          name: lighthouse-reports
+          path: lhci-reports/
+          retention-days: 14
+          if-no-files-found: ignore

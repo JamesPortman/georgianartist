@@ -1,0 +1,40 @@
+# OWASP ZAP baseline rules for this site, read by the "Security scan" step in
+# .github/workflows/e2e.yml. Every passive rule defaults to WARN, and any WARN
+# fails CI — so each line below is a finding that was triaged and accepted,
+# with the reason, rather than switched off. INFO keeps it in the report.
+# Format (tab-separated): rule id, level, (rule name), reason.
+#
+# ZAP matches on rule id only, so accepting one alert accepts its siblings;
+# where that hides something we care about, our own tests check it instead.
+#
+# Fixed rather than accepted, on the first run: X-Powered-By (10037, now off
+# in next.config.ts), the contact form's fields in a GET URL (10024, every
+# form now posts — e2e/forms.spec.ts), and COOP/CORP (90004, now sent).
+
+10055	INFO	(CSP: style-src unsafe-inline)	The one deliberate allowance in the enforced policy: React renders style="" attributes (next/image fill, Leaflet), which nonces cannot cover. Scripts stay nonce-only with no unsafe-inline; injected CSS is far less dangerous. Rule 10055 only analyses an enforced policy, so it first ran when ENFORCE flipped. It also covers other CSP findings, so __tests__/csp.test.ts pins the rest of the policy.
+10049	INFO	(Non-Storable / Storable Content)	Informational. Pages are no-store on purpose (force-dynamic, so admin edits show at once); static chunks are immutable.
+10109	INFO	(Modern Web Application)	Informational: suggests the Ajax spider. Every page is server-rendered, so the plain spider reaches them.
+10202	INFO	(Absence of Anti-CSRF Tokens)	The public forms act for nobody: no session, so a forged submission gains nothing a direct one wouldn't, and each has its own limits. Admin forms are Next server actions, which reject a foreign Origin, behind a SameSite=Lax cookie.
+90003	INFO	(Sub Resource Integrity Attribute Missing)	Only GA4's gtag.js, which Google changes without notice, so no hash can pin it; it carries the CSP nonce. GA loads only in production now (lib/ga.ts), so the CI scan no longer sees it — kept in case that changes.
+90004	INFO	(Cross-Origin-Embedder/Opener/Resource-Policy)	COEP is accepted: require-corp would block the OpenStreetMap iframe, the tiles and GA4. COOP and CORP are sent, and e2e/static-pages.spec.ts checks them since ZAP can't be told apart.
+
+# Next.js answers a trailing-slash URL with an empty 308 redirect and no body.
+10019	OUTOFSCOPE	^http://localhost:3000/.+/$
+
+# Next.js's own image endpoint answers a malformed request (no url, w or q) with a
+# plain-text 400 and no Content-Type; nosniff is set, so nothing is sniffed. It is
+# framework code our headers cannot reach without clobbering real image types,
+# and CI-only: on Vercel, /_next/image is served by Vercel's optimizer. Real
+# optimized images always carry their type. The spider first found the bare
+# path on #211.
+10019	OUTOFSCOPE	^http://localhost:3000/_next/image(\?.*)?$
+100001	INFO	(Unexpected Content-Type was returned)	API scan only: it expects JSON everywhere, but its probes of non-API paths (/?-s, /.DS_Store, /api?-d+...) get the site's HTML or 404 pages and RSC payloads. The JSON endpoints answer JSON; 500s stay WARN under 100000.
+
+# Rule 10044 (Big Redirect): signed out, /admin pages answer 307 to the login
+# page with a ~15 KB body, because Next streams the public shell (sale banner,
+# header, footer) before the page's redirect() runs. Nothing the admin shows
+# is in it: every admin page checks the session before reading data, and
+# e2e/admin.spec.ts ("a signed-out admin redirect carries no admin data")
+# fails if a product title or analytics figure appears. Scoped to /admin, so
+# a big redirect anywhere else still fails the scan. First seen 18 Oct 2026 (#273).
+10044	OUTOFSCOPE	^http://localhost:3000/admin(/.*)?$

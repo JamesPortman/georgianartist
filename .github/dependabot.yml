@@ -1,0 +1,60 @@
+# Dependabot version updates. Security alerts and security-update PRs are
+# switched on in the repository settings; this file adds the routine weekly
+# updates, grouped so they arrive as one or two PRs rather than a dozen.
+#
+# Every PR it opens runs the same CI as any other change (e2e.yml: build, unit
+# tests, npm audit, Playwright + axe) and is merged only when that is green.
+# Its branches start with "dependabot/", which vercel.json's ignoreCommand
+# skips, so no preview deployments are created.
+version: 2
+updates:
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+      time: "06:00"
+      timezone: America/Toronto
+    open-pull-requests-limit: 5
+    # Wait seven days before offering a new release. Hijacked packages are
+    # usually caught and pulled within days, so this keeps a poisoned version
+    # out of the lockfile. Security updates ignore the cooldown.
+    cooldown:
+      default-days: 7
+    groups:
+      # Minor and patch releases together; majors arrive one per PR, since
+      # they are where breaking changes live.
+      minor-and-patch:
+        update-types: [minor, patch]
+    ignore:
+      # Prisma's packages must move in lockstep (the CLI and the client must
+      # match), which Dependabot's grouping can't guarantee across a major.
+      - dependency-name: "prisma"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "@prisma/*"
+        update-types: ["version-update:semver-major"]
+      # The types follow the Node the site runs on (24: package.json engines,
+      # .nvmrc, CI), not the newest Node. Types for a later Node describe APIs
+      # the runtime doesn't have. Move this with the runtime.
+      - dependency-name: "@types/node"
+        update-types: ["version-update:semver-major"]
+      # Held until the lint toolchain supports them — both broke `npm run lint`
+      # outright (28 Sep 2026). typescript-eslint: "does not support TS 7.0";
+      # eslint-config-next's React plugin allows ESLint <= 9. Remove when
+      # eslint-config-next supports them, and check with `npm run lint`.
+      - dependency-name: "typescript"
+        versions: [">=7"]
+      - dependency-name: "eslint"
+        versions: [">=10"]
+
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: monthly
+    # Actions are pinned to commit SHAs (a tag can be moved to point at other
+    # code); Dependabot updates the SHA and its version comment together.
+    cooldown:
+      default-days: 7
+    groups:
+      actions:
+        patterns: ["*"]

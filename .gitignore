@@ -1,0 +1,76 @@
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
+# dependencies
+/node_modules
+/.pnp
+.pnp.*
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/versions
+
+# testing
+/coverage
+/.vitest-results.json
+
+# next.js
+/.next/
+/out/
+
+# production
+/build
+
+# misc
+.DS_Store
+*.pem
+
+# debug
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# env files (can opt-in for committing if needed)
+.env*
+# …but DO commit the documented example so new clones know what to fill in
+!.env.local.example
+
+# vercel
+.vercel
+
+# typescript
+*.tsbuildinfo
+next-env.d.ts
+
+/lib/generated/prisma
+
+# Local catalog backups (db:export)
+/backups
+test-results/
+playwright-report/
+
+# One-off runner scripts prepared outside the repo workflow
+/site_*.command
+/catalog-update.log
+
+# runner logs — local only
+/*.log
+
+# Copies of blobs taken before pruning them (scripts/prune-orphan-blobs.ts)
+.blob-archive
+
+# Encrypted secrets copies (scripts/secrets-backup.sh) belong off the repo
+*.env.age
+
+# Mutation testing (Stryker)
+/reports
+.stryker-tmp
+
+# Lighthouse CI (perf.yml)
+.lighthouseci/
+lhci-reports/
+
+# Claude Code: each machine's own permission list (paths, one-off commands).
+# The shared .claude/launch.json stays tracked.
+.claude/settings.local.json

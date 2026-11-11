@@ -1,0 +1,23 @@
+{
+  // CI's dependency audit (`npx audit-ci --config audit-ci.jsonc`, first step of
+  // .github/workflows/e2e.yml). Production dependencies only, failing on any
+  // high or critical advisory.
+  //
+  // The one named exception is the Prisma CLI's build-time dependencies. No 7.x
+  // release fixes them, and `npm audit fix` "resolves" them by downgrading to
+  // Prisma 6, so never accept that. Each entry is pinned to its path under
+  // `prisma`: the same advisory arriving through anything else still fails.
+  // Remove an entry once a Prisma release drops the dependency; audit-ci warns
+  // about entries that no longer match (`show-not-found`).
+  "$schema": "https://github.com/IBM/audit-ci/raw/main/docs/schema.json",
+  "high": true,
+  "skip-dev": true,
+  "show-not-found": true,
+  "report-type": "summary",
+  "allowlist": [
+    // deepmerge-ts: stack exhaustion merging recursive objects (Prisma config loading)
+    "GHSA-ggr8-5vv4-36mx|prisma>@prisma/config>deepmerge-ts",
+    // mysql2: Prisma CLI's MySQL support; this site only speaks Postgres
+    "GHSA-3f6p-5ww8-9rcr|prisma>mysql2"
+  ]
+}

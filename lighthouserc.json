@@ -1,0 +1,105 @@
+{
+  "ci": {
+    "collect": {
+      "url": [
+        "http://localhost:3000/",
+        "http://localhost:3000/products/lora-bay",
+        "http://localhost:3000/photographs",
+        "http://localhost:3000/gift-shop",
+        "http://localhost:3000/about"
+      ],
+      "numberOfRuns": 5,
+      "startServerCommand": "npm run start",
+      "startServerReadyPattern": "Ready",
+      "startServerReadyTimeout": 60000
+    },
+    "assert": {
+      "assertMatrix": [
+        {
+          "matchingUrlPattern": "^http://localhost:3000/$",
+          "assertions": {
+            "categories:performance": [
+              "error",
+              {
+                "minScore": 0.6,
+                "aggregationMethod": "median-run"
+              }
+            ],
+            "largest-contentful-paint": [
+              "error",
+              {
+                "maxNumericValue": 6500,
+                "aggregationMethod": "median-run"
+              }
+            ],
+            "cumulative-layout-shift": [
+              "error",
+              {
+                "maxNumericValue": 0.05,
+                "aggregationMethod": "median-run"
+              }
+            ],
+            "total-blocking-time": [
+              "error",
+              {
+                "maxNumericValue": 1000,
+                "aggregationMethod": "median-run"
+              }
+            ],
+            "resource-summary:script:size": [
+              "error",
+              {
+                "maxNumericValue": 210000,
+                "aggregationMethod": "median-run"
+              }
+            ]
+          }
+        },
+        {
+          "matchingUrlPattern": "^http://localhost:3000/.+",
+          "assertions": {
+            "categories:performance": [
+              "error",
+              {
+                "minScore": 0.7,
+                "aggregationMethod": "median-run"
+              }
+            ],
+            "largest-contentful-paint": [
+              "error",
+              {
+                "maxNumericValue": 6500,
+                "aggregationMethod": "median-run"
+              }
+            ],
+            "cumulative-layout-shift": [
+              "error",
+              {
+                "maxNumericValue": 0.05,
+                "aggregationMethod": "median-run"
+              }
+            ],
+            "total-blocking-time": [
+              "error",
+              {
+                "maxNumericValue": 500,
+                "aggregationMethod": "median-run"
+              }
+            ],
+            "resource-summary:script:size": [
+              "error",
+              {
+                "maxNumericValue": 210000,
+                "aggregationMethod": "median-run"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "upload": {
+      "target": "filesystem",
+      "outputDir": "./lhci-reports"
+    }
+  }
+}

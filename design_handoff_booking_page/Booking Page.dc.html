@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="" />
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;500;600;700&family=Barlow:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="_ds/industry-000b06d0-c9a5-4dc0-9a5b-5b2c4fbd0b62/styles.css" />
+<script src="_ds/industry-000b06d0-c9a5-4dc0-9a5b-5b2c4fbd0b62/_ds_bundle.js"></script>
+<style>
+  /* Theme override only — the flier's yellow ground and black accent, fed
+     through the design system's own tokens so every component re-colors. */
+  :root{
+    --color-bg:#fdf8e3;
+    --color-surface:#f7f0d2;
+    --color-text:#1d1f20;
+    --color-accent:#1d1f20;
+    --color-accent-600:#3c3d3f;
+    --color-accent-700:#141516;
+    --color-divider:#1d1f20;
+  }
+  body{margin:0;background:var(--color-bg)}
+  a{color:var(--color-text);text-decoration:underline;text-underline-offset:3px}
+  a:hover{color:var(--color-accent-600)}
+  .input{background:#fffdf3;font-size:16px;min-height:44px}
+  .field > label{font-family:var(--font-heading);font-weight:600;font-size:14px;letter-spacing:0.13em;text-transform:uppercase;color:var(--color-text)}
+  .btn{white-space:nowrap}
+</style>
+</helmet>
+
+<div style="min-height:100vh;box-sizing:border-box;padding:clamp(20px,5vw,56px)">
+  <div style="max-width:980px;margin:0 auto;display:flex;flex-direction:column;gap:clamp(22px,3vw,34px)">
+
+    <div style="display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:16px;border-bottom:1px solid var(--color-divider);padding-bottom:12px">
+      <div style="font-family:var(--font-heading);font-weight:600;font-size:clamp(22px,3vw,30px);line-height:1;letter-spacing:-0.01em">GeorgianArtist<span style="color:#6f7375">.com</span></div>
+      <div style="font-family:var(--font-heading);font-weight:600;font-size:14px;line-height:1.35;letter-spacing:0.13em;text-transform:uppercase;text-align:right">Websites for artists &amp; artisans<br />Georgian Bay, Ontario</div>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:14px">
+      <div style="font-family:var(--font-heading);font-weight:600;font-size:15px;letter-spacing:0.16em;text-transform:uppercase;color:#4a4b4d">Book a free 15-minute chat</div>
+      <h1 style="margin:0;font-size:clamp(40px,7vw,72px);line-height:0.92;letter-spacing:-0.025em;text-wrap:balance">Tell me about your work.</h1>
+      <p style="margin:0;font-size:clamp(16px,2vw,19px);line-height:1.45;max-width:46em;text-wrap:pretty">Fifteen minutes, no pitch. What you make, who buys it, and what you'd want a site of your own to do. Fill this in and I'll reply with a couple of times that suit.</p>
+    </div>
+
+    <div style="display:flex;align-items:baseline;flex-wrap:wrap;gap:8px 16px;border-top:1px solid var(--color-divider);border-bottom:1px solid var(--color-divider);padding:11px 0">
+      <div style="flex:none;font-family:var(--font-heading);font-weight:700;font-size:clamp(28px,4vw,40px);line-height:1;letter-spacing:-0.01em;white-space:nowrap">From $999</div>
+      <div style="flex:1 1 auto;min-width:0;font-family:var(--font-heading);font-weight:600;font-size:15px;line-height:1.4;letter-spacing:0.13em;text-transform:uppercase">One time &nbsp;·&nbsp; no monthly fee &nbsp;·&nbsp; you own it</div>
+    </div>
+
+    <form onSubmit="{{ onSubmit }}" class="card blueprint" style="gap:18px;padding:clamp(18px,3vw,28px)">
+      <i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>
+
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,240px),1fr));gap:18px">
+        <div class="field">
+          <label for="bk-name">Your name</label>
+          <input class="input" id="bk-name" name="name" required="{{ true }}" />
+        </div>
+        <div class="field">
+          <label for="bk-email">Email</label>
+          <input class="input" id="bk-email" name="email" type="email" required="{{ true }}" />
+        </div>
+        <div class="field">
+          <label for="bk-phone">Phone — if texting is easier</label>
+          <input class="input" id="bk-phone" name="phone" type="tel" />
+        </div>
+        <div class="field">
+          <label for="bk-medium">What you make</label>
+          <input class="input" id="bk-medium" name="medium" placeholder="Painting, pottery, woodwork…" />
+        </div>
+        <div class="field">
+          <label for="bk-town">Town</label>
+          <input class="input" id="bk-town" name="town" placeholder="Collingwood, Meaford…" />
+        </div>
+        <div class="field">
+          <label for="bk-current">Where you are now</label>
+          <select class="input" id="bk-current" name="current">
+            <option>Instagram or Facebook only</option>
+            <option>Squarespace, Wix or similar</option>
+            <option>Etsy or another marketplace</option>
+            <option>An old site that needs replacing</option>
+            <option>Nothing online yet</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="bk-notes">Anything you'd like the site to do</label>
+        <textarea class="input" id="bk-notes" name="notes" rows="4" placeholder="A catalogue of available work, a mailing list, show dates…"></textarea>
+      </div>
+
+      <div style="display:flex;flex-wrap:wrap;align-items:center;gap:16px">
+        <button type="submit" class="btn btn-primary blueprint" style="font-family:var(--font-heading);font-weight:700;font-size:20px;letter-spacing:0.04em;text-transform:uppercase;padding:13px 26px;min-height:52px">
+          <i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>Send it to James
+        </button>
+        <div style="font-size:15px;line-height:1.4;color:#4a4b4d">Or text <strong style="font-weight:600">416-410-8899</strong> · <a href="mailto:james@portman.ca">james@portman.ca</a></div>
+      </div>
+
+      <sc-if value="{{ sent }}" hint-placeholder-val="{{ false }}">
+        <div style="border:1px solid var(--color-divider);background:var(--color-surface);padding:14px 16px;font-size:16px;line-height:1.45">Thanks — your note is on its way to James. If your email program didn't open, write to <a href="mailto:james@portman.ca">james@portman.ca</a> or text 416-410-8899.</div>
+      </sc-if>
+    </form>
+
+    <sc-if value="{{ showFaq }}" hint-placeholder-val="{{ true }}">
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,240px),1fr));gap:20px">
+        <div class="card blueprint">
+          <i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>
+          <div class="card-title" style="font-size:19px">Can I update it myself?</div>
+          <p class="card-body" style="font-size:15px;opacity:1;color:#424244">Yes — that's the point. If you'd rather not, send me the photos and I'll post them.</p>
+        </div>
+        <div class="card blueprint">
+          <i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>
+          <div class="card-title" style="font-size:19px">Do I keep my domain and photos?</div>
+          <p class="card-body" style="font-size:15px;opacity:1;color:#424244">All of it, always — domain, images, and your mailing list. Nothing is held hostage.</p>
+        </div>
+        <div class="card blueprint">
+          <i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>
+          <div class="card-title" style="font-size:19px">Can you move my existing site over?</div>
+          <p class="card-body" style="font-size:15px;opacity:1;color:#424244">Usually yes, including any archive of past work.</p>
+        </div>
+      </div>
+    </sc-if>
+
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;showFaq&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;}}">
+class Component extends DCLogic {
+  state = { sent: false };
+
+  renderVals() {
+    return {
+      sent: this.state.sent,
+      showFaq: this.props.showFaq ?? true,
+      onSubmit: (e) => {
+        e.preventDefault();
+        const d = new FormData(e.target);
+        const g = (k) => (d.get(k) || '').toString().trim();
+        const body = [
+          'Name: ' + g('name'),
+          'Email: ' + g('email'),
+          'Phone: ' + g('phone'),
+          'What they make: ' + g('medium'),
+          'Town: ' + g('town'),
+          'Where they are now: ' + g('current'),
+          '',
+          'Notes:',
+          g('notes'),
+        ].join('\n');
+        window.location.href = 'mailto:james@portman.ca'
+          + '?subject=' + encodeURIComponent('Booking request — ' + (g('name') || 'GeorgianArtist.com'))
+          + '&body=' + encodeURIComponent(body);
+        this.setState({ sent: true });
+      },
+    };
+  }
+}
+</script>
+</body>
+</html>

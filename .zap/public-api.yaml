@@ -1,0 +1,124 @@
+# The site's public JSON endpoints, for ZAP's API scan in
+# .github/workflows/zap-full.yml. The forms send these from JavaScript, so a
+# crawler never finds them; this is how the weekly active scan reaches them.
+# Examples are valid submissions: ZAP starts from a request that works, then
+# replaces one field at a time with attack payloads.
+openapi: 3.0.3
+info:
+  title: Public endpoints
+  version: "1"
+servers:
+  - url: http://localhost:3000
+paths:
+  /api/contact:
+    post:
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name: { type: string, example: Jane Smith }
+                email: { type: string, example: jane@example.com }
+                message: { type: string, example: I would like a print of Lora Bay for my cottage. }
+                website: { type: string, example: "" }
+      responses:
+        "200": { description: Sent }
+  /api/buy:
+    post:
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                order:
+                  type: object
+                  properties:
+                    kind: { type: string, example: print }
+                    productId: { type: string, example: lora-bay }
+                    size: { type: string, example: '12" × 16"' }
+                name: { type: string, example: Jane Smith }
+                email: { type: string, example: jane@example.com }
+                phone: { type: string, example: 705 555 0100 }
+                address: { type: string, example: 1 Main St, Thornbury ON }
+                website: { type: string, example: "" }
+      responses:
+        "200": { description: Sent }
+  /api/book:
+    post:
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name: { type: string, example: Pat Painter }
+                email: { type: string, example: pat@example.com }
+                phone: { type: string, example: 705 555 0100 }
+                medium: { type: string, example: Watercolour }
+                town: { type: string, example: Collingwood }
+                current: { type: string, example: Squarespace }
+                notes: { type: string, example: I would like to sell prints. }
+                elapsedMs: { type: integer, example: 60000 }
+                website: { type: string, example: "" }
+      responses:
+        "200": { description: Sent }
+  /api/track:
+    post:
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                kind: { type: string, example: pageview }
+                path: { type: string, example: /about }
+                referrer: { type: string, example: "" }
+      responses:
+        "204": { description: Recorded }
+  /api/csp-report:
+    post:
+      requestBody:
+        required: true
+        content:
+          application/csp-report:
+            schema:
+              type: object
+              properties:
+                csp-report:
+                  type: object
+                  properties:
+                    document-uri: { type: string, example: "http://localhost:3000/" }
+                    violated-directive: { type: string, example: img-src }
+                    blocked-uri: { type: string, example: "https://example.com/x.png" }
+      responses:
+        "204": { description: Received }
+  /api/client-error:
+    post:
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name: { type: string, example: TypeError }
+                message: { type: string, example: "x is undefined" }
+                stack: { type: string, example: "" }
+                path: { type: string, example: /gift-shop }
+                kind: { type: string, example: "browser (event)" }
+      responses:
+        "204": { description: Received }
+  /api/health:
+    get:
+      responses:
+        "200": { description: Healthy }
+  /api/version:
+    get:
+      responses:
+        "200": { description: Deployed commit }

@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="" />
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;500;600;700&family=Barlow:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<style>
+  doc-page:not(:defined){visibility:hidden}
+  body{margin:0}
+  a{color:#1d1f20;text-decoration:none}
+  a:hover{color:#1d1f20}
+</style>
+<script src="./image-slot.js"></script>
+<script src="./doc-page.js"></script>
+</helmet>
+<doc-page size="letter">
+
+<section class="page" id="front" data-screen-label="Front" style="box-sizing:border-box;padding:6% 6.5%;background:#fdf8e3;color:#1d1f20;font-family:Barlow,system-ui,sans-serif;display:flex;flex-direction:column;gap:27px;overflow:hidden">
+
+  <div style="display:flex;align-items:flex-end;justify-content:space-between;gap:20px;border-bottom:1px solid #1d1f20;padding-bottom:12px">
+    <div style="flex:none;font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:30px;line-height:1;letter-spacing:-0.01em">GeorgianArtist<span style="color:#1d1f20">.com</span></div>
+    <div style="flex:none;font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:14px;line-height:1.35;letter-spacing:0.13em;text-transform:uppercase;color:#1d1f20;text-align:right;white-space:nowrap">Websites for artists &amp; artisans<br />Georgian Bay, Ontario</div>
+  </div>
+
+  <div style="display:flex;flex-direction:column;gap:14px">
+    <div style="font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:15px;letter-spacing:0.16em;text-transform:uppercase;color:#1d1f20">You made the work</div>
+    <h1 style="margin:0;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:88px;line-height:0.9;letter-spacing:-0.025em;white-space:nowrap">Own your site.<br /><span style="color:#1d1f20">Lose the subscription.</span></h1>
+  </div>
+
+  <div style="display:flex;align-items:baseline;gap:14px;border-top:1px solid #1d1f20;border-bottom:1px solid #1d1f20;padding:11px 0">
+    <div style="flex:none;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:40px;line-height:1;letter-spacing:-0.01em;white-space:nowrap">From $999</div>
+    <div style="flex:none;font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:16px;letter-spacing:0.13em;text-transform:uppercase;white-space:nowrap">One time &nbsp;·&nbsp; no monthly fee &nbsp;·&nbsp; you own it</div>
+  </div>
+
+  <div style="display:grid;grid-template-columns:1.12fr 1fr;gap:28px;flex:1;align-items:stretch">
+    <div style="min-width:0;display:flex;flex-direction:column;gap:20px">
+      <p style="margin:0;font-size:19.5px;line-height:1.42;text-wrap:pretty">A real website for your work: portfolio, catalogue, and a mailing list you own. Built once for one fee, then it's yours. No subscription, no platform between you and the people who want your work.</p>
+      <div style="display:flex;flex-wrap:wrap;gap:8px;font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:16px;letter-spacing:0.02em">
+        <div style="flex:none;white-space:nowrap;padding:6px 12px;background:#1d1f20;color:#fdf8e3">No monthly fees</div>
+        <div style="flex:none;white-space:nowrap;padding:6px 12px;border:1px solid #1d1f20;color:#1d1f20">You own your data</div>
+        <div style="flex:none;white-space:nowrap;padding:6px 12px;border:1px solid #1d1f20;color:#1d1f20">You own your audience</div>
+        <div style="flex:none;white-space:nowrap;padding:6px 12px;border:1px solid #1d1f20;color:#1d1f20">Update it yourself</div>
+        <div style="flex:none;white-space:nowrap;padding:6px 12px;background:#1d1f20;color:#fdf8e3">No platform lock-in</div>
+        <div style="flex:none;white-space:nowrap;padding:6px 12px;border:1px solid #1d1f20;color:#1d1f20">Posts to Instagram for you</div>
+      </div>
+    </div>
+    <figure style="margin:0;position:relative;box-sizing:border-box;border:1px solid #1d1f20;padding:7px;display:flex;flex-direction:column;gap:7px">
+      <div style="position:relative;flex:1;min-height:0">
+        <image-slot id="front-artwork" shape="rect" fit="cover" placeholder="Drop the sunflower painting"></image-slot>
+      </div>
+      <figcaption style="flex:none;font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:13px;letter-spacing:0.12em;text-transform:uppercase;color:#1d1f20">Your work, shown the way you'd hang it</figcaption>
+      <span style="position:absolute;left:-5px;top:-11px;font-size:15px;color:#6f7375">+</span>
+      <span style="position:absolute;right:-5px;top:-11px;font-size:15px;color:#6f7375">+</span>
+      <span style="position:absolute;left:-5px;bottom:-11px;font-size:15px;color:#6f7375">+</span>
+      <span style="position:absolute;right:-5px;bottom:-11px;font-size:15px;color:#6f7375">+</span>
+    </figure>
+  </div>
+
+  <div style="position:relative;box-sizing:border-box;height:124px;background:#141516;color:#fdf8e3;padding:16px 26px;display:flex;align-items:center;justify-content:space-between;gap:24px">
+    <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:5px">
+      <div style="font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:31px;line-height:1.05;white-space:nowrap">Let's get your work online.</div>
+      <div style="font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:23px;letter-spacing:0.01em;white-space:nowrap">James Portman &nbsp;·&nbsp; 416-410-8899</div>
+      <div style="font-size:15px;color:#e6dcb4;white-space:nowrap">james@portman.ca &nbsp;·&nbsp; GeorgianArtist.com</div>
+    </div>
+    <div style="flex:none;display:flex;align-items:center;gap:12px">
+      <div style="font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:13px;letter-spacing:0.14em;color:#c9bf98;writing-mode:vertical-rl;transform:rotate(180deg)">SCAN ME</div>
+      <img src="qr-georgianartist.png" alt="Scan for GeorgianArtist.com" style="display:block;width:92px;height:92px;background:#fdf8e3;padding:5px;box-sizing:border-box" />
+    </div>
+    <span style="position:absolute;left:-5px;top:-11px;font-size:15px;color:#6f7375">+</span>
+    <span style="position:absolute;right:-5px;top:-11px;font-size:15px;color:#6f7375">+</span>
+    <span style="position:absolute;left:-5px;bottom:-11px;font-size:15px;color:#6f7375">+</span>
+    <span style="position:absolute;right:-5px;bottom:-11px;font-size:15px;color:#6f7375">+</span>
+  </div>
+
+</section>
+
+<section class="page" id="back" data-screen-label="Back" style="box-sizing:border-box;padding:6% 6.5%;background:#fdf8e3;color:#1d1f20;font-family:Barlow,system-ui,sans-serif;display:flex;flex-direction:column;gap:22px;overflow:hidden">
+
+  <div style="display:flex;align-items:flex-end;justify-content:space-between;gap:20px;border-bottom:1px solid #1d1f20;padding-bottom:11px">
+    <h2 style="flex:none;white-space:nowrap;margin:0;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:44px;line-height:1;letter-spacing:-0.02em">Platform vs. your own</h2>
+    <div style="flex:none;font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:14px;letter-spacing:0.13em;text-transform:uppercase;color:#1d1f20;white-space:nowrap">Live in about two weeks</div>
+  </div>
+
+  <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));column-gap:30px">
+    <div style="font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:14px;letter-spacing:0.14em;text-transform:uppercase;color:#5d5d60;padding:7px 0 7px 0;border-bottom:1px solid #1d1f20;">On a platform now</div>
+    <div style="font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:14px;letter-spacing:0.14em;text-transform:uppercase;color:#fdf8e3;background:#1d1f20;padding:7px 12px;">On your own site</div>
+
+    <div style="font-size:15.5px;line-height:1.35;padding:9px 0;border-bottom:1px solid #ddd6bb;color:#5d5d60">Commission taken out of every sale</div>
+    <div style="font-size:15.5px;line-height:1.35;padding:9px 0 9px 12px;border-bottom:1px solid #e0d9b6;background:#f7f0d2;color:#141516">Enquiries come straight to you, no cut</div>
+
+    <div style="font-size:15.5px;line-height:1.35;padding:9px 0;border-bottom:1px solid #ddd6bb;color:#5d5d60">Your work beside a hundred lookalikes</div>
+    <div style="font-size:15.5px;line-height:1.35;padding:9px 0 9px 12px;border-bottom:1px solid #e0d9b6;background:#f7f0d2;color:#141516">Your name, your domain, your look</div>
+
+    <div style="font-size:15.5px;line-height:1.35;padding:9px 0;border-bottom:1px solid #ddd6bb;color:#5d5d60">Buyers can't picture the piece at home</div>
+    <div style="font-size:15.5px;line-height:1.35;padding:9px 0 9px 12px;border-bottom:1px solid #e0d9b6;background:#f7f0d2;color:#141516">"In a Room" mockups show true scale</div>
+
+    <div style="font-size:15.5px;line-height:1.35;padding:9px 0;border-bottom:1px solid #ddd6bb;color:#5d5d60">The algorithm decides who sees your work</div>
+    <div style="font-size:15.5px;line-height:1.35;padding:9px 0 9px 12px;border-bottom:1px solid #e0d9b6;background:#f7f0d2;color:#141516">A newsletter list that belongs to you</div>
+
+    <div style="font-size:15.5px;line-height:1.35;padding:9px 0;border-bottom:1px solid #ddd6bb;color:#5d5d60">Every change waits on somebody else</div>
+    <div style="font-size:15.5px;line-height:1.35;padding:9px 0 9px 12px;border-bottom:1px solid #e0d9b6;background:#f7f0d2;color:#141516">Upload, edit and reorder it yourself</div>
+  </div>
+
+  <div style="display:flex;flex-direction:column;gap:13px;flex:1">
+    <div style="font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:15px;letter-spacing:0.16em;text-transform:uppercase;color:#1d1f20">What's built in</div>
+    <div style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:18px;flex:1">
+
+      <div style="position:relative;box-sizing:border-box;border:1px solid #cfc7a8;padding:16px 14px;display:flex;flex-direction:column;gap:8px">
+        <div style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:22px;line-height:1;letter-spacing:0.02em;color:#1d1f20">SELL</div>
+        <div style="height:1px;background:#cfc7a8"></div>
+        <div style="display:flex;flex-direction:column;gap:7px;font-size:14px;line-height:1.3">
+          <div style="display:flex;gap:8px;color:#424244"><span style="flex:none;color:#6f7375">+</span><span>Catalogue of available work</span></div>
+          <div style="display:flex;gap:8px;color:#424244"><span style="flex:none;color:#6f7375">+</span><span>Sale and new badges</span></div>
+          <div style="display:flex;gap:8px;color:#424244"><span style="flex:none;color:#6f7375">+</span><span>Full-text search</span></div>
+          <div style="display:flex;gap:8px;color:#424244"><span style="flex:none;color:#6f7375">+</span><span>&ldquo;In a Room&rdquo; mockups</span></div>
+          <div style="display:flex;gap:8px;color:#424244"><span style="flex:none;color:#6f7375">+</span><span>GPS inspiration map</span></div>
+        </div>
+        <span style="position:absolute;left:-5px;top:-11px;font-size:15px;color:#6f7375">+</span>
+        <span style="position:absolute;right:-5px;top:-11px;font-size:15px;color:#6f7375">+</span>
+        <span style="position:absolute;left:-5px;bottom:-11px;font-size:15px;color:#6f7375">+</span>
+        <span style="position:absolute;right:-5px;bottom:-11px;font-size:15px;color:#6f7375">+</span>
+      </div>
+
+      <div style="position:relative;box-sizing:border-box;border:1px solid #cfc7a8;padding:16px 14px;display:flex;flex-direction:column;gap:8px">
+        <div style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:22px;line-height:1;letter-spacing:0.02em;color:#1d1f20">GROW</div>
+        <div style="height:1px;background:#cfc7a8"></div>
+        <div style="display:flex;flex-direction:column;gap:7px;font-size:14px;line-height:1.3">
+          <div style="display:flex;gap:8px;color:#424244"><span style="flex:none;color:#6f7375">+</span><span>New work posts itself to Instagram</span></div>
+          <div style="display:flex;gap:8px;color:#424244"><span style="flex:none;color:#6f7375">+</span><span>Suggested caption and hashtags</span></div>
+          <div style="display:flex;gap:8px;color:#424244"><span style="flex:none;color:#6f7375">+</span><span>No second login, no scheduling app</span></div>
+          <div style="display:flex;gap:8px;color:#424244"><span style="flex:none;color:#6f7375">+</span><span>A newsletter list that&rsquo;s yours</span></div>
+          <div style="display:flex;gap:8px;color:#424244"><span style="flex:none;color:#6f7375">+</span><span>Enquiry emails that actually arrive</span></div>
+        </div>
+        <span style="position:absolute;left:-5px;top:-11px;font-size:15px;color:#6f7375">+</span>
+        <span style="position:absolute;right:-5px;top:-11px;font-size:15px;color:#6f7375">+</span>
+        <span style="position:absolute;left:-5px;bottom:-11px;font-size:15px;color:#6f7375">+</span>
+        <span style="position:absolute;right:-5px;bottom:-11px;font-size:15px;color:#6f7375">+</span>
+      </div>
+
+      <div style="position:relative;box-sizing:border-box;border:1px solid #cfc7a8;padding:16px 14px;display:flex;flex-direction:column;gap:8px">
+        <div style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:22px;line-height:1;letter-spacing:0.02em;color:#1d1f20">CONTROL</div>
+        <div style="height:1px;background:#cfc7a8"></div>
+        <div style="display:flex;flex-direction:column;gap:7px;font-size:14px;line-height:1.3">
+          <div style="display:flex;gap:8px;color:#424244"><span style="flex:none;color:#6f7375">+</span><span>Your own admin area</span></div>
+          <div style="display:flex;gap:8px;color:#424244"><span style="flex:none;color:#6f7375">+</span><span>Upload, edit, swap images</span></div>
+          <div style="display:flex;gap:8px;color:#424244"><span style="flex:none;color:#6f7375">+</span><span>Drag to reorder</span></div>
+          <div style="display:flex;gap:8px;color:#424244"><span style="flex:none;color:#6f7375">+</span><span>Plain, readable analytics</span></div>
+          <div style="display:flex;gap:8px;color:#424244"><span style="flex:none;color:#6f7375">+</span><span>No third-party trackers</span></div>
+        </div>
+        <span style="position:absolute;left:-5px;top:-11px;font-size:15px;color:#6f7375">+</span>
+        <span style="position:absolute;right:-5px;top:-11px;font-size:15px;color:#6f7375">+</span>
+        <span style="position:absolute;left:-5px;bottom:-11px;font-size:15px;color:#6f7375">+</span>
+        <span style="position:absolute;right:-5px;bottom:-11px;font-size:15px;color:#6f7375">+</span>
+      </div>
+
+      <div style="position:relative;box-sizing:border-box;border:1px solid #cfc7a8;padding:16px 14px;display:flex;flex-direction:column;gap:8px">
+        <div style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:22px;line-height:1;letter-spacing:0.02em;color:#1d1f20">BUILT TO LAST</div>
+        <div style="height:1px;background:#cfc7a8"></div>
+        <div style="display:flex;flex-direction:column;gap:7px;font-size:14px;line-height:1.3">
+          <div style="display:flex;gap:8px;color:#424244"><span style="flex:none;color:#6f7375">+</span><span>A real database behind it</span></div>
+          <div style="display:flex;gap:8px;color:#424244"><span style="flex:none;color:#6f7375">+</span><span>Backed up every day</span></div>
+          <div style="display:flex;gap:8px;color:#424244"><span style="flex:none;color:#6f7375">+</span><span>Spam-proof enquiry forms</span></div>
+          <div style="display:flex;gap:8px;color:#424244"><span style="flex:none;color:#6f7375">+</span><span>Tested before every release</span></div>
+        </div>
+        <span style="position:absolute;left:-5px;top:-11px;font-size:15px;color:#6f7375">+</span>
+        <span style="position:absolute;right:-5px;top:-11px;font-size:15px;color:#6f7375">+</span>
+        <span style="position:absolute;left:-5px;bottom:-11px;font-size:15px;color:#6f7375">+</span>
+        <span style="position:absolute;right:-5px;bottom:-11px;font-size:15px;color:#6f7375">+</span>
+      </div>
+
+    </div>
+  </div>
+
+  <div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:26px;border-top:1px solid #1d1f20;padding-top:16px">
+    <div style="display:flex;flex-direction:column;gap:6px">
+      <div style="font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:19px;line-height:1.15">Can I update it myself?</div>
+      <div style="font-size:14px;line-height:1.4;color:#424244">Yes — that's the point. If you'd rather not, send me the photos and I'll post them.</div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:6px">
+      <div style="font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:19px;line-height:1.15">Do I keep my domain and photos?</div>
+      <div style="font-size:14px;line-height:1.4;color:#424244">All of it, always — domain, images, and your mailing list. Nothing is held hostage.</div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:6px">
+      <div style="font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:19px;line-height:1.15">Can you move my existing site over?</div>
+      <div style="font-size:14px;line-height:1.4;color:#424244">Usually yes, including any archive of past work.</div>
+    </div>
+  </div>
+
+  <div style="position:relative;box-sizing:border-box;height:124px;background:#141516;color:#fdf8e3;padding:16px 26px;display:flex;align-items:center;justify-content:space-between;gap:24px">
+    <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:5px">
+      <div style="font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:31px;line-height:1.05;letter-spacing:-0.01em;white-space:nowrap">Free 15-minute chat.</div>
+      <div style="font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:23px;letter-spacing:0.01em;white-space:nowrap">Text James &nbsp;416-410-8899</div>
+      <div style="font-size:15px;color:#e6dcb4;white-space:nowrap">james@portman.ca &nbsp;·&nbsp; GeorgianArtist.com</div>
+    </div>
+    <div style="flex:none;display:flex;align-items:center;gap:12px">
+      <div style="font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:13px;letter-spacing:0.14em;color:#c9bf98;writing-mode:vertical-rl;transform:rotate(180deg)">SCAN ME</div>
+      <img src="qr-georgianartist.png" alt="Scan for GeorgianArtist.com" style="display:block;width:92px;height:92px;background:#fdf8e3;padding:5px;box-sizing:border-box" />
+    </div>
+    <span style="position:absolute;left:-5px;top:-11px;font-size:15px;color:#6f7375">+</span>
+    <span style="position:absolute;right:-5px;top:-11px;font-size:15px;color:#6f7375">+</span>
+    <span style="position:absolute;left:-5px;bottom:-11px;font-size:15px;color:#6f7375">+</span>
+    <span style="position:absolute;right:-5px;bottom:-11px;font-size:15px;color:#6f7375">+</span>
+  </div>
+
+</section>
+
+</doc-page>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{}">
+class Component extends DCLogic {
+  componentDidMount() { this._sync(); }
+  componentDidUpdate() { this._sync(); }
+  _sync() {
+    // doc-page upgrades before the .page sections stream in; nudge it to
+    // re-detect explicit pagination once they exist.
+    const run = () => {
+      const el = document.querySelector('doc-page');
+      if (!el || !el._measure) return;
+      el._measure();
+      if (el._syncPrintSizingMeta) el._syncPrintSizingMeta();
+      if (el._syncPrintPageRule) el._syncPrintPageRule();
+    };
+    requestAnimationFrame(run);
+    setTimeout(run, 300);
+  }
+}
+</script>
+</body>
+</html>

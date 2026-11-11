@@ -1,0 +1,209 @@
+name: E2E
+
+on:
+  # Every pull request, so the e2e check always reports and can be required on
+  # main: a workflow skipped by a path filter never reports, and a required
+  # check that never reports blocks the merge for good. A Markdown-only change
+  # still skips the suite, in the job below, which counts as passing.
+  pull_request:
+  push:
+    branches: [main]
+    paths-ignore: ["**.md"]
+
+# A newer push to the same PR makes the running check worthless: cancel it
+# rather than pay for both. Pushes to main are never cancelled; each is a
+# deploy and deserves its own run. (Actions minutes ran out on 28 Sep 2026.)
+# Read the code, nothing more: the jobs only build, test and upload artifacts.
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  # Does this pull request change anything but Markdown? A change to Markdown
+  # alone can't break the build, and a full run costs twelve Actions minutes.
+  changes:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      code: ${{ steps.diff.outputs.code }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+      - id: diff
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+        run: |
+          if git diff --name-only "$BASE_SHA" HEAD | grep -qv '\.md$'; then code=true; else code=false; fi
+          echo "code=$code" >> "$GITHUB_OUTPUT"
+
+  e2e:
+    needs: changes
+    # Skipped (which a required check counts as passing) only when the diff was
+    # read and is Markdown alone. If it couldn't be read, the suite runs.
+    if: ${{ !cancelled() && !(needs.changes.result == 'success' && needs.changes.outputs.code == 'false') }}
+    runs-on: ubuntu-latest
+    # A normal run takes 9–10 minutes. Without a limit a hung runner goes to
+    # GitHub's 6-hour default, billed to this private repo's Actions minutes;
+    # one hung at setup-node on 230ee20 (28 Sep 2026) until force-cancelled.
+    timeout-minutes: 30
+
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    env:
+      CI: "true"
+      DATABASE_URL: postgresql://postgres:postgres@localhost:5432/test
+      # Test-only credentials (not secrets — the DB is throwaway).
+      ADMIN_PASSWORD: e2e-admin-password
+      SESSION_SECRET: e2e-session-secret-at-least-32-characters-long
+      # Set because Vercel's production build has one: the unit tests run
+      # there too, and a test that only passed with no secret set once broke
+      # the production deploy while CI stayed green (#190).
+      CRON_SECRET: e2e-cron-secret
+      # The passkey break-glass (lib/passkey.ts): keeps the password working
+      # while e2e/zz-admin-passkey.spec.ts has a passkey registered, so the
+      # other admin specs can still sign in. Never set in production unless
+      # every passkey device is lost.
+      ADMIN_PASSWORD_LOGIN: "1"
+      # No BLOB_READ_WRITE_TOKEN. It used to be set here although nothing in CI
+      # used it (e2e/upload.spec.ts also needs RUN_BLOB_UPLOAD_E2E=1), so the
+      # production store's read-write token was in reach of every dependency's
+      # install script on every PR (security review, October 2026). Run the
+      # upload spec locally, against a store you can afford to write to.
+
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 24
+          cache: npm
+
+      - run: npm ci
+
+      # Fails on a high or critical advisory in a production dependency. The
+      # Prisma CLI's build-time dependencies (no fix in any 7.x release) are the
+      # one named exception, allowlisted by advisory and path in audit-ci.jsonc
+      # — see /architecture §10.
+      - name: Audit production dependencies
+        run: npx audit-ci --config audit-ci.jsonc
+
+      # ESLint wasn't in CI, so two Dependabot majors (TypeScript 7, ESLint 10)
+      # passed every check here while breaking lint outright. Now it is.
+      - name: Lint
+        run: npm run lint
+
+      # The browser download is ~150 MB per run; cache it by Playwright version.
+      # --with-deps still installs the system libraries, which aren't cached.
+      - name: Playwright version
+        id: playwright
+        run: echo "version=$(node -p "require('@playwright/test/package.json').version")" >> "$GITHUB_OUTPUT"
+      - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        id: playwright-cache
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-${{ steps.playwright.outputs.version }}
+      - name: Install Playwright (Chromium)
+        run: npx playwright install --with-deps chromium
+        if: steps.playwright-cache.outputs.cache-hit != 'true'
+      - name: Install Playwright system dependencies
+        run: npx playwright install-deps chromium
+        if: steps.playwright-cache.outputs.cache-hit == 'true'
+
+      - name: Build (also creates the schema via prisma db push + runs unit tests)
+        run: npm run build
+
+      # The build rewrote data/test-inventory.json (the list /architecture/tests
+      # renders). If it differs from the committed copy, a test was added,
+      # renamed or removed without regenerating it.
+      - name: Test inventory is up to date
+        run: |
+          git diff --exit-code -- data/test-inventory.json || {
+            echo "::error file=data/test-inventory.json::Stale test inventory. Run npm run tests:inventory and commit data/test-inventory.json."
+            exit 1
+          }
+
+      - name: Seed the test database
+        run: npm run db:seed
+
+      # Restore drill: snapshot the seeded database, restore it into an empty
+      # one, and fail unless every table reads back identical
+      # (scripts/backup-drill.ts). A backup format nobody has restored is a hope.
+      - name: Restore drill
+        run: |
+          PGPASSWORD=postgres psql -h localhost -U postgres -c "CREATE DATABASE drill"
+          npm run backup:drill -- --from-db
+        env:
+          DRILL_DATABASE_URL: postgresql://postgres:postgres@localhost:5432/drill
+
+      # Before the main suite, which edits the catalogue: the screenshots are of
+      # the freshly seeded one (e2e/visual.spec.ts). Diffs land in test-results/.
+      - name: Visual regression
+        id: visual
+        run: npm run test:visual
+
+      # Runs even when the screenshots differ, so one PR shows both results.
+      - name: Run E2E tests
+        if: ${{ !cancelled() && steps.visual.conclusion != 'skipped' }}
+        run: npm run test:e2e
+
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        if: failure()
+        with:
+          # test-results/ holds each failing test's trace, screenshot and
+          # error-context.md; playwright-report/ only exists with the HTML
+          # reporter, so on its own this uploaded nothing.
+          name: playwright-report
+          path: |
+            test-results/
+            playwright-report/
+          retention-days: 7
+          if-no-files-found: ignore
+
+      # OWASP ZAP baseline: spiders the built site and runs ZAP's passive rules
+      # over every response (headers, cookies, CSP, caching, information leaks).
+      # Passive only (no attack payloads), and only ever against this CI build,
+      # never production. Any finding not triaged in .zap/rules.tsv fails the
+      # job. The image is pinned so a new ZAP release can't fail an unrelated PR.
+      #
+      # On pushes to main only, not on every PR: it adds a few minutes a run,
+      # and passive findings come from headers and markup that rarely change.
+      # A finding turns main red; fix it or triage it in .zap/rules.tsv.
+      - name: Security scan (OWASP ZAP baseline)
+        if: github.event_name == 'push'
+        run: |
+          npm run start > next.log 2>&1 &
+          for i in $(seq 60); do curl -sf -o /dev/null http://localhost:3000 && break; sleep 1; done
+          mkdir -p zap && cp .zap/rules.tsv zap/ && chmod -R a+rwx zap
+          docker run --rm --network host -v "$PWD/zap:/zap/wrk:rw" zaproxy/zap-stable:2.17.0 \
+            zap-baseline.py -t http://localhost:3000 -c rules.tsv \
+              -r zap-report.html -w zap-report.md -J zap-report.json
+
+      - name: ZAP report summary
+        if: always() && github.event_name == 'push'
+        run: '[ -f zap/zap-report.md ] && cat zap/zap-report.md >> "$GITHUB_STEP_SUMMARY" || true'
+
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        if: always() && github.event_name == 'push'
+        with:
+          name: zap-report
+          path: zap/
+          retention-days: 14
+          if-no-files-found: ignore
