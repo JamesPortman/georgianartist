@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import { siteConfig } from "@/data/siteConfig";
 import inventory from "@/data/test-inventory.json";
@@ -8,8 +9,11 @@ import {
   DefenceLayers,
   ImageJourney,
   InstagramLifecycle,
+  MutationExplainer,
   MutationScores,
+  PasskeySignIn,
   RecoveryLayers,
+  ScanSchedule,
   SystemMap,
   TableMap,
   TestingLayers,
@@ -46,7 +50,7 @@ export default function ArchitecturePage() {
       </div>
 
       {/* ── 1 · Executive summary ────────────────────────────────── */}
-      <Section n={1} id="summary" title="Executive summary">
+      <Section n={1} id="summary" title="Executive summary" lead="One Next.js app on Vercel and six outside services, run by one person: mistakes are made to fail the build rather than reach visitors.">
         <SystemMap />
         <p>
           A storefront for paintings and photographs: a filterable gallery,
@@ -62,6 +66,7 @@ export default function ArchitecturePage() {
           reach production, and scheduled jobs email when something goes wrong rather than
           waiting on a dashboard someone has to watch.
         </p>
+        <SiteScreens />
         <dl className="grid grid-cols-2 sm:grid-cols-4 gap-3">
           <Chip term="Framework" value="Next.js 16 · App Router" />
           <Chip term="Runtime" value="React 19 · Node" />
@@ -75,7 +80,7 @@ export default function ArchitecturePage() {
       </Section>
 
       {/* ── 2 · Operations ─────────────────────────────────────────── */}
-      <Section n={2} id="operations" title="Operations">
+      <Section n={2} id="operations" title="Operations" lead="What runs by itself each week, and how the owner hears when something breaks.">
         <WeekOfAutomation />
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <OpsCard title="Tests gate every deploy">
@@ -120,7 +125,7 @@ export default function ArchitecturePage() {
       </Section>
 
       {/* ── 3 · Runtime request path ───────────────────────────────── */}
-      <Section n={3} id="request-path" title="Runtime request path">
+      <Section n={3} id="request-path" title="Runtime request path" lead="How a page request travels from the browser through Vercel to the database, and what else it can touch.">
         <p>
           Every page is a React Server Component rendered on request, reading through a single
           Prisma client. The catalogue pages say so (<Code>dynamic = &quot;force-dynamic&quot;</Code>);
@@ -186,7 +191,7 @@ export default function ArchitecturePage() {
       </Section>
 
       {/* ── 4 · CI/CD ──────────────────────────────────────────────── */}
-      <Section n={4} id="cicd" title="CI/CD & deployment topology">
+      <Section n={4} id="cicd" title="CI/CD & deployment topology" lead="Branch, tests, merge, build, production, smoke test: nothing reaches the live site untested.">
         <p>
           All work lands through pull requests into <Code>main</Code>. GitHub Actions
           (<Code>.github/workflows/e2e.yml</Code>) runs on every pull request and every push to{" "}
@@ -291,7 +296,7 @@ export default function ArchitecturePage() {
       </Section>
 
       {/* ── 5 · Data model ─────────────────────────────────────────── */}
-      <Section n={5} id="data-model" title="Data model">
+      <Section n={5} id="data-model" title="Data model" lead="The database tables behind the catalogue, the Instagram queue and the analytics.">
         <TableMap />
         <p>
           Ten tables. Paintings and photographs share <Code>Product</Code>, distinguished by{" "}
@@ -379,7 +384,7 @@ export default function ArchitecturePage() {
       </Section>
 
       {/* ── 6 · Key flows ──────────────────────────────────────────── */}
-      <Section n={6} id="flows" title="Key flows">
+      <Section n={6} id="flows" title="Key flows" lead="Step by step: ordering a print, editing a work, publishing to Instagram, recording a visit.">
         <InstagramLifecycle />
         <Flow title="Order a print, a card or a gift pack">
           The Buy Now form posts only ids and choices (which work, which size, framed or not, which
@@ -455,7 +460,7 @@ export default function ArchitecturePage() {
       </Section>
 
       {/* ── 7 · Media pipeline ─────────────────────────────────────── */}
-      <Section n={7} id="media" title="Media pipeline">
+      <Section n={7} id="media" title="Media pipeline" lead="How a photograph of a painting becomes the sized, fast-loading images visitors see, with its copyright notice.">
         <ImageJourney />
         <ul className="list-disc pl-5 space-y-2">
           <li>
@@ -517,7 +522,7 @@ export default function ArchitecturePage() {
       </Section>
 
       {/* ── 8 · Guards ─────────────────────────────────────────────── */}
-      <Section n={8} id="guards" title="Tests & build guards">
+      <Section n={8} id="guards" title="Tests & build guards" lead={`${UNIT_TESTS.toLocaleString("en")} unit and ${E2E_TESTS} browser tests, plus guards that turn whole classes of mistake into build failures.`}>
         <TestingLayers unit={UNIT_TESTS} e2e={E2E_TESTS} />
         <p>
           {UNIT_TESTS} unit and component tests (Vitest and Testing Library) and {E2E_TESTS}{" "}
@@ -676,6 +681,7 @@ export default function ArchitecturePage() {
           database guard, the private media store, backups, Instagram publishing, the URL rules
           and the admin sign-in (passkeys and the session cookie), 1,108 mutants in all.
         </p>
+        <MutationExplainer />
         <MutationScores />
         <p>
           A full run reruns the tests once per mutant, about 50 minutes, so a pull request gets a
@@ -690,6 +696,7 @@ export default function ArchitecturePage() {
           reuses an earlier one&rsquo;s results: Stryker&rsquo;s cache can&rsquo;t see a test
           change here, and would go on crediting a test that had been deleted.
         </p>
+        <Story title="How the scores got here">
         <p>
           The first full run (October 2026, about 50 minutes) killed 630 of the 902: 69.8%. By
           module, from strongest: availability 95%, the private media store 92%, URL slugs and
@@ -737,10 +744,11 @@ export default function ArchitecturePage() {
           A score that looks too bad to be true deserves the same suspicion as one that looks too
           good.
         </p>
+        </Story>
       </Section>
 
       {/* ── 9 · Security ───────────────────────────────────────────── */}
-      <Section n={9} id="security" title="Security & privacy">
+      <Section n={9} id="security" title="Security & privacy" lead="Defences in rings, from every response down to the data, and what none of them covers.">
         <DefenceLayers />
         <p>
           <strong>What this defends against:</strong> the public forms being used as a mail relay,
@@ -750,6 +758,7 @@ export default function ArchitecturePage() {
           GitHub or Neon account, which hold everything (the Vercel one also holds the passkey
           break-glass); and volumetric DDoS beyond what Vercel absorbs.
         </p>
+        <PasskeySignIn />
         <ul className="list-disc pl-5 space-y-2">
           <li>
             <strong>Admin authentication is a passkey</strong> (WebAuthn, <Code>lib/passkey.ts</Code>):
@@ -817,7 +826,7 @@ export default function ArchitecturePage() {
       </Section>
 
       {/* ── 10 · Security testing & resilience ───────────────────────── */}
-      <Section n={10} id="security-testing" title="Security testing & resilience">
+      <Section n={10} id="security-testing" title="Security testing & resilience" lead="Automated attacks, scans and outside checks that keep the defences honest.">
         <CoverageGrid />
         <p>
           What is in place, and what is not, stated plainly, including the things that
@@ -890,6 +899,7 @@ export default function ArchitecturePage() {
             guarded modules, it plants bugs in them and fails if too many go unnoticed.
           </li>
         </ul>
+        <ScanSchedule />
         <h3 className="font-semibold text-gray-800">Automated scanning (DAST)</h3>
         <p>
           On every push to <Code>main</Code>, after the E2E suite passes, CI starts the same
@@ -904,6 +914,7 @@ export default function ArchitecturePage() {
           <Code>.zap/rules.tsv</Code>{" "}records it as triaged, with the reason; the report is
           attached to the run.
         </p>
+        <Story title="Why the gate reads ZAP&rsquo;s report">
         <p>
           The verdict comes from <Code>scripts/zap-gate.mjs</Code>, which reads the summary ZAP
           prints, rather than from ZAP&rsquo;s exit code. A rule accepted for particular URLs only
@@ -915,6 +926,7 @@ export default function ArchitecturePage() {
           in it. The gate keeps ZAP&rsquo;s verdict and ignores only a rule listed with no
           instances; the weekly active scan uses it too.
         </p>
+        </Story>
         <p>
           Its first run found four things, and all four were fixed rather than accepted. The
           contact form, sent before JavaScript loaded, put the visitor&rsquo;s email and message
@@ -1164,7 +1176,7 @@ export default function ArchitecturePage() {
       </Section>
 
       {/* ── 11 · Build & runtime notes ──────────────────────────────── */}
-      <Section n={11} id="build-notes" title="Build & runtime notes">
+      <Section n={11} id="build-notes" title="Build & runtime notes" lead="Specific facts about the build and the servers, most of them learned the hard way.">
         <ul className="list-disc pl-5 space-y-2">
           <li>
             <strong>The proxy skips files by extension, not by folder.</strong> It once excluded
@@ -1221,7 +1233,7 @@ export default function ArchitecturePage() {
       </Section>
 
       {/* ── 12 · Durability ─────────────────────────────────────────── */}
-      <Section n={12} id="durability" title="Backups & durability">
+      <Section n={12} id="durability" title="Backups & durability" lead="Four ways back from a mistake, from any second of the last six hours to a week of snapshots.">
         <RecoveryLayers />
         <ul className="list-disc pl-5 space-y-2">
           <li>
@@ -1283,7 +1295,7 @@ export default function ArchitecturePage() {
       </Section>
 
       {/* ── 13 · Decisions ─────────────────────────────────────────── */}
-      <Section n={13} id="decisions" title="Decisions & trade-offs">
+      <Section n={13} id="decisions" title="Decisions & trade-offs" lead="The main choices, why they were made, and what each one costs.">
         <div className="overflow-x-auto">
           <table className="w-full text-sm border-collapse">
             <thead>
@@ -1355,7 +1367,7 @@ export default function ArchitecturePage() {
       </Section>
 
       {/* ── 14 · Repository map ────────────────────────────────────── */}
-      <Section n={14} id="repo-map" title="Repository map">
+      <Section n={14} id="repo-map" title="Repository map" lead="Where everything lives in the code.">
         {/* Focusable: on a phone it scrolls sideways, and a keyboard has to be able to scroll it. */}
         <pre
           tabIndex={0}
@@ -1443,25 +1455,35 @@ function Section({
   n,
   id,
   title,
+  lead,
   children,
 }: {
   n: number;
   id: string;
   title: string;
+  lead: string;
   children: React.ReactNode;
 }) {
   // Collapsed until opened. The heading is the toggle; deep links and Expand
   // all open it too (SectionToggles.tsx). The content is in the
-  // HTML either way, so search engines and find-in-page still see it.
+  // HTML either way, so search engines and find-in-page still see it. The
+  // one-line lead stays visible when closed, so the closed page reads as a
+  // summary of the whole.
+  //
+  // Running text is held to about 70 characters a line, which is easier to
+  // read than the column's full width; diagrams, tables and cards keep it.
   return (
-    <details id={id} data-section className="group scroll-mt-24">
-      <summary className="flex cursor-pointer list-none items-center justify-between gap-4 py-1.5 [&::-webkit-details-marker]:hidden">
-        <h2 id={`${id}-h`} className="text-lg font-semibold text-gray-800">
-          {n} · {title}
-        </h2>
+    <details id={id} data-section className="group scroll-mt-24 border-t border-gray-200 first-of-type:border-t-0">
+      <summary className="flex cursor-pointer list-none items-start justify-between gap-4 py-4 [&::-webkit-details-marker]:hidden">
+        <div>
+          <h2 id={`${id}-h`} className="text-xl font-semibold text-gray-800">
+            <span className="text-brand">{n}</span> · {title}
+          </h2>
+          <p className="mt-1 text-sm text-gray-600 leading-snug max-w-[70ch]">{lead}</p>
+        </div>
         <svg
           aria-hidden="true"
-          className="w-5 h-5 shrink-0 text-gray-500 transition-transform duration-200 group-open:rotate-180"
+          className="mt-1 w-5 h-5 shrink-0 text-gray-500 transition-transform duration-200 group-open:rotate-180"
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"
@@ -1469,8 +1491,58 @@ function Section({
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
         </svg>
       </summary>
-      <div className="space-y-3 text-gray-700 leading-relaxed pt-1 pb-6">{children}</div>
+      <div className="space-y-4 text-gray-700 leading-relaxed pt-1 pb-8 [&>p]:max-w-[70ch] [&>ul]:max-w-[70ch] [&>h3]:pt-3 [&>h3]:text-lg">
+        {children}
+      </div>
     </details>
+  );
+}
+
+/**
+ * Backstory a reader can skip: how a number was reached, or what went wrong
+ * before. Folded by default so the section reads as what is true now.
+ */
+function Story({ title, children }: { title: string; children: React.ReactNode }) {
+  return (
+    <details className="group/story max-w-[70ch] rounded-lg border border-gray-200 bg-white">
+      <summary className="flex cursor-pointer list-none items-center justify-between gap-3 px-4 py-2.5 text-sm font-semibold text-brand [&::-webkit-details-marker]:hidden">
+        {title}
+        <span aria-hidden="true" className="text-gray-500 transition-transform group-open/story:rotate-90">
+          ›
+        </span>
+      </summary>
+      <div className="space-y-3 px-4 pb-4 text-[0.95rem]">{children}</div>
+    </details>
+  );
+}
+
+/** The site itself, for the reader who arrives here first (§1). */
+function SiteScreens() {
+  return (
+    <figure aria-label="The site as visitors see it" className="rounded-lg border border-gray-200 bg-gray-50 p-4 sm:p-5 not-prose">
+      <div className="grid grid-cols-[minmax(0,3fr)_minmax(0,1fr)] gap-3 sm:gap-4 items-start">
+        <Image
+          src="/architecture/gallery-desktop.webp"
+          width={1280}
+          height={764}
+          sizes="(min-width: 896px) 640px, 75vw"
+          alt="The gallery on a desktop: a search box, filter and sort above a grid of painting cards with prices and New or Sale badges."
+          className="w-full h-auto rounded-md border border-gray-200 shadow-sm"
+        />
+        <Image
+          src="/architecture/painting-phone.webp"
+          width={390}
+          height={808}
+          sizes="(min-width: 896px) 200px, 25vw"
+          alt="A painting's page on a phone: the image, a preview of it in a room, the title, a short description and the price."
+          className="w-full h-auto rounded-md border border-gray-200 shadow-sm"
+        />
+      </div>
+      <figcaption className="mt-3 text-xs text-gray-600 leading-snug">
+        The gallery on a desktop and a painting&rsquo;s page on a phone, taken from the
+        reference screenshots the visual-regression test compares against (§8).
+      </figcaption>
+    </figure>
   );
 }
 

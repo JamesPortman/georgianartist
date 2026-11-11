@@ -573,3 +573,115 @@ export function RecoveryLayers() {
     </Figure>
   );
 }
+
+/* ── Step rows: a numbered sequence that runs across on a wide screen ────── */
+
+function Steps({ steps }: { steps: [string, string][] }) {
+  return (
+    <ol className="flex flex-col sm:flex-row sm:items-stretch gap-2">
+      {steps.map(([title, sub], i) => (
+        <li key={title} className="flex flex-col sm:flex-row flex-1 gap-2">
+          {i > 0 && <Arrow />}
+          <div className="flex-1 rounded-md border border-gray-300 bg-white px-3 py-2">
+            <p className="text-sm font-semibold text-gray-800 leading-snug">
+              <span className="mr-1.5 inline-flex h-5 w-5 items-center justify-center rounded-full bg-brand text-[11px] text-white align-text-bottom">
+                {i + 1}
+              </span>
+              {title}
+            </p>
+            <p className="text-xs text-gray-600 mt-1 leading-snug">{sub}</p>
+          </div>
+        </li>
+      ))}
+    </ol>
+  );
+}
+
+/* ── §8 · What a mutant is ─────────────────────────────────────────────── */
+
+export function MutationExplainer() {
+  return (
+    <Figure
+      label="How mutation testing works"
+      caption="Stryker repeats this once per mutant, over a thousand times across the guarded modules. A surviving mutant is a line no test would notice changing."
+    >
+      <div className="flex flex-col sm:flex-row sm:items-stretch gap-2">
+        <Box title="The real code" sub="lib/form-input.ts: if (value.length > max) refuse" />
+        <Arrow label="plant one small bug" />
+        <Box title="A mutant" sub="if (value.length >= max) refuse" tone="tint" />
+        <Arrow label="run the tests" />
+        <div className="flex flex-1 flex-col gap-2">
+          <Box title="Killed" sub="a test failed, so this bug would be caught" tone="solid" />
+          <Box title="Survived" sub="every test passed: nothing pins this line yet" />
+        </div>
+      </div>
+    </Figure>
+  );
+}
+
+/* ── §9 · Passkey sign-in ──────────────────────────────────────────────── */
+
+export function PasskeySignIn() {
+  return (
+    <Figure
+      label="Admin sign-in with a passkey"
+      caption="The private key never leaves the artist's device, and the server keeps only public keys, so there is no password to steal or phish. A signature made for another domain fails step 4."
+    >
+      <Steps
+        steps={[
+          ["Admin opens sign-in", "the browser asks the server to start"],
+          ["Server sends a challenge", "one-time, short-lived, held in the encrypted session cookie"],
+          ["Device signs it", "Touch ID, Face ID or a security key unlocks the passkey"],
+          ["Server verifies", "against stored public keys; only this site's domain counts"],
+          ["8-hour session", "an http-only, same-site, secure cookie"],
+        ]}
+      />
+    </Figure>
+  );
+}
+
+/* ── §10 · Who attacks the site, and when ──────────────────────────────── */
+
+export function ScanSchedule() {
+  const lanes: [string, [string, string][]][] = [
+    [
+      "Every push to main",
+      [
+        ["E2E suite passes", "the build under test is the real one"],
+        ["ZAP baseline scan", "a spider crawls 1,000+ URLs; passive checks on every response"],
+        ["Gate", "any untriaged finding fails the run and opens an issue"],
+      ],
+    ],
+    [
+      "Every Sunday",
+      [
+        ["Throwaway build", "its own database; production is never touched"],
+        ["ZAP full and API scans", "injection, scripting, traversal on every page and form endpoint"],
+        ["Gate", "findings fail the run and open an issue"],
+      ],
+    ],
+    [
+      "By hand, 11 Nov 2026",
+      [
+        ["Mozilla Observatory", "A+, 130/100, 12 of 12 tests"],
+        ["SSL Labs", "A: TLS 1.3, post-quantum key exchange, CAA"],
+        ["Email records", "SPF and DKIM pass; DMARC published"],
+      ],
+    ],
+  ];
+  return (
+    <Figure
+      label="Security scans and outside checks"
+      caption="The automated scans run against builds of the site, never against production; the outside checks look at the live site the way any visitor's browser or mail server does."
+    >
+      <div className="space-y-4">
+        {lanes.map(([lane, steps]) => (
+          <div key={lane}>
+            <p className="text-xs font-semibold uppercase tracking-wider text-brand mb-1.5">{lane}</p>
+            <Steps steps={steps} />
+          </div>
+        ))}
+      </div>
+    </Figure>
+  );
+}

@@ -141,10 +141,12 @@ test("the numbered Architecture sections start collapsed and open from their hea
   await expect(page.getByRole("navigation", { name: "Contents" })).toHaveCount(0);
 
   // The heading opens its section, and closes it again.
+  // The section's own heading, not a "How it got here" fold inside it.
   const security = page.locator("details#security-testing");
-  await security.locator("summary").click();
+  const heading = security.locator(":scope > summary");
+  await heading.click();
   await expect(security).toHaveJSProperty("open", true);
-  await security.locator("summary").click();
+  await heading.click();
   await expect(security).toHaveJSProperty("open", false);
 
   // Expand all / Collapse all.
