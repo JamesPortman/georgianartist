@@ -41,7 +41,7 @@ test("the phone menu says whether it is open, and Escape closes it", async ({ pa
 
 test("the image viewer is a dialog that keeps focus and gives it back", async ({ page }) => {
   await page.goto("/products/lora-bay");
-  const enlarge = page.getByRole("button", { name: "Enlarge image of Lora Bay" });
+  const enlarge = page.getByRole("button", { name: "Click to enlarge image of Lora Bay" });
   await enlarge.focus();
   await page.keyboard.press("Enter");
 

@@ -66,7 +66,7 @@ export default function PhotographDetailClient({
         <button
           className="relative w-full mb-8 rounded-sm overflow-hidden bg-gray-100 mt-4 cursor-zoom-in focus:outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 block"
           onClick={() => setLightboxOpen(true)}
-          aria-label={`Enlarge image of ${photo.title}`}
+          aria-label={`Click to enlarge image of ${photo.title}`}
         >
           <Image
             src={photo.image}
@@ -91,7 +91,7 @@ export default function PhotographDetailClient({
             <button
               className="relative w-full aspect-[4/3] bg-gray-100 rounded-sm overflow-hidden cursor-zoom-in focus:outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2"
               onClick={() => setLightboxOpen(true)}
-              aria-label={`Enlarge image of ${photo.title}`}
+              aria-label={`Click to enlarge image of ${photo.title}`}
             >
               <Image
                 src={photo.image}

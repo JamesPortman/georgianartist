@@ -3373,6 +3373,35 @@
           "name": "/api/version › reports null outside Vercel"
         }
       ]
+    },
+    {
+      "file": "__tests__/zap-gate.test.ts",
+      "tests": [
+        {
+          "name": "judge › passes main's four-week failure: a warning with no instances"
+        },
+        {
+          "name": "judge › fails a warning that has instances"
+        },
+        {
+          "name": "judge › fails FAIL and in-progress lines too"
+        },
+        {
+          "name": "judge › leaves INFO, IGNORE and PASS lines to ZAP's judgement"
+        },
+        {
+          "name": "judge › never passes when ZAP's totals line is missing"
+        },
+        {
+          "name": "summary › says the scan did not finish when there are no totals"
+        },
+        {
+          "name": "summary › names what it ignored when it passes"
+        },
+        {
+          "name": "summary › lists each finding, singular and plural"
+        }
+      ]
     }
   ],
   "e2e": [

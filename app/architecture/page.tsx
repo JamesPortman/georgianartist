@@ -257,6 +257,15 @@ export default function ArchitecturePage() {
             Content-Security-Policy at all.
           </li>
           <li>
+            <strong>A red main opens an issue.</strong>{" "}Pull requests show their checks to
+            whoever merges them; a failure on <Code>main</Code>{" "}showed itself to nobody. The ZAP
+            baseline runs on <Code>main</Code>{" "}only, and it failed every push from 15 October to
+            11 November 2026 while every pull request, deploy and smoke test stayed green.{" "}
+            <Code>.github/workflows/main-watch.yml</Code>{" "}now runs when the E2E, static analysis
+            or performance workflow fails on a push to <Code>main</Code>, and opens an issue, or
+            comments on the one already open.
+          </li>
+          <li>
             <strong>E2E cannot touch production.</strong> The Playwright suite creates, edits and
             deletes rows. <Code>e2e/db-guard.ts</Code> refuses to start unless{" "}
             <Code>DATABASE_URL</Code> points at a local host (added after a local run once edited
@@ -607,7 +616,8 @@ export default function ArchitecturePage() {
               </GuardRow>
               <GuardRow name="Security scan">
                 OWASP ZAP&rsquo;s baseline scan of the CI build raises a finding not triaged in{" "}
-                <Code>.zap/rules.tsv</Code>, where each accepted one carries its reason.
+                <Code>.zap/rules.tsv</Code>, where each accepted one carries its reason. Decided
+                by <Code>scripts/zap-gate.mjs</Code>{" "}from ZAP&rsquo;s summary, not its exit code.
               </GuardRow>
               <GuardRow name="E2E database">
                 <Code>DATABASE_URL</Code> is not local; the suite refuses to start.
@@ -887,11 +897,23 @@ export default function ArchitecturePage() {
           <strong>OWASP ZAP baseline scan</strong>{" "}against it: a spider crawls the site (over
           a thousand URLs) and ZAP&rsquo;s passive rules check every response: headers,
           cookies, the policy, caching, information leaks. It sends no attack payloads and never
-          touches production. The ZAP image is pinned, so a new release can&rsquo;t fail an
-          unrelated change. Pull requests skip it to save Actions minutes, since passive findings
-          come from headers and markup that rarely change. Any finding fails the job unless{" "}
+          touches production. The ZAP image is pinned by digest, so a new release can&rsquo;t fail
+          an unrelated change (the version tag alone is rebuilt every week). Pull requests skip it
+          to save Actions minutes, since passive findings come from headers and markup that rarely
+          change. Any finding fails the job unless{" "}
           <Code>.zap/rules.tsv</Code>{" "}records it as triaged, with the reason; the report is
           attached to the run.
+        </p>
+        <p>
+          The verdict comes from <Code>scripts/zap-gate.mjs</Code>, which reads the summary ZAP
+          prints, rather than from ZAP&rsquo;s exit code. A rule accepted for particular URLs only
+          (an <Code>OUTOFSCOPE</Code>{" "}line, such as Next&rsquo;s empty trailing-slash redirects)
+          has those matches dropped, but <Code>zap-baseline.py</Code>{" "}still exits with a
+          warning whenever the rule fired at all, listing it as &ldquo;x 0&rdquo;: no instances. Whether it
+          fired depended on how far the one-minute spider got, and from 15 October 2026 it got far
+          enough every time: <Code>main</Code>{" "}failed for four weeks on a finding with nothing
+          in it. The gate keeps ZAP&rsquo;s verdict and ignores only a rule listed with no
+          instances; the weekly active scan uses it too.
         </p>
         <p>
           Its first run found four things, and all four were fixed rather than accepted. The
@@ -1371,7 +1393,7 @@ scripts/                           films, mockups, blurs, copyright, backups, ba
                                    secrets-backup.sh,
                                    assert-catalogue-on-blob.ts,
                                    Blob pruner, analytics purge, smoke.mjs,
-                                   test-inventory.mjs
+                                   test-inventory.mjs, zap-gate.mjs
 __tests__/                         Vitest unit, component and source-scan tests
 e2e/                               Playwright specs, shared fixture (test.ts), axe scans, db-guard
 .github/workflows/e2e.yml          audit-ci, lint, build, E2E on every PR; + ZAP scan on main
@@ -1379,6 +1401,7 @@ audit-ci.jsonc                     the audit's one named exception (Prisma CLI)
 .github/workflows/static-analysis.yml  Gitleaks (history) + Semgrep (source), every PR
 data/test-inventory.json           every test by name, written by the build
 .github/workflows/smoke.yml        post-deploy check of production, opens an issue on failure
+.github/workflows/main-watch.yml   opens an issue when CI fails on main
 .github/workflows/zap-full.yml     weekly active scan (pages + JSON endpoints)
 .github/workflows/mutation.yml     mutation test (Stryker): modules a PR touches; all, weekly
 stryker.config.mjs                 the mutated modules and each one's score floor

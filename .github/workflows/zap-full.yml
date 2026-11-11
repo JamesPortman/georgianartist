@@ -35,7 +35,8 @@ concurrency:
   cancel-in-progress: true
 
 env:
-  ZAP_IMAGE: zaproxy/zap-stable:2.17.0
+  # Pinned by digest: the 2.17.0 tag is rebuilt weekly with new add-ons.
+  ZAP_IMAGE: zaproxy/zap-stable@sha256:9624669db72f54d86c4b46a7064518bd9bf79d8c61a4c31befa9923489f328af
 
 jobs:
   scan:
@@ -101,23 +102,34 @@ jobs:
             done ) &
           mkdir -p zap && cp .zap/rules.tsv .zap/public-api.yaml zap/ && chmod -R a+rwx zap
 
+      # Exit codes 1 and 2 are findings, which the gate step below decides on
+      # from ZAP's printed summary (scripts/zap-gate.mjs, which ignores only a
+      # rule listed with no instances); anything else is ZAP failing.
       - name: Active scan of the pages (ZAP full scan)
         id: full
         continue-on-error: true
         run: |
+          set +e
           docker run --rm --network host -v "$PWD/zap:/zap/wrk:rw" "$ZAP_IMAGE" \
             zap-full-scan.py -t http://localhost:3000 -c rules.tsv -m 3 \
               -z "-config scanner.maxScanDurationInMins=25" \
-              -r full-report.html -w full-report.md -J full-report.json
+              -r full-report.html -w full-report.md -J full-report.json 2>&1 | tee zap/full-output.txt
+          code=${PIPESTATUS[0]}
+          set -e
+          [ "$code" -le 2 ] || { echo "ZAP failed to run (exit $code)"; exit "$code"; }
 
       - name: Active scan of the JSON endpoints (ZAP API scan)
         id: api
         continue-on-error: true
         run: |
+          set +e
           docker run --rm --network host -v "$PWD/zap:/zap/wrk:rw" "$ZAP_IMAGE" \
             zap-api-scan.py -t public-api.yaml -f openapi -O http://localhost:3000 -c rules.tsv \
               -z "-config scanner.maxScanDurationInMins=15" \
-              -r api-report.html -w api-report.md -J api-report.json
+              -r api-report.html -w api-report.md -J api-report.json 2>&1 | tee zap/api-output.txt
+          code=${PIPESTATUS[0]}
+          set -e
+          [ "$code" -le 2 ] || { echo "ZAP failed to run (exit $code)"; exit "$code"; }
 
       - name: Reports
         if: always()
@@ -142,6 +154,10 @@ jobs:
         run: |
           echo "full scan: ${{ steps.full.outcome }}, API scan: ${{ steps.api.outcome }}"
           [ "${{ steps.full.outcome }}" = success ] && [ "${{ steps.api.outcome }}" = success ]
+          ok=0
+          node scripts/zap-gate.mjs zap/full-output.txt || ok=1
+          node scripts/zap-gate.mjs zap/api-output.txt || ok=1
+          exit $ok
 
       # A scheduled run has nobody watching: open an issue so a finding is seen.
       - name: Open an issue

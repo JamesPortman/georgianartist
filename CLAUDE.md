@@ -554,8 +554,8 @@ matching Permissions-Policy entry or it will silently fail.
 
 **OWASP ZAP baseline scan**: the last step of `e2e.yml`, on pushes to `main`
 only (not PRs, to save Actions minutes), restarts the CI build
-and runs ZAP's passive scan against it (never production; image pinned to a
-version). A finding therefore turns `main` red rather than blocking the PR. Every finding fails the job unless `.zap/rules.tsv` accepts it, and
+and runs ZAP's passive scan against it (never production; image pinned by
+**digest**, since the `2.17.0` tag is rebuilt weekly with new add-ons). A finding therefore turns `main` red rather than blocking the PR — and **`.github/workflows/main-watch.yml` opens an issue** when E2E, static analysis or performance fails on `main`, because from 15 Oct to 11 Nov 2026 `main` failed this step on every push and nobody saw it. Pass/fail comes from **`scripts/zap-gate.mjs`** reading ZAP's printed summary (teed to `zap/*-output.txt`), not its exit code: an `OUTOFSCOPE` line drops its matches, but `zap-baseline.py` still exits 2 whenever the rule fired at all ("WARN-NEW: … [10019] x 0"), which is what failed those four weeks. The gate keeps ZAP's verdict and ignores only `WARN`/`FAIL` lines with a count of 0; a first version that re-judged the JSON report itself got ZAP's rules wrong (it doesn't apply OUTOFSCOPE or risk levels the way ZAP's scripts do), so don't go back to that. Both ZAP workflows use the gate. Every finding fails the job unless `.zap/rules.tsv` accepts it, and
 every line there carries its reason. ZAP matches on rule id only, so accepting
 one alert accepts its siblings (COEP/COOP/CORP share 90004); where that hides
 something, a test of our own checks it instead. When a new finding appears, fix

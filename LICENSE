@@ -1,0 +1,52 @@
+This repository contains two kinds of material under different terms:
+the source code, which is open (MIT License, below), and the artist's
+creative work and identity, which are not (see "Not covered").
+
+
+MIT License
+
+Copyright (c) 2026 James Portman
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+
+Not covered
+
+The MIT License above applies to the source code only. It does not apply to
+the following, which are not licensed for any use:
+
+1. Images and other media. Every image file in this repository, including
+   reproductions of paintings and photographs (for example
+   e2e/assets/council-beach.jpg), the portrait in public/james.jpg, the
+   screenshots in e2e/__screenshots__ and design_handoff_booking_page/, and
+   any image the site displays. The paintings, photographs and portrait are
+   © James Portman. All rights reserved.
+
+2. Written content. The biography and other prose on the site's pages, and
+   the titles and descriptions of works in data/ (products.ts,
+   photographs.ts, making-of.ts, merchandise.ts, giftShop.ts).
+   © James Portman. All rights reserved.
+
+3. Names and identity. "Georgian Bay Artists", "georgianartist.com", the name
+   James Portman, and the contact details, accounts and analytics ID in
+   data/siteConfig.ts. A fork may reuse the code, but must replace these
+   with its own and must not present itself as this site or this artist.
+   FORKING.md explains how.
+
+Third-party packages installed by npm are under their own licenses.

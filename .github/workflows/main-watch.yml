@@ -1,0 +1,48 @@
+name: Main CI watch
+
+# When a CI workflow fails on a push to main, open an issue, or comment on the
+# one already open. Pull requests show their checks to whoever is merging; a
+# red main shows them to nobody. The ZAP baseline step runs on main only, and
+# it failed every push from 15 Oct to 11 Nov 2026 while every PR, deploy and
+# smoke test stayed green, because nothing reported it.
+#
+# Reads no code and checks nothing out: it only files the issue.
+
+on:
+  workflow_run:
+    workflows: [E2E, Static analysis, Performance]
+    types: [completed]
+    branches: [main]
+
+permissions:
+  issues: write
+
+jobs:
+  report:
+    if: github.event.workflow_run.event == 'push' && github.event.workflow_run.conclusion == 'failure'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Open or update the issue
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          WORKFLOW: ${{ github.event.workflow_run.name }}
+          RUN_URL: ${{ github.event.workflow_run.html_url }}
+          SHA: ${{ github.event.workflow_run.head_sha }}
+          COMMIT: ${{ github.event.workflow_run.display_title }}
+        run: |
+          title="main is red: $WORKFLOW"
+          open=$(gh issue list --state open --search "in:title \"$title\"" --json number,title \
+            --jq "map(select(.title == \"$title\")) | .[0].number // empty")
+          note="$(printf '%s\n' \
+            "\`$WORKFLOW\` failed on main at \`${SHA::7}\` ($COMMIT): $RUN_URL" \
+            "" \
+            "Pull requests don't run every step main does (the ZAP baseline is main-only)," \
+            "so a green PR doesn't rule this out. Read the failed step, fix it, and close" \
+            "this issue once main is green again.")"
+          if [ -n "$open" ]; then
+            gh issue comment "$open" --body "Still failing. $note"
+          else
+            gh issue create --title "$title" --body "$note"
+          fi

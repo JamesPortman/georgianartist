@@ -106,7 +106,7 @@ export default function ProductDetailClient({
           <button
             className="relative w-full rounded-sm overflow-hidden cursor-zoom-in focus:outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 bg-gray-100"
             onClick={() => setLightboxOpen(true)}
-            aria-label={`Enlarge image of ${product.title}`}
+            aria-label={`Click to enlarge image of ${product.title}`}
           >
             {view === "room" && !mockupSrc && !homePhoto ? (
               <RoomView src={product.image} alt={`${product.title} shown in a room`} />

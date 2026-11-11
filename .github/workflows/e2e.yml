@@ -186,15 +186,30 @@ jobs:
       # On pushes to main only, not on every PR: it adds a few minutes a run,
       # and passive findings come from headers and markup that rarely change.
       # A finding turns main red; fix it or triage it in .zap/rules.tsv.
+      #
+      # Pass or fail comes from scripts/zap-gate.mjs reading ZAP's printed
+      # summary, not from its exit code: zap-baseline.py exits 2 (warning) for
+      # a rule whose every instance matched an OUTOFSCOPE line ("[10019] x 0"),
+      # which failed main for four weeks from 15 Oct 2026. The gate keeps ZAP's
+      # verdict and ignores only lines with no instances. Exit codes 1 and 2
+      # are findings the gate decides on; anything else is ZAP itself failing.
+      #
+      # Pinned by digest: the 2.17.0 tag is rebuilt weekly with new add-ons.
       - name: Security scan (OWASP ZAP baseline)
         if: github.event_name == 'push'
         run: |
           npm run start > next.log 2>&1 &
           for i in $(seq 60); do curl -sf -o /dev/null http://localhost:3000 && break; sleep 1; done
           mkdir -p zap && cp .zap/rules.tsv zap/ && chmod -R a+rwx zap
-          docker run --rm --network host -v "$PWD/zap:/zap/wrk:rw" zaproxy/zap-stable:2.17.0 \
+          set +e
+          docker run --rm --network host -v "$PWD/zap:/zap/wrk:rw" \
+            zaproxy/zap-stable@sha256:9624669db72f54d86c4b46a7064518bd9bf79d8c61a4c31befa9923489f328af \
             zap-baseline.py -t http://localhost:3000 -c rules.tsv \
-              -r zap-report.html -w zap-report.md -J zap-report.json
+              -r zap-report.html -w zap-report.md -J zap-report.json 2>&1 | tee zap/zap-output.txt
+          code=${PIPESTATUS[0]}
+          set -e
+          [ "$code" -le 2 ] || { echo "ZAP failed to run (exit $code)"; exit "$code"; }
+          node scripts/zap-gate.mjs zap/zap-output.txt
 
       - name: ZAP report summary
         if: always() && github.event_name == 'push'

@@ -53,7 +53,7 @@ const ALT = "Lora Bay hanging in a collector's home";
 
 function openCollectorsPhotoLarge() {
   fireEvent.click(screen.getByRole("button", { name: "View in a collector's home" }));
-  fireEvent.click(screen.getByRole("button", { name: "Enlarge image of Lora Bay" }));
+  fireEvent.click(screen.getByRole("button", { name: "Click to enlarge image of Lora Bay" }));
 }
 
 describe("a collector's photo, enlarged", () => {
@@ -80,7 +80,7 @@ describe("a collector's photo, enlarged", () => {
   it("does not carry the credit onto the painting itself", () => {
     // The credit belongs to their photograph, not to the artist's work.
     render(<ProductDetailClient product={painting()} related={[]} />);
-    fireEvent.click(screen.getByRole("button", { name: "Enlarge image of Lora Bay" }));
+    fireEvent.click(screen.getByRole("button", { name: "Click to enlarge image of Lora Bay" }));
     expect(screen.queryByText(CREDIT)).toBeNull();
   });
 });
