@@ -71,6 +71,16 @@ on the site.
 
 Push to `main` on GitHub (`https://github.com/JamesPortman/georgian-bay-artists`) → Vercel auto-deploys to `https://www.georgianartist.com`. No manual deploy step needed.
 
+**Keep the public copy up to date, without being asked.** `JamesPortman/georgianartist`
+is a public snapshot of this repo's `main` (no history). James asked on
+23 Nov 2026 that it be updated automatically: after a PR merges here and the
+production smoke test passes, update it in the same session.
+
+- Replace the public clone's files with `git archive origin/main` of this repo.
+- Scan the staged diff for secrets (connection strings, API keys, tokens) before committing. If anything turns up, stop and tell James.
+- Commit as James Portman with a plain summary of what changed, and push to its `main`.
+- If the session can't reach `georgianartist`, say so rather than skip it silently.
+
 **Every production deploy is smoke-tested.** `.github/workflows/smoke.yml` runs
 on Vercel's `deployment_status` event: a failed deploy fails the run; a
 successful one runs `scripts/smoke.mjs`, which polls `/api/version` until the
