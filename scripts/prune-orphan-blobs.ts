@@ -116,12 +116,13 @@ type StoreBlob = BlobInfo & { privateStore?: boolean };
  * something live.
  */
 async function collectReferences(): Promise<{ refs: Map<string, string[]>; counts: Record<string, number> }> {
-  const [products, posts, films] = await Promise.all([
+  const [products, posts, films, commissions] = await Promise.all([
     prisma.product.findMany({
       select: { id: true, image: true, inspirationImage: true, homePhoto: true, mockupImage: true },
     }),
     prisma.instagramPost.findMany({ select: { id: true, status: true, imageUrl: true } }),
     prisma.makingOf.findMany({ select: { id: true, videoUrl: true, posterUrl: true } }),
+    prisma.commissionExample.findMany({ select: { id: true, image: true } }),
   ]);
 
   const refs = new Map<string, string[]>();
@@ -142,6 +143,7 @@ async function collectReferences(): Promise<{ refs: Map<string, string[]>; count
     add(f.videoUrl, `MakingOf.video:${f.id}`);
     add(f.posterUrl, `MakingOf.poster:${f.id}`);
   }
+  for (const c of commissions) add(c.image, `CommissionExample.image:${c.id}`);
 
   // The repository counts too: a Blob URL typed into a page or a data file is
   // as live as one in a row. Tracked text files only; images can't hold one.

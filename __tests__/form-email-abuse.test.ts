@@ -59,6 +59,7 @@ vi.mock("@/lib/db", () => {
 const { POST: buy } = await import("../app/api/buy/route");
 const { POST: contact } = await import("../app/api/contact/route");
 const { POST: book } = await import("../app/api/book/route");
+const { POST: commissions } = await import("../app/api/commissions/route");
 const { sizeOptions } = await import("../data/products");
 
 const post = (body: unknown) =>
@@ -258,5 +259,101 @@ describe("form outcomes", () => {
     expect((await contact(post(contactBody))).status).toBe(200);
     expect(sent.map((m) => m.to)).not.toContain(VICTIM);
     expect(recorded).toEqual(["contact_submit"]);
+  });
+});
+
+// ── /api/commissions: the quote request on /commissions ───────────────────────
+// A new form gets every rule above, not just the ones remembered.
+
+describe("/api/commissions", () => {
+  const request = {
+    name: "Jane Smith",
+    email: VICTIM,
+    kind: "pet",
+    size: "12 x 16 in",
+    deadline: "June",
+    message: "Our dog Bailey on the dock at the cottage.",
+  };
+
+  it("gives the owner everything typed, and the visitor fixed text only", async () => {
+    const res = await commissions(post({ ...request, name: PAYLOAD, deadline: PAYLOAD }));
+    expect(res.status).toBe(200);
+    const owner = sent.find((m) => m.to !== VICTIM)!;
+    expect(owner.subject).toContain("a pet");
+    expect(owner.text).toContain("Size in mind: 12 x 16 in");
+    expect(owner.text).toContain(`Needed by: ${PAYLOAD}`);
+    expect(owner.text).toContain("Our dog Bailey");
+    const [confirmation] = toVictim();
+    expect(confirmation!.subject).toBe("We received your commission request");
+    expect(confirmation!.subject + confirmation!.text).not.toContain("evil");
+    expect(confirmation!.text).not.toContain("Bailey");
+    expect(confirmation!.text).toContain("50% deposit");
+    expect(recorded).toEqual(["contact_submit"]);
+  });
+
+  it("refuses a kind it doesn't offer, and sends nothing", async () => {
+    for (const kind of ["boat", "", undefined, ["pet"], "__proto__", "toString"]) {
+      const res = await commissions(post({ ...request, kind }));
+      expect(res.status, String(kind)).toBe(400);
+    }
+    expect(sent).toHaveLength(0);
+  });
+
+  it.each(["portrait", "other"])("accepts a request for %s", async (kind) => {
+    expect((await commissions(post({ ...request, kind }))).status).toBe(200);
+  });
+
+  it("refuses a missing name, email or message, and a one-word message", async () => {
+    for (const body of [
+      { ...request, name: "" },
+      { ...request, email: undefined },
+      { ...request, message: "" },
+      { ...request, message: "hello" },
+    ]) {
+      expect((await commissions(post(body))).status).toBe(400);
+    }
+    expect(sent).toHaveLength(0);
+  });
+
+  it("sends nothing once the IP is over its limit", async () => {
+    limiter.submission = false;
+    expect((await commissions(post(request))).status).toBe(429);
+    expect(sent).toHaveLength(0);
+  });
+
+  it("still tells the owner when only the confirmation is held back", async () => {
+    limiter.confirmation = false;
+    expect((await commissions(post(request))).status).toBe(200);
+    expect(toVictim()).toHaveLength(0);
+    expect(sent).toHaveLength(1);
+  });
+
+  it("answers a caught bot like a person, sends nothing, and counts it as spam", async () => {
+    const res = await commissions(post({ ...request, website: "http://spam.example" }));
+    expect(res.status).toBe(200);
+    expect(await res.json()).toEqual({ ok: true });
+    expect(sent).toHaveLength(0);
+    expect(recorded).toEqual(["spam_blocked"]);
+  });
+
+  it("says so when Resend refuses the owner's email, and sends no confirmation", async () => {
+    refuse.owner = true;
+    expect((await commissions(post(request))).status).toBe(500);
+    expect(sent).toHaveLength(0);
+    expect(recorded).toEqual([]);
+  });
+
+  it("refuses oversized, over-limit, non-text and non-JSON input", async () => {
+    const long = (n: number) => "word ".repeat(Math.ceil(n / 5)).slice(0, n);
+    expect((await commissions(post({ ...request, message: long(40_000) }))).status).toBe(413);
+    const over = await commissions(post({ ...request, size: "x".repeat(101) }));
+    expect(over.status).toBe(400);
+    expect((await over.json()).error).toMatch(/size is too long/);
+    expect((await commissions(post({ ...request, deadline: "y".repeat(101) }))).status).toBe(400);
+    expect((await commissions(post({ ...request, size: { w: 12 } }))).status).toBe(400);
+    expect(
+      (await commissions(new Request("http://localhost/api/x", { method: "POST", body: "name=Jane" }))).status
+    ).toBe(400);
+    expect(sent).toHaveLength(0);
   });
 });

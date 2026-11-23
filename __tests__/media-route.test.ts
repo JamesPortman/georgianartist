@@ -16,13 +16,28 @@ import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 type Row = { id: string; visible: boolean; image: string; inspirationImage: string | null; homePhoto: string | null };
 type Where = { visible?: boolean; OR?: Partial<Record<"image" | "inspirationImage" | "homePhoto", string>>[] };
 
+type Commission = { id: string; visible: boolean; image: string };
+
 const state = vi.hoisted(() => ({
   rows: [] as Row[],
+  commissions: [] as Commission[],
+  commissionQueries: 0,
   admin: false,
   sessionReads: 0,
   gets: [] as { pathname: string; options: unknown }[],
   file: undefined as undefined | null | { statusCode: number; contentType?: string },
 }));
+
+/**
+ * Prisma refuses a select with no field switched on ("must not be empty"), so
+ * the fake does too: otherwise `select: {}` or `{ id: false }` passed every
+ * test (mutation testing, Nov 2026). Returns only the selected fields.
+ */
+const pick = vi.hoisted(() => (row: Record<string, unknown>, select: Record<string, boolean>) => {
+  const fields = Object.keys(select ?? {}).filter((k) => select[k] === true);
+  if (fields.length === 0) throw new Error("Prisma: the select statement must not be empty");
+  return Object.fromEntries(fields.map((k) => [k, row[k]]));
+});
 
 vi.mock("@/lib/db", () => ({
   prisma: {
@@ -35,8 +50,24 @@ vi.mock("@/lib/db", () => ({
               Object.entries(cond).every(([k, v]) => r[k as keyof Row] === v)
             )
         );
-        // Only the selected fields, as Prisma returns them.
-        return row ? Object.fromEntries(Object.keys(select).map((k) => [k, row[k as keyof Row]])) : null;
+        const picked = pick(row ?? {}, select);
+        return row ? picked : null;
+      },
+    },
+    commissionExample: {
+      findFirst: async ({
+        where,
+        select,
+      }: {
+        where: { visible?: boolean; image?: string };
+        select: Record<string, boolean>;
+      }) => {
+        state.commissionQueries++;
+        const row = state.commissions.find(
+          (r) => (where.visible === undefined || r.visible === where.visible) && r.image === where.image
+        );
+        const picked = pick(row ?? {}, select);
+        return row ? picked : null;
       },
     },
   },
@@ -89,6 +120,11 @@ beforeEach(() => {
       homePhoto: "/media/homes/collector.jpg",
     }),
   ];
+  state.commissions = [
+    { id: "c1", visible: true, image: "/media/commissions/bailey.jpg" },
+    { id: "c2", visible: false, image: "/media/commissions/draft.jpg" },
+  ];
+  state.commissionQueries = 0;
   state.admin = false;
   state.sessionReads = 0;
   state.gets = [];
@@ -175,6 +211,36 @@ describe("/media", () => {
     expect((await fetchMedia("paintings/lora-bay.jpg")).headers.get("content-type")).toBe(
       "application/octet-stream"
     );
+  });
+
+  it("serves a visible commission example to the public, cacheable", async () => {
+    const res = await fetchMedia("commissions/bailey.jpg");
+    expect(res.status).toBe(200);
+    expect(res.headers.get("cache-control")).toBe("public, max-age=600, s-maxage=600");
+    expect(state.sessionReads).toBe(0);
+  });
+
+  it.each([
+    ["a hidden commission example", "commissions/draft.jpg"],
+    ["a commission file no example uses", "commissions/orphan.jpg"],
+  ])("is a 404 to the public for %s", async (_, path) => {
+    expect((await fetchMedia(path)).status).toBe(404);
+    expect(state.gets).toEqual([]);
+  });
+
+  it("serves a hidden commission example to the signed-in admin, never cached", async () => {
+    state.admin = true;
+    const res = await fetchMedia("commissions/draft.jpg");
+    expect(res.status).toBe(200);
+    expect(res.headers.get("cache-control")).toBe("private, no-store");
+  });
+
+  it("asks about commission examples only for files in the commissions folder", async () => {
+    await fetchMedia("paintings/orphan.jpg");
+    expect(state.commissionQueries).toBe(0);
+    // A product's image is never a commission's, even at the same name.
+    state.commissions.push({ id: "c3", visible: true, image: "/media/paintings/orphan.jpg" });
+    expect((await fetchMedia("paintings/orphan.jpg")).status).toBe(404);
   });
 
   it("is never prerendered: every request asks the database", () => {

@@ -3,6 +3,7 @@ import Script from "next/script";
 import { headers } from "next/headers";
 import "./globals.css";
 import Navigation from "@/components/Navigation";
+import { hasMakingOfFilms } from "@/lib/making-of";
 import SaleBanner from "@/components/SaleBanner";
 import Footer from "@/components/Footer";
 import Newsletter from "@/components/Newsletter";
@@ -35,6 +36,8 @@ export default async function RootLayout({
   // Set per request by proxy.ts; the GA4 scripts need it under the CSP.
   const nonce = (await headers()).get("x-nonce") ?? undefined;
   const gaId = gaMeasurementId();
+  // A cached read (lib/catalogue-cache.ts); never let it take the whole site down.
+  const showMakingOf = await hasMakingOfFilms().catch(() => true);
   return (
     <html lang="en" className="h-full">
       <body className="min-h-full flex flex-col bg-[#fafafa]">
@@ -48,7 +51,7 @@ export default async function RootLayout({
         </a>
         <StorefrontChrome
           banner={<SaleBanner />}
-          header={<Navigation />}
+          header={<Navigation showMakingOf={showMakingOf} />}
           footer={
             <>
               <Newsletter />

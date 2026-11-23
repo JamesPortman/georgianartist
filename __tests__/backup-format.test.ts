@@ -10,7 +10,7 @@ import { buildSnapshot, fingerprint, restoreSnapshot, SNAPSHOT_VERSION, TABLES, 
  */
 
 const snap = (over: Partial<Snapshot> = {}): Snapshot => ({
-  version: 2,
+  version: 3,
   exportedAt: "2026-10-01T05:00:00.000Z",
   count: 2,
   products: [
@@ -21,6 +21,7 @@ const snap = (over: Partial<Snapshot> = {}): Snapshot => ({
   instagramPosts: [],
   excludedVisitors: [],
   productSlugs: [],
+  commissionExamples: [],
   ...over,
 });
 
@@ -64,6 +65,13 @@ describe("fingerprint", () => {
     delete v1.version;
     expect(fingerprint(v1).productSlugs).toEqual(fingerprint(snap()).productSlugs);
   });
+
+  it("treats a version 2 snapshot, which had no commissionExamples, as having none", () => {
+    const v2 = snap({ version: 2 });
+    delete v2.commissionExamples;
+    expect(fingerprint(v2).commissionExamples).toEqual({ rows: 0, sha256: fingerprint(snap()).commissionExamples.sha256 });
+    expect(fingerprint(snap({ commissionExamples: [{ id: "c" }] })).commissionExamples.rows).toBe(1);
+  });
 });
 
 describe("restoreSnapshot", () => {
@@ -81,9 +89,17 @@ describe("restoreSnapshot", () => {
       instagramPost: table("instagramPost"),
       excludedVisitor: table("excludedVisitor"),
       productSlug: table("productSlug"),
+      commissionExample: table("commissionExample"),
     };
     const counts = await restoreSnapshot(prisma as never, snap({ productSlugs: [{ slug: "old", productId: "lora-bay" }] }));
-    expect(counts).toEqual({ products: 2, makingOf: 0, instagramPosts: 0, excludedVisitors: 0, productSlugs: 1 });
+    expect(counts).toEqual({
+      products: 2,
+      makingOf: 0,
+      instagramPosts: 0,
+      excludedVisitors: 0,
+      productSlugs: 1,
+      commissionExamples: 0,
+    });
     expect(calls).toEqual(["product", "productSlug"]);
   });
 });
@@ -103,6 +119,7 @@ describe("restoreSnapshot, every table", () => {
       instagramPost: table("instagramPost"),
       excludedVisitor: table("excludedVisitor"),
       productSlug: table("productSlug"),
+      commissionExample: table("commissionExample"),
     };
     const at = new Date("2026-10-01T05:00:00.000Z");
     const full = snap({
@@ -113,9 +130,17 @@ describe("restoreSnapshot, every table", () => {
       ],
       excludedVisitors: [{ id: "v1" }],
       productSlugs: [{ slug: "old", productId: "lora-bay" }],
+      commissionExamples: [{ id: "c1", kind: "pet", name: "Bailey", updatedAt: at }],
     });
     const counts = await restoreSnapshot(prisma as never, full);
-    expect(counts).toEqual({ products: 2, makingOf: 1, instagramPosts: 2, excludedVisitors: 1, productSlugs: 1 });
+    expect(counts).toEqual({
+      products: 2,
+      makingOf: 1,
+      instagramPosts: 2,
+      excludedVisitors: 1,
+      productSlugs: 1,
+      commissionExamples: 1,
+    });
     expect(received).toEqual({
       product: full.products,
       makingOf: full.makingOf,
@@ -125,6 +150,7 @@ describe("restoreSnapshot, every table", () => {
       ],
       excludedVisitor: full.excludedVisitors,
       productSlug: full.productSlugs,
+      commissionExample: [{ id: "c1", kind: "pet", name: "Bailey", updatedAt: "2026-10-01T05:00:00.000Z" }],
     });
   });
 });
@@ -144,6 +170,7 @@ describe("buildSnapshot", () => {
       instagramPost: table("instagramPost", [{ id: "p" }]),
       excludedVisitor: table("excludedVisitor", [{ id: "v" }]),
       productSlug: table("productSlug", [{ slug: "s" }]),
+      commissionExample: table("commissionExample", [{ id: "c" }]),
     };
     const s = await buildSnapshot(prisma as never, new Date("2026-10-06T12:00:00.000Z"));
     expect(s).toEqual({
@@ -155,6 +182,7 @@ describe("buildSnapshot", () => {
       instagramPosts: [{ id: "p" }],
       excludedVisitors: [{ id: "v" }],
       productSlugs: [{ slug: "s" }],
+      commissionExamples: [{ id: "c" }],
     });
     expect(asked).toEqual({
       product: { orderBy: [{ type: "asc" }, { sortOrder: "asc" }] },
@@ -162,6 +190,7 @@ describe("buildSnapshot", () => {
       instagramPost: { orderBy: { createdAt: "asc" } },
       excludedVisitor: undefined,
       productSlug: undefined,
+      commissionExample: { orderBy: { sortOrder: "asc" } },
     });
     expect(Object.keys(s).filter((k) => (TABLES as readonly string[]).includes(k))).toEqual([...TABLES]);
   });

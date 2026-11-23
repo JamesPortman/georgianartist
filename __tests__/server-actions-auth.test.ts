@@ -45,6 +45,8 @@ const MODULES = {
   instagram: () => import("../app/actions/instagram"),
   analytics: () => import("../app/actions/analytics"),
   passkey: () => import("../app/actions/passkey"),
+  commissions: () => import("../app/actions/commissions"),
+  films: () => import("../app/actions/films"),
 };
 
 /** Allowed without a session, and why. */

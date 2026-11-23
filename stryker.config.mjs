@@ -29,7 +29,7 @@ export const MODULES = {
   "lib/rate-limit.ts": { why: "admin login lockout", floor: 82 },
   "lib/db-guard.ts": { why: "keeps laptops and previews off production", floor: 76 },
   "lib/private-blob.ts": { why: "which private files /media may reach", floor: 89 },
-  "app/media/[...path]/route.ts": { why: "who may see an unpublished upload", floor: 91 },
+  "app/media/[...path]/route.ts": { why: "who may see an unpublished upload", floor: 97 },
   "lib/backup.ts": { why: "snapshot, fingerprint, restore", floor: 98 },
   "lib/instagram-publish.ts": { why: "never post twice", floor: 96 },
   "lib/product-path.ts": { why: "a work's URL and slug rules", floor: 97 },

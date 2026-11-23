@@ -34,6 +34,7 @@ const PAGES = [
   "/gift-shop/calendar",
   "/about",
   "/contact",
+  "/commissions",
   "/for-artists",
   "/architecture",
   "/architecture/tests",

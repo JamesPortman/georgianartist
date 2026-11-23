@@ -41,6 +41,8 @@ export default async function AdminProductsPage() {
             <span className="text-white font-medium">Products</span>
             <Link href="/admin/instagram" className="hover:text-white">Instagram</Link>
             <Link href="/admin/analytics" className="hover:text-white">Analytics</Link>
+            <Link href="/admin/commissions" className="hover:text-white">Commissions</Link>
+            <Link href="/admin/films" className="hover:text-white">Films</Link>
             <Link href="/admin/security" className="hover:text-white">Security</Link>
           </nav>
         </div>

@@ -16,13 +16,13 @@ describe("which folders the pruner sweeps", () => {
     // app/actions/admin.ts writes paintings/, photographs/, inspiration/ and
     // homes/. The first two went unswept until September 2026.
     const prefixes = Object.values(AREAS).map((a) => a.prefix);
-    for (const p of ["paintings/", "photographs/", "inspiration/", "homes/"]) {
+    for (const p of ["paintings/", "photographs/", "inspiration/", "homes/", "commissions/"]) {
       expect(prefixes).toContain(p);
     }
   });
 
   it("gives every admin upload folder a grace period, since the file is written before its row", () => {
-    for (const a of [AREAS.paintings, AREAS.photographs, AREAS.homes]) {
+    for (const a of [AREAS.paintings, AREAS.photographs, AREAS.homes, AREAS.commissions]) {
       expect(a.minAgeHours).toBeGreaterThanOrEqual(24);
     }
   });

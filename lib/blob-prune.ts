@@ -10,7 +10,15 @@
  * so the next one can't go unnoticed the same way.
  */
 
-export type AreaName = "films" | "inspiration" | "igready" | "reels" | "paintings" | "photographs" | "homes";
+export type AreaName =
+  | "films"
+  | "inspiration"
+  | "igready"
+  | "reels"
+  | "paintings"
+  | "photographs"
+  | "homes"
+  | "commissions";
 export type Area = { prefix: string; what: string; minAgeHours?: number };
 
 export const AREAS: Record<AreaName, Area> = {
@@ -46,6 +54,11 @@ export const AREAS: Record<AreaName, Area> = {
     // These are other people's photographs. The archive the pruner keeps is
     // a copy of someone's room on this machine; delete it once nothing is
     // missed.
+    minAgeHours: 24,
+  },
+  commissions: {
+    prefix: "commissions/",
+    what: "commission examples uploaded through the admin",
     minAgeHours: 24,
   },
 };

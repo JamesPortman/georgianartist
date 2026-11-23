@@ -33,6 +33,7 @@ vi.mock("@/lib/db", () => ({
     instagramPost: { findMany: async () => [{ id: "post-1", caption: "approved text" }] },
     excludedVisitor: { findMany: async () => [{ visitorId: "v1" }] },
     productSlug: { findMany: async () => [{ slug: "spirit-rock", productId: "spirit-rock" }] },
+    commissionExample: { findMany: async () => [{ id: "c1", name: "Bailey" }] },
   },
 }));
 vi.mock("@/lib/notify", () => ({ sendAlert: async (subject: string) => { alerts.push(subject); } }));
@@ -60,12 +61,13 @@ describe("/api/cron/backup", () => {
     expect(path).toMatch(/^backups\/catalog-\d{4}-\d{2}-\d{2}T\d{2}-\d{2}\.json$/);
     expect(opts).toMatchObject({ access: "private", token: "private-token" });
     const data = JSON.parse(body);
-    expect(data.version).toBe(2);
+    expect(data.version).toBe(3);
     expect(data.products[0].id).toBe("lora-bay");
     expect(data.makingOf[0].id).toBe("film-1");
     expect(data.instagramPosts[0].caption).toBe("approved text");
     expect(data.excludedVisitors[0].visitorId).toBe("v1");
     expect(data.productSlugs[0].slug).toBe("spirit-rock");
+    expect(data.commissionExamples[0].name).toBe("Bailey");
   });
 
   it("falls back to an unguessable name in the public store without one", async () => {

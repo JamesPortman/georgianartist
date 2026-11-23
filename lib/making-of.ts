@@ -16,6 +16,19 @@ export async function getMakingOfForProduct(productId: string): Promise<MakingOf
   return catalogue.makingOf.findFirst({ where: { productId, visible: true }, select });
 }
 
+/**
+ * Whether any film is showing. When none is (each can be hidden in the admin),
+ * the Making Of link leaves the menu, the About page and the sitemap.
+ */
+export async function hasMakingOfFilms(): Promise<boolean> {
+  // Not during `next build`: the pages it prerenders share the root layout, so
+  // the answer would go into the data cache from whatever the database held at
+  // build time and be served for an hour after. CI builds before it seeds, so
+  // that answer was "none", and the running site had no Making Of link.
+  if (process.env.NEXT_PHASE === "phase-production-build") return true;
+  return (await catalogue.makingOf.findFirst({ where: { visible: true }, select: { id: true } })) !== null;
+}
+
 /** Every published film, in the order set on the records. */
 export async function getMakingOfFilms(): Promise<MakingOfFilm[]> {
   return catalogue.makingOf.findMany({

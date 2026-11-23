@@ -142,6 +142,44 @@ test("booking form offers other ways to reach James when sending fails", async (
 });
 
 // ── Before JavaScript runs ────────────────────────────────────────────────────
+// ── Commission quote request (/commissions) ──────────────────────────────────
+
+test("commission request sends what was typed, and confirms", async ({ page }) => {
+  let sent: Record<string, string> | null = null;
+  await page.route("/api/commissions", async (route) => {
+    sent = route.request().postDataJSON();
+    await route.fulfill({ status: 200, body: JSON.stringify({ ok: true }), contentType: "application/json" });
+  });
+  await page.goto("/commissions");
+  await expect(page.getByRole("heading", { level: 1, name: "Commissions" })).toBeVisible();
+  await expect(page.getByText(/50% deposit to start, balance before shipping/i)).toBeVisible();
+
+  await page.getByRole("main").getByLabel("Name", { exact: true }).fill("Jane Smith");
+  await page.getByRole("main").getByLabel("Email", { exact: true }).fill("jane@example.com");
+  await page.getByRole("main").getByLabel("A painting of").selectOption("portrait");
+  await page.getByRole("main").getByLabel(/needed by/i).fill("June");
+  await page.getByRole("main").getByLabel("Tell us about it").fill("A portrait of my father at the cottage.");
+  await page.getByRole("button", { name: /send request/i }).click();
+
+  await expect(page.getByText(/request has been sent/i)).toBeVisible();
+  expect(sent).toMatchObject({ name: "Jane Smith", kind: "portrait", deadline: "June", website: "" });
+});
+
+test("commission request shows the server's refusal, with the email fallback", async ({ page }) => {
+  await page.route("/api/commissions", (route) =>
+    route.fulfill({ status: 400, body: JSON.stringify({ error: "Please choose what the painting is of." }), contentType: "application/json" })
+  );
+  await page.goto("/commissions");
+  await page.getByRole("main").getByLabel("Name", { exact: true }).fill("Jane Smith");
+  await page.getByRole("main").getByLabel("Email", { exact: true }).fill("jane@example.com");
+  await page.getByRole("main").getByLabel("Tell us about it").fill("A painting of our dog.");
+  await page.getByRole("button", { name: /send request/i }).click();
+  // Scoped to main: Next's route announcer is a role="alert" too.
+  const alert = page.getByRole("main").getByRole("alert");
+  await expect(alert).toContainText("Please choose what the painting is of.");
+  await expect(alert.getByRole("link")).toBeVisible();
+});
+
 //
 // Every form here is sent by JavaScript. Before hydration, or with JavaScript
 // off, the browser submits it natively instead — and a form with no method
@@ -152,7 +190,7 @@ test("booking form offers other ways to reach James when sending fails", async (
 test.describe("without JavaScript", () => {
   test.use({ javaScriptEnabled: false });
 
-  for (const path of ["/", "/contact", "/book", "/products/lora-bay"]) {
+  for (const path of ["/", "/contact", "/commissions", "/book", "/products/lora-bay"]) {
     test(`${path}: every form posts`, async ({ page }) => {
       await page.goto(path);
       const methods = await page

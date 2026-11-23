@@ -82,6 +82,9 @@ const productFindMany = cached("product.findMany", (a: Prisma.ProductFindManyArg
 const productFindFirst = cached("product.findFirst", (a: Prisma.ProductFindFirstArgs) => prisma.product.findFirst(a));
 const makingOfFindMany = cached("makingOf.findMany", (a: Prisma.MakingOfFindManyArgs) => prisma.makingOf.findMany(a));
 const makingOfFindFirst = cached("makingOf.findFirst", (a: Prisma.MakingOfFindFirstArgs) => prisma.makingOf.findFirst(a));
+const commissionFindMany = cached("commissionExample.findMany", (a: Prisma.CommissionExampleFindManyArgs) =>
+  prisma.commissionExample.findMany(a)
+);
 const slugFindUnique = cached("productSlug.findUnique", (a: Prisma.ProductSlugFindUniqueArgs) => prisma.productSlug.findUnique(a));
 
 /** The cached, read-only twin of `prisma` for public pages (see above). */
@@ -97,6 +100,14 @@ export const catalogue = {
       makingOfFindMany(args as Prisma.MakingOfFindManyArgs) as unknown as Promise<Prisma.MakingOfGetPayload<T>[]>,
     findFirst: <T extends Prisma.MakingOfFindFirstArgs>(args: Prisma.SelectSubset<T, Prisma.MakingOfFindFirstArgs>) =>
       makingOfFindFirst(args as Prisma.MakingOfFindFirstArgs) as unknown as Promise<Prisma.MakingOfGetPayload<T> | null>,
+  },
+  commissionExample: {
+    findMany: <T extends Prisma.CommissionExampleFindManyArgs>(
+      args: Prisma.SelectSubset<T, Prisma.CommissionExampleFindManyArgs>
+    ) =>
+      commissionFindMany(args as Prisma.CommissionExampleFindManyArgs) as unknown as Promise<
+        Prisma.CommissionExampleGetPayload<T>[]
+      >,
   },
   productSlug: {
     findUnique: <T extends Prisma.ProductSlugFindUniqueArgs>(args: Prisma.SelectSubset<T, Prisma.ProductSlugFindUniqueArgs>) =>

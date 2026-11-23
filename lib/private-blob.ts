@@ -30,7 +30,7 @@ export function privateBlobToken(): string | null {
 }
 
 /** The folders the admin uploads into, and so the only ones /media serves. */
-export const MEDIA_FOLDERS = ["paintings/", "photographs/", "inspiration/", "homes/"] as const;
+export const MEDIA_FOLDERS = ["paintings/", "photographs/", "inspiration/", "homes/", "commissions/"] as const;
 
 export const mediaPath = (pathname: string): string => `/media/${pathname}`;
 

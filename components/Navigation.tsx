@@ -5,7 +5,12 @@ import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { siteConfig } from "@/data/siteConfig";
 
-export default function Navigation() {
+/**
+ * `showMakingOf` is false when every film is hidden in the admin
+ * (hasMakingOfFilms, read by the root layout): a menu link to an empty page
+ * helps nobody.
+ */
+export default function Navigation({ showMakingOf = true }: { showMakingOf?: boolean }) {
   const pathname = usePathname();
   const [menuOpen, setMenuOpen] = useState(false);
   const menuButton = useRef<HTMLButtonElement>(null);
@@ -31,8 +36,10 @@ export default function Navigation() {
     // Third, right after the work itself: the one thing on the menu that sells.
     { href: "/gift-shop", label: "Gift Shop" },
     { href: "/locations", label: "Locations" },
-    { href: "/making-of", label: "Making Of" },
+    ...(showMakingOf ? [{ href: "/making-of", label: "Making Of" }] : []),
     { href: "/about", label: "About" },
+    // Made to order: after the finished work and the artist, before the questions.
+    { href: "/commissions", label: "Commissions" },
     // Last of the shop links, where people look for it. One page with the FAQ.
     { href: "/contact", label: "FAQ/Contact" },
   ];
@@ -51,14 +58,17 @@ export default function Navigation() {
         </Link>
 
         {/* Desktop nav. It once held ten links, which at 1024px wrapped onto two
-            lines; measure at 1024 before adding more. */}
-        <nav className="hidden lg:flex items-center gap-5 xl:gap-6">
+            lines; measure at 1024 before adding more. With Commissions (eight
+            links, Nov 2026) the brand wrapped onto two lines at 1024, so until
+            xl the links are 13px with a 14px gap: one line, 34px clear of the
+            brand at 1024 even with a scrollbar. */}
+        <nav className="hidden lg:flex items-center gap-3.5 xl:gap-6">
           {links.map((l) => (
             <Link
               key={l.href}
               href={l.href}
               aria-current={pathname === l.href ? "page" : undefined}
-              className={`text-sm tracking-wide whitespace-nowrap transition-colors ${
+              className={`text-[13px] xl:text-sm tracking-wide whitespace-nowrap transition-colors ${
                 pathname === l.href
                   ? "text-brand font-semibold"
                   : "text-gray-600 hover:text-brand"
@@ -71,7 +81,7 @@ export default function Navigation() {
           <Link
             href={forArtists.href}
             data-audience="artists"
-            className={`text-sm tracking-wide whitespace-nowrap rounded-full border px-3 py-1 transition-colors ${
+            className={`text-[13px] xl:text-sm tracking-wide whitespace-nowrap rounded-full border px-3 py-1 transition-colors ${
               onForArtists
                 ? "bg-brand border-brand text-white"
                 : "border-brand/40 text-brand hover:bg-brand hover:text-white"

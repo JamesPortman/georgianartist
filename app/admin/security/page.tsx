@@ -23,6 +23,8 @@ export default async function SecurityPage() {
             <Link href="/admin/products" className="hover:text-white">Products</Link>
             <Link href="/admin/instagram" className="hover:text-white">Instagram</Link>
             <Link href="/admin/analytics" className="hover:text-white">Analytics</Link>
+            <Link href="/admin/commissions" className="hover:text-white">Commissions</Link>
+            <Link href="/admin/films" className="hover:text-white">Films</Link>
             <span className="text-white font-medium">Security</span>
           </nav>
         </div>

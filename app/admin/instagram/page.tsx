@@ -35,6 +35,8 @@ export default async function InstagramAdminPage() {
             <Link href="/admin/products" className="hover:text-white">Products</Link>
             <span className="text-white font-medium">Instagram</span>
             <Link href="/admin/analytics" className="hover:text-white">Analytics</Link>
+            <Link href="/admin/commissions" className="hover:text-white">Commissions</Link>
+            <Link href="/admin/films" className="hover:text-white">Films</Link>
             <Link href="/admin/security" className="hover:text-white">Security</Link>
           </nav>
         </div>

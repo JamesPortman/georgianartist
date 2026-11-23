@@ -8,6 +8,7 @@ import {
   isVisitorId,
   withViewsTrend,
   TREND_DAYS,
+  countryName,
 } from "../lib/analytics";
 
 const UA = {
@@ -191,5 +192,19 @@ describe("withViewsTrend", () => {
   it("keeps the raw daily values untouched", () => {
     const out = withViewsTrend(series([1, 2, 3]), 0);
     expect(out.map((p) => p.views)).toEqual([1, 2, 3]);
+  });
+});
+
+describe("countryName", () => {
+  it("expands two-letter codes to full names", () => {
+    expect(countryName("CA")).toBe("Canada");
+    expect(countryName("US")).toBe("United States");
+    expect(countryName("AE")).toBe("United Arab Emirates");
+    expect(countryName("sg")).toBe("Singapore");
+  });
+
+  it("returns anything it can't name unchanged", () => {
+    expect(countryName("T1")).toBe("T1");
+    expect(countryName("")).toBe("");
   });
 });

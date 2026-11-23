@@ -12,10 +12,11 @@ import type { PrismaClient } from "@prisma/client";
  * hours on the Free plan.
  *
  * Version 1 (until October 2026) had no `version` and no `productSlugs`;
- * restoreSnapshot() reads both.
+ * version 2 (until November 2026) had no `commissionExamples`. Both read as
+ * having none.
  */
 
-export const SNAPSHOT_VERSION = 2;
+export const SNAPSHOT_VERSION = 3;
 
 type Row = Record<string, unknown>;
 
@@ -28,10 +29,18 @@ export type Snapshot = {
   instagramPosts: Row[];
   excludedVisitors: Row[];
   productSlugs?: Row[];
+  commissionExamples?: Row[];
 };
 
 /** The tables, in the order a restore inserts them. */
-export const TABLES = ["products", "makingOf", "instagramPosts", "excludedVisitors", "productSlugs"] as const;
+export const TABLES = [
+  "products",
+  "makingOf",
+  "instagramPosts",
+  "excludedVisitors",
+  "productSlugs",
+  "commissionExamples",
+] as const;
 export type TableName = (typeof TABLES)[number];
 
 export async function buildSnapshot(prisma: PrismaClient, now: Date = new Date()): Promise<Snapshot> {
@@ -42,6 +51,7 @@ export async function buildSnapshot(prisma: PrismaClient, now: Date = new Date()
   const instagramPosts = await prisma.instagramPost.findMany({ orderBy: { createdAt: "asc" } });
   const excludedVisitors = await prisma.excludedVisitor.findMany();
   const productSlugs = await prisma.productSlug.findMany();
+  const commissionExamples = await prisma.commissionExample.findMany({ orderBy: { sortOrder: "asc" } });
   return {
     version: SNAPSHOT_VERSION,
     exportedAt: now.toISOString(),
@@ -51,6 +61,7 @@ export async function buildSnapshot(prisma: PrismaClient, now: Date = new Date()
     instagramPosts,
     excludedVisitors,
     productSlugs,
+    commissionExamples,
   };
 }
 
@@ -89,6 +100,7 @@ export async function restoreSnapshot(prisma: PrismaClient, s: Snapshot): Promis
     instagramPosts: (data) => prisma.instagramPost.createMany({ data: data as never }),
     excludedVisitors: (data) => prisma.excludedVisitor.createMany({ data: data as never }),
     productSlugs: (data) => prisma.productSlug.createMany({ data: data as never }),
+    commissionExamples: (data) => prisma.commissionExample.createMany({ data: data as never }),
   };
   for (const t of TABLES) {
     const rows = rowsOf(s, t);

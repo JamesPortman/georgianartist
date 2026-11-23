@@ -240,3 +240,17 @@ export function isNonProductionRequest(
     hostname.endsWith(".test")
   );
 }
+
+const REGION_NAMES = new Intl.DisplayNames(["en-CA"], { type: "region" });
+
+/**
+ * Full English name for a two-letter country code, as Vercel's geo headers
+ * give it: "SG" -> "Singapore". Anything Intl can't name comes back as given.
+ */
+export function countryName(code: string): string {
+  try {
+    return REGION_NAMES.of(code.toUpperCase()) ?? code;
+  } catch {
+    return code;
+  }
+}

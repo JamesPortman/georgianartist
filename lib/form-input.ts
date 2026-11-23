@@ -1,5 +1,6 @@
 /**
- * What the public forms (/api/buy, /api/contact, /api/book) will accept.
+ * What the public forms (/api/buy, /api/contact, /api/book, /api/commissions)
+ * will accept.
  *
  * Until September 2026 they took any JSON: a message, address or note of any
  * length went straight into the owner's inbox, and a non-text field (say
@@ -24,6 +25,9 @@ export const FIELD_MAX = {
   medium: 200,
   town: 100,
   current: 200,
+  kind: 20,
+  size: 100,
+  deadline: 100,
   website: 200, // the honeypot
 } as const;
 

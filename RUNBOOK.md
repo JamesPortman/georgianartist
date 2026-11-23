@@ -17,7 +17,7 @@ over means transferring or sharing each one.
 | **Vercel** | Hosting, env vars, crons, Blob store | Site down; secrets only in the encrypted copy |
 | **Neon** (Free plan) | Postgres: catalogue, orders, analytics | Point-in-time restore covers **6 hours** only; after that, the 6-hourly snapshot in the private Blob store |
 | **Vercel Blob** (inside Vercel), two stores | Public: catalogue images (`catalogue/`), films. Private: backups, admin uploads, collectors' photos | Catalogue images are also in git history and `public/` until removed; films re-upload from source; later uploads lost |
-| **Squarespace Domains** | Domain, DNS, `info@` forwarding (MX → Mailgun) | Site and email unreachable; renewal is the risk |
+| **Squarespace Domains** | Domain, DNS, `info@` forwarding (MX → Mailgun). Four CAA records on `@` (Nov 2026) allow only Vercel's certificate authorities: Let's Encrypt, GlobalSign, `pki.goog`, Sectigo. If Vercel ever adds one, add it here too, or certificate renewal for the bare domain fails | Site and email unreachable; renewal is the risk |
 | **Resend** | Every email the site sends (forms, alerts) | Forms "work" but nobody is told |
 | **Meta** (Facebook Page + Instagram business) | Auto-posting | Posting stops; an alert email says so |
 | **Anthropic** | Drafts Instagram captions | Captions can't be generated |

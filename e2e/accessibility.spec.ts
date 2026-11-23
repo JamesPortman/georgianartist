@@ -53,6 +53,7 @@ const PAGES: [name: string, path: string][] = [
   ["Gift shop pack builder", "/gift-shop/card-pack"],
   ["About", "/about"],
   ["FAQ & Contact", "/contact"],
+  ["Commissions", "/commissions"],
   ["For Artists", "/for-artists"],
   ["Architecture", "/architecture"],
   ["Test inventory", "/architecture/tests"],

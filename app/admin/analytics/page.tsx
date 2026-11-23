@@ -5,7 +5,7 @@ import Link from "next/link";
 import AnalyticsClient from "./AnalyticsClient";
 import ExcludeBrowser from "./ExcludeBrowser";
 import { getExclusionsAction } from "@/app/actions/analytics";
-import { fillDailySeries, TREND_DAYS, withViewsTrend } from "@/lib/analytics";
+import { countryName, fillDailySeries, TREND_DAYS, withViewsTrend } from "@/lib/analytics";
 import { siteConfig } from "@/data/siteConfig";
 
 export const metadata = { title: "Analytics | Admin" };
@@ -206,7 +206,7 @@ export default async function AnalyticsPage({
     return { label: host || "(direct)", value: r._count._all };
   });
 
-  const countries = countryRows.map((r) => ({ label: r.country ?? "(unknown)", value: r._count._all }));
+  const countries = countryRows.map((r) => ({ label: r.country ? countryName(r.country) : "(unknown)", value: r._count._all }));
 
   const recentEvents = recent.map((e) => ({
     id: e.id,
@@ -230,6 +230,8 @@ export default async function AnalyticsPage({
             <Link href="/admin/products" className="hover:text-white">Products</Link>
             <Link href="/admin/instagram" className="hover:text-white">Instagram</Link>
             <span className="text-white font-medium">Analytics</span>
+            <Link href="/admin/commissions" className="hover:text-white">Commissions</Link>
+            <Link href="/admin/films" className="hover:text-white">Films</Link>
             <Link href="/admin/security" className="hover:text-white">Security</Link>
           </nav>
         </div>

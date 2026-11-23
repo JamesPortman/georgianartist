@@ -9,6 +9,8 @@
  * readers through their labels and the tables behind the charts.
  */
 
+import { siteConfig } from "@/data/siteConfig";
+
 /* ── Shared pieces ──────────────────────────────────────────────────────────── */
 
 function Figure({ label, caption, children }: { label: string; caption: string; children: React.ReactNode }) {
@@ -682,6 +684,65 @@ export function ScanSchedule() {
           </div>
         ))}
       </div>
+    </Figure>
+  );
+}
+
+/* ── §10 · Outside grades ───────────────────────────────────────────────────── */
+
+/**
+ * Ratings from outside services, which anyone can re-run from the links.
+ * Checked by hand: update the grade and CHECKED together after re-running
+ * them (the SSL Labs report re-scans when its cache is older than a few hours).
+ */
+const CHECKED = "16 November 2026";
+const HOST = new URL(siteConfig.url).host;
+const APEX = HOST.replace(/^www\./, "");
+
+export const OUTSIDE_GRADES: { service: string; grade: string; detail: string; href: string }[] = [
+  {
+    service: "Mozilla HTTP Observatory",
+    grade: "A+",
+    detail: "130 / 100 · 12 of 12 tests passed",
+    href: `https://developer.mozilla.org/en-US/observatory/analyze?host=${HOST}`,
+  },
+  {
+    service: "Qualys SSL Labs",
+    grade: "A",
+    detail: "TLS 1.2 and 1.3 · post-quantum key exchange (X25519MLKEM768)",
+    href: `https://www.ssllabs.com/ssltest/analyze.html?d=${HOST}`,
+  },
+  {
+    service: "Email authentication",
+    grade: "SPF · DKIM · DMARC",
+    detail: "all published; DMARC at p=none (monitoring)",
+    href: `https://mxtoolbox.com/SuperTool.aspx?action=dmarc%3a${APEX}`,
+  },
+];
+
+export function OutsideGrades() {
+  return (
+    <Figure
+      label="Outside security ratings"
+      caption={`Ratings from outside services, checked ${CHECKED}. Each links to the service's own public report, so anyone can re-run it.`}
+    >
+      <ul className="grid gap-3 sm:grid-cols-3">
+        {OUTSIDE_GRADES.map((g) => (
+          <li key={g.service} className="rounded-md border border-gray-300 bg-white px-4 py-3">
+            <p className="text-xs font-semibold uppercase tracking-wide text-gray-600">{g.service}</p>
+            <p className={`mt-1 font-semibold text-brand ${g.grade.length <= 2 ? "text-3xl" : "text-lg"}`}>{g.grade}</p>
+            <p className="mt-1 text-xs text-gray-600 leading-snug">{g.detail}</p>
+            <a
+              href={g.href}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mt-2 inline-block text-xs text-brand underline underline-offset-2 hover:no-underline"
+            >
+              View the report<span className="sr-only"> from {g.service} (opens in a new tab)</span>
+            </a>
+          </li>
+        ))}
+      </ul>
     </Figure>
   );
 }

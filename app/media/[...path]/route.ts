@@ -7,7 +7,8 @@ import { mediaPath, mediaPathname, privateBlobToken } from "@/lib/private-blob";
  * Admin uploads in the private Blob store (lib/private-blob.ts).
  *
  * A file is served only while a visible work uses it (as its image, its
- * inspiration photo or a collector's photo), or to a signed-in admin. So a
+ * inspiration photo or a collector's photo) or a visible commission example
+ * shows it, or to a signed-in admin. So a
  * work uploaded hidden can't be seen before it's published, and hiding a work
  * or removing a collector's photo stops serving the file, rather than leaving
  * it readable by anyone who kept the URL.
@@ -30,13 +31,17 @@ export async function GET(_request: Request, { params }: { params: Promise<{ pat
   const token = privateBlobToken();
   if (!pathname || !token) return notFound();
 
-  const published = await prisma.product.findFirst({
-    where: {
-      visible: true,
-      OR: [{ image: url }, { inspirationImage: url }, { homePhoto: url }],
-    },
-    select: { id: true },
-  });
+  const published =
+    (await prisma.product.findFirst({
+      where: {
+        visible: true,
+        OR: [{ image: url }, { inspirationImage: url }, { homePhoto: url }],
+      },
+      select: { id: true },
+    })) ??
+    (pathname.startsWith("commissions/")
+      ? await prisma.commissionExample.findFirst({ where: { visible: true, image: url }, select: { id: true } })
+      : null);
   const admin = published ? false : (await getAdminSession()).isLoggedIn === true;
   if (!published && !admin) return notFound();
 

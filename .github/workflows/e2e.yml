@@ -98,10 +98,8 @@ jobs:
 
       - run: npm ci
 
-      # Fails on a high or critical advisory in a production dependency. The
-      # Prisma CLI's build-time dependencies (no fix in any 7.x release) are the
-      # one named exception, allowlisted by advisory and path in audit-ci.jsonc
-      # — see /architecture §10.
+      # Fails on a high or critical advisory in a production dependency. No
+      # exceptions are allowlisted in audit-ci.jsonc — see /architecture §10.
       - name: Audit production dependencies
         run: npx audit-ci --config audit-ci.jsonc
 

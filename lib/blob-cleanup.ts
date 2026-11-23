@@ -49,12 +49,13 @@ export async function countReferences(
   const target = key(url);
   const { excludeProductId } = opts;
 
-  const [products, posts, films] = await Promise.all([
+  const [products, posts, films, commissions] = await Promise.all([
     prisma.product.findMany({
       select: { id: true, image: true, inspirationImage: true, homePhoto: true, mockupImage: true },
     }),
     prisma.instagramPost.findMany({ select: { imageUrl: true } }),
     prisma.makingOf.findMany({ select: { videoUrl: true, posterUrl: true } }),
+    prisma.commissionExample.findMany({ select: { image: true } }),
   ]);
 
   let n = 0;
@@ -70,6 +71,7 @@ export async function countReferences(
     if (f.videoUrl && key(f.videoUrl) === target) n++;
     if (f.posterUrl && key(f.posterUrl) === target) n++;
   }
+  for (const c of commissions) if (key(c.image) === target) n++;
   return n;
 }
 

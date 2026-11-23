@@ -15,16 +15,23 @@ vi.mock("next/link", () => ({
 }));
 
 describe("Navigation", () => {
-  it("holds the storefront's seven links, Contact last, then For Artists apart", () => {
+  it("holds the storefront's eight links, Contact last, then For Artists apart", () => {
     const { container } = render(<Navigation />);
     const desktop = [...container.querySelectorAll("header nav a")].map((a) => a.textContent);
     expect(desktop).toEqual([
-      "Paintings", "Photographs", "Gift Shop", "Locations", "Making Of", "About", "FAQ/Contact",
-      "For Artists",
+      "Paintings", "Photographs", "Gift Shop", "Locations", "Making Of", "About", "Commissions",
+      "FAQ/Contact", "For Artists",
     ]);
     // Set apart as a button for a different reader, not an eighth shop link.
     const forArtists = container.querySelector('header nav a[href="/for-artists"]')!;
     expect(forArtists.getAttribute("data-audience")).toBe("artists");
+  });
+
+  it("drops Making Of when no film is showing", () => {
+    const { container } = render(<Navigation showMakingOf={false} />);
+    const desktop = [...container.querySelectorAll("header nav a")].map((a) => a.textContent);
+    expect(desktop).not.toContain("Making Of");
+    expect(desktop).toHaveLength(8);
   });
 
   it("leaves Architecture to the footer", () => {

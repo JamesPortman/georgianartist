@@ -182,6 +182,12 @@
         },
         {
           "name": "withViewsTrend › keeps the raw daily values untouched"
+        },
+        {
+          "name": "countryName › expands two-letter codes to full names"
+        },
+        {
+          "name": "countryName › returns anything it can't name unchanged"
         }
       ]
     },
@@ -340,6 +346,9 @@
           "name": "fingerprint › treats a version 1 snapshot, which had no productSlugs, as having none"
         },
         {
+          "name": "fingerprint › treats a version 2 snapshot, which had no commissionExamples, as having none"
+        },
+        {
           "name": "restoreSnapshot › inserts every table with one statement each, and skips empty ones"
         },
         {
@@ -429,6 +438,12 @@
         },
         {
           "name": "the catalogue's own images › count a product's mockup as a reference"
+        },
+        {
+          "name": "commission examples › count as a reference, so a file an example shows is never deleted"
+        },
+        {
+          "name": "commission examples › don't count a different file"
         }
       ]
     },
@@ -739,6 +754,47 @@
         },
         {
           "name": "rateLimitAddress › leaves anything it can't parse alone rather than merging it with others"
+        }
+      ]
+    },
+    {
+      "file": "__tests__/commissions.test.ts",
+      "tests": [
+        {
+          "name": "captionOf › joins the parts that are there, subject's name first"
+        },
+        {
+          "name": "captionOf › drops blanks and trims"
+        },
+        {
+          "name": "altOf › describes the painting by its subject"
+        },
+        {
+          "name": "altOf › falls back to the kind when there's no subject"
+        },
+        {
+          "name": "kinds › knows an example is a pet or a portrait, nothing else"
+        },
+        {
+          "name": "kinds › takes a request for a pet, a portrait or something else, and nothing inherited"
+        },
+        {
+          "name": "parseExampleFields › reads and trims the fields, blanks as null"
+        },
+        {
+          "name": "parseExampleFields › requires a kind it knows and a name"
+        },
+        {
+          "name": "parseExampleFields › refuses a field over its limit, by name"
+        },
+        {
+          "name": "parseExampleFields › ignores a field that isn't text"
+        },
+        {
+          "name": "quoteEmailText › labels every field, and says when one was left out"
+        },
+        {
+          "name": "the terms › are the owner's: half up front, the rest before shipping, four to six weeks"
         }
       ]
     },
@@ -1262,6 +1318,9 @@
           "name": "E2E specs use the shared test fixture › visual.spec.ts imports from ./test, not @playwright/test"
         },
         {
+          "name": "E2E specs use the shared test fixture › zz-admin-films.spec.ts imports from ./test, not @playwright/test"
+        },
+        {
           "name": "E2E specs use the shared test fixture › zz-admin-instagram.spec.ts imports from ./test, not @playwright/test"
         },
         {
@@ -1466,6 +1525,36 @@
         },
         {
           "name": "form outcomes › still succeeds when only the confirmation is refused: the owner has the message"
+        },
+        {
+          "name": "/api/commissions › gives the owner everything typed, and the visitor fixed text only"
+        },
+        {
+          "name": "/api/commissions › refuses a kind it doesn't offer, and sends nothing"
+        },
+        {
+          "name": "/api/commissions › accepts a request for portrait"
+        },
+        {
+          "name": "/api/commissions › accepts a request for other"
+        },
+        {
+          "name": "/api/commissions › refuses a missing name, email or message, and a one-word message"
+        },
+        {
+          "name": "/api/commissions › sends nothing once the IP is over its limit"
+        },
+        {
+          "name": "/api/commissions › still tells the owner when only the confirmation is held back"
+        },
+        {
+          "name": "/api/commissions › answers a caught bot like a person, sends nothing, and counts it as spam"
+        },
+        {
+          "name": "/api/commissions › says so when Resend refuses the owner's email, and sends no confirmation"
+        },
+        {
+          "name": "/api/commissions › refuses oversized, over-limit, non-text and non-JSON input"
         }
       ]
     },
@@ -2285,6 +2374,21 @@
           "name": "/media › labels a file the store has no type for as plain bytes"
         },
         {
+          "name": "/media › serves a visible commission example to the public, cacheable"
+        },
+        {
+          "name": "/media › is a 404 to the public for a hidden commission example"
+        },
+        {
+          "name": "/media › is a 404 to the public for a commission file no example uses"
+        },
+        {
+          "name": "/media › serves a hidden commission example to the signed-in admin, never cached"
+        },
+        {
+          "name": "/media › asks about commission examples only for files in the commissions folder"
+        },
+        {
           "name": "/media › is never prerendered: every request asks the database"
         }
       ]
@@ -2381,7 +2485,10 @@
       "file": "__tests__/Navigation.test.tsx",
       "tests": [
         {
-          "name": "Navigation › holds the storefront's seven links, Contact last, then For Artists apart"
+          "name": "Navigation › holds the storefront's eight links, Contact last, then For Artists apart"
+        },
+        {
+          "name": "Navigation › drops Making Of when no film is showing"
         },
         {
           "name": "Navigation › leaves Architecture to the footer"
@@ -3149,6 +3256,12 @@
           "name": "server actions without a session › app/actions/passkey.ts: every action sends a caller with no session to sign in, untouched"
         },
         {
+          "name": "server actions without a session › app/actions/commissions.ts: every action sends a caller with no session to sign in, untouched"
+        },
+        {
+          "name": "server actions without a session › app/actions/films.ts: every action sends a caller with no session to sign in, untouched"
+        },
+        {
           "name": "server actions without a session › the sign-in actions are the only ones exempt, and still exist"
         }
       ]
@@ -3468,6 +3581,9 @@
           "name": "a11y: FAQ & Contact (/contact)"
         },
         {
+          "name": "a11y: Commissions (/commissions)"
+        },
+        {
           "name": "a11y: For Artists (/for-artists)"
         },
         {
@@ -3575,6 +3691,9 @@
           "name": "no CSP violations on /contact"
         },
         {
+          "name": "no CSP violations on /commissions"
+        },
+        {
           "name": "no CSP violations on /for-artists"
         },
         {
@@ -3639,10 +3758,19 @@
           "name": "booking form offers other ways to reach James when sending fails"
         },
         {
+          "name": "commission request sends what was typed, and confirms"
+        },
+        {
+          "name": "commission request shows the server's refusal, with the email fallback"
+        },
+        {
           "name": "without JavaScript › /: every form posts"
         },
         {
           "name": "without JavaScript › /contact: every form posts"
+        },
+        {
+          "name": "without JavaScript › /commissions: every form posts"
         },
         {
           "name": "without JavaScript › /book: every form posts"
@@ -3956,6 +4084,17 @@
         },
         {
           "name": "phone › about looks as it did"
+        }
+      ]
+    },
+    {
+      "file": "e2e/zz-admin-films.spec.ts",
+      "tests": [
+        {
+          "name": "the admin's Films page needs a session"
+        },
+        {
+          "name": "hiding a film in the admin takes it off /making-of and its work's page; showing it puts it back"
         }
       ]
     },

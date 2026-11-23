@@ -2,6 +2,7 @@ import { catalogue } from "@/lib/catalogue-cache";
 import type { MetadataRoute } from "next";
 import { siteConfig } from "@/data/siteConfig";
 import { productPath } from "@/lib/product-path";
+import { hasMakingOfFilms } from "@/lib/making-of";
 
 export const dynamic = "force-dynamic";
 
@@ -14,6 +15,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${base}/gift-shop`, changeFrequency: "weekly", priority: 0.7 },
     { url: `${base}/gift-shop/calendar`, changeFrequency: "monthly", priority: 0.7 },
     { url: `${base}/about`, changeFrequency: "monthly", priority: 0.5 },
+    { url: `${base}/commissions`, changeFrequency: "monthly", priority: 0.6 },
     { url: `${base}/contact`, changeFrequency: "monthly", priority: 0.5 },
     { url: `${base}/for-artists`, changeFrequency: "monthly", priority: 0.4 },
     { url: `${base}/architecture`, changeFrequency: "monthly", priority: 0.3 },
@@ -22,7 +24,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     // findable by search too, not only by camera.
     { url: `${base}/book`, changeFrequency: "monthly", priority: 0.6 },
     { url: `${base}/locations`, changeFrequency: "weekly", priority: 0.6 },
-    { url: `${base}/making-of`, changeFrequency: "monthly", priority: 0.6 },
+    // Only while a film is showing; each can be hidden in the admin.
+    ...((await hasMakingOfFilms())
+      ? [{ url: `${base}/making-of`, changeFrequency: "monthly" as const, priority: 0.6 }]
+      : []),
   ];
 
   const allProducts = await catalogue.product.findMany({

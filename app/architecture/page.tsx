@@ -11,6 +11,7 @@ import {
   InstagramLifecycle,
   MutationExplainer,
   MutationScores,
+  OutsideGrades,
   PasskeySignIn,
   RecoveryLayers,
   ScanSchedule,
@@ -145,7 +146,8 @@ export default function ArchitecturePage() {
             <strong>Proxy</strong> gives each page request a fresh CSP nonce ·{" "}
             <strong>Server Components</strong> render every page per request ·{" "}
             <strong>Route handlers</strong> <Code>/api/buy</Code> <Code>/api/contact</Code>{" "}
-            <Code>/api/book</Code> <Code>/api/track</Code> <Code>/api/og-image</Code>{" "}
+            <Code>/api/book</Code> <Code>/api/commissions</Code> <Code>/api/track</Code>{" "}
+            <Code>/api/og-image</Code>{" "}
             <Code>/api/csp-report</Code> <Code>/api/version</Code> <Code>/api/health</Code>{" "}
             <Code>/api/cron/*</Code> · <strong>Server actions</strong> for the admin (session-checked)
           </Tier>
@@ -157,8 +159,8 @@ export default function ArchitecturePage() {
           </Tier>
           <Down />
           <Tier title="Neon Postgres (serverless)" accent>
-            Product · MakingOf · InstagramPost · AnalyticsEvent · ExcludedVisitor · FormRateLimit ·
-            HealthState · CspViolation · ErrorReport · AdminPasskey
+            Product · MakingOf · CommissionExample · InstagramPost · AnalyticsEvent · ExcludedVisitor ·
+            FormRateLimit · HealthState · CspViolation · ErrorReport · AdminPasskey
           </Tier>
           <p className="text-xs font-semibold uppercase tracking-wider text-gray-600 mt-6 mb-2">
             Alongside the database
@@ -338,6 +340,13 @@ export default function ArchitecturePage() {
             <Field k="description · seconds" v="caption and running time" />
             <Field k="visible · sortOrder" v="publishing and order" />
           </Entity>
+          <Entity name="CommissionExample" note="Past commissions on /commissions; deliberately not a Product">
+            <Field k="kind" v="pet | portrait" />
+            <Field k="name · subject" v="the subject's name and what they are; never the client" />
+            <Field k="medium · size" v="free text for the caption" />
+            <Field k="image · blurDataURL" v="private store, commissions/; metadata stripped, artist's copyright" />
+            <Field k="visible · sortOrder" v="shown once the client agrees; admin order" />
+          </Entity>
           <Entity name="AnalyticsEvent" note="One row per page view or action">
             <Field k="kind · action" v="pageview | action (buy_open, product_click, …)" />
             <Field k="path · productId · referrer" v="what, and from where" />
@@ -392,9 +401,9 @@ export default function ArchitecturePage() {
           itself (<Code>lib/order.ts</Code>) and refuses a hidden or sold-out work, a size the
           work isn&rsquo;t sold in, or a pack with the wrong images, so no posted text can reach an
           email. It then sends the enquiry to the artist, with <Code>Reply-To</Code> set to the
-          buyer, and a confirmation to the buyer. No payment is taken on the site. Contact and booking
-          (<Code>/api/contact</Code>, <Code>/api/book</Code>) follow the same pattern. All three
-          forms carry a hidden honeypot field; a submission that fills it gets a success response
+          buyer, and a confirmation to the buyer. No payment is taken on the site. Contact, booking
+          and the commission quote request (<Code>/api/contact</Code>, <Code>/api/book</Code>,{" "}
+          <Code>/api/commissions</Code>) follow the same pattern. All four forms carry a hidden honeypot field; a submission that fills it gets a success response
           and sends nothing, so a bot learns nothing from being caught. Because that reply is
           identical, the page can&rsquo;t tell a sent message from a caught bot, so the routes
           record the outcome themselves (<Code>lib/server-event.ts</Code>): &ldquo;Contact form
@@ -412,6 +421,19 @@ export default function ArchitecturePage() {
           and XMP (pure JS; no exiftool in a serverless function), uploads to Blob under{" "}
           <Code>paintings/</Code> or <Code>photographs/</Code>, and writes the row. The work is
           live on the next request.
+        </Flow>
+        <Flow title="Commissions: examples and quote requests">
+          <Code>/commissions</Code> shows past commissions (pets and portraits), the terms and a
+          quote request; nothing is priced, every commission is quoted. The examples are their own
+          table, <Code>CommissionExample</Code>, not a kind of <Code>Product</Code>: the galleries,
+          sitemap entries, Buy Now, the Instagram queue and the engagement ranking all read{" "}
+          <Code>Product</Code>, and a commissioned portrait must never appear for sale because one
+          of them forgot a filter. The admin adds, edits, hides and reorders them at{" "}
+          <Code>/admin/commissions</Code>. Each image is re-encoded with sharp like a
+          collector&rsquo;s photo (the client&rsquo;s own photo of their dog may carry their
+          home&rsquo;s GPS) and then stamped with the artist&rsquo;s copyright, since the painting
+          is the artist&rsquo;s. An example names the subject, never the client. The quote request
+          takes no uploads: the reply asks for photos, so nothing a stranger sends is stored.
         </Flow>
         <Flow title="Attach a collector&rsquo;s photo">
           A photo of a work hanging in a buyer&rsquo;s home replaces the generated room mockup on
@@ -465,10 +487,10 @@ export default function ArchitecturePage() {
         <ul className="list-disc pl-5 space-y-2">
           <li>
             <strong>Two Blob stores, public and private.</strong> Admin uploads (a new
-            work&rsquo;s image, inspiration photos, collectors&rsquo; photos) go to a{" "}
-            <em>private</em> store and are held as <Code>/media/&hellip;</Code> paths, served by{" "}
-            <Code>app/media</Code> only while a visible work uses the file, or to the signed-in
-            admin. A work uploaded hidden can&rsquo;t be seen before it&rsquo;s published, and
+            work&rsquo;s image, inspiration photos, collectors&rsquo; photos, commission examples)
+            go to a <em>private</em> store and are held as <Code>/media/&hellip;</Code> paths,
+            served by <Code>app/media</Code> only while a visible work or commission example uses
+            the file, or to the signed-in admin. A work uploaded hidden can&rsquo;t be seen before it&rsquo;s published, and
             hiding it, or removing a collector&rsquo;s photo, stops the file being served instead
             of leaving it readable by anyone with the URL (within the caches: ten minutes at the
             CDN, a few hours in the image optimiser). The route serves only plain files in the
@@ -504,7 +526,10 @@ export default function ArchitecturePage() {
             <strong>Films stay on Blob</strong> as MP4s with the index at the front (faststart),
             so playback begins before the file has fully arrived. The page renders a still
             poster; no <Code>&lt;video&gt;</Code> element exists until the visitor presses play, so
-            no film data is downloaded unless asked for.
+            no film data is downloaded unless asked for. Each film can be hidden or shown at{" "}
+            <Code>/admin/films</Code>: a hidden one leaves the Making Of page, its work&rsquo;s
+            page and the map, and with none showing the Making Of link leaves the menu and the
+            sitemap.
           </li>
           <li>
             <strong>Share images</strong> come from <Code>/api/og-image</Code>, which composes a
@@ -596,8 +621,8 @@ export default function ArchitecturePage() {
               </GuardRow>
               <GuardRow name="Dependency audit">
                 a production dependency has a high or critical security advisory (
-                <Code>audit-ci</Code>, the first step in CI), other than the Prisma CLI exception
-                named in <Code>audit-ci.jsonc</Code>.
+                <Code>audit-ci</Code>, the first step in CI). Nothing is allowlisted in{" "}
+                <Code>audit-ci.jsonc</Code>.
               </GuardRow>
               <GuardRow name="Lint">
                 ESLint reports an error. It wasn&rsquo;t in CI until two dependency upgrades that
@@ -715,7 +740,9 @@ export default function ArchitecturePage() {
           test&rsquo;s fake database returned a work whatever it was asked, so deleting{" "}
           <Code>visible: true</Code>{" "}from the route&rsquo;s query, which would have served a
           hidden work&rsquo;s image to anyone, passed every test. The fake now answers the query
-          against a small catalogue, and the route scores 94%. Adding the admin sign-in showed
+          against a small catalogue, and the route scores 98%: it also refuses an empty{" "}
+          <Code>select</Code>, as Prisma does, after the commission examples showed one passing
+          unnoticed. Adding the admin sign-in showed
           it was barely unit-tested at all: the passkey ceremonies scored 2% and the session
           cookie 0%, because only the end-to-end suite exercised them and every unit test faked
           the session. Their refusals are pinned now (a stale or reused challenge, an unknown
@@ -827,6 +854,7 @@ export default function ArchitecturePage() {
 
       {/* ── 10 · Security testing & resilience ───────────────────────── */}
       <Section n={10} id="security-testing" title="Security testing & resilience" lead="Automated attacks, scans and outside checks that keep the defences honest.">
+        <OutsideGrades />
         <CoverageGrid />
         <p>
           What is in place, and what is not, stated plainly, including the things that
@@ -974,15 +1002,24 @@ export default function ArchitecturePage() {
         </p>
         <p>
           Three outside checks look at what any visitor&rsquo;s browser or mail server sees, and
-          were run by hand on 11 November 2026. <strong>Mozilla&rsquo;s HTTP Observatory</strong>
+          were last run by hand on 16 November 2026 (the grades are in the figure at the top of
+          this section). <strong>Mozilla&rsquo;s HTTP Observatory</strong>
           {" "}gives the headers <strong>A+</strong>, 130 out of 100, all 12 tests passed. Its
           three suggestions were each declined for a reason: inline styles stay allowed because
           React and <Code>next/image</Code> write <Code>style</Code> attributes (scripts stay
           locked to a nonce); HSTS isn&rsquo;t preloaded because that would commit every
           subdomain to HTTPS for good; and there is no Cross-Origin-Embedder-Policy because it
           would block the locations map and analytics. <strong>SSL Labs</strong> gives the TLS
-          set-up an <strong>A</strong>: TLS&nbsp;1.3, post-quantum key exchange, and a CAA record
-          naming who may issue the domain&rsquo;s certificates. For email, SPF covers both
+          set-up an <strong>A</strong>: TLS&nbsp;1.2 and 1.3 only, forward secrecy throughout,
+          and post-quantum key exchange (<Code>X25519MLKEM768</Code>). It isn&rsquo;t an A+
+          because its own request to the site is answered 403, by Vercel&rsquo;s bot protection,
+          and that answer carries no HSTS header; a browser&rsquo;s does (two years). The 403
+          comes and goes: on a re-run the same day one address, and the bare domain, scored A+.
+          CAA records on the bare domain (16 November 2026) limit who may issue its certificates
+          to the four authorities Vercel uses (Let&rsquo;s Encrypt, GlobalSign, Google Trust
+          Services, Sectigo); <Code>www</Code>{" "}follows Vercel&rsquo;s own, which name the
+          same four. Until then any certificate authority could issue for the bare domain. For
+          email, SPF covers both
           senders (Squarespace&rsquo;s forwarding on the domain, Resend on its{" "}
           <Code>send.</Code> subdomain), Resend signs with DKIM, and DMARC is published with
           reports going to two monitors. Its policy stays at <Code>p=none</Code>, monitoring
@@ -1036,12 +1073,11 @@ export default function ArchitecturePage() {
           newest one.
         </p>
         <p>
-          One exception is allowlisted by name in <Code>audit-ci.jsonc</Code>: the Prisma
-          CLI&rsquo;s own dependencies (deepmerge-ts, mysql2), which no 7.x release fixes and
-          which run only during the build, never when a visitor loads a page. Each entry is
-          pinned to its path under <Code>prisma</Code>, so the same advisory arriving through
-          anything else still fails. Until October 2026 the whole audit was held at critical
-          to make room for it.
+          Nothing is allowlisted in <Code>audit-ci.jsonc</Code>. Until November 2026 two
+          advisories in the Prisma CLI&rsquo;s build-time dependencies (deepmerge-ts, mysql2)
+          were, each pinned to its path under <Code>prisma</Code> so the same advisory arriving
+          through anything else still failed; Prisma 7.10.1 dropped both. Before October 2026
+          the whole audit was held at critical to make room for them.
         </p>
         <h3 className="font-semibold text-gray-800">Not done yet</h3>
         <div className="overflow-x-auto">
@@ -1239,7 +1275,8 @@ export default function ArchitecturePage() {
           <li>
             <strong>A snapshot every six hours, in a private store.</strong> A cron writes a JSON
             snapshot of <Code>Product</Code>, the films&rsquo; rows, the Instagram queue, the
-            excluded browsers and the retired URL slugs (<Code>lib/backup.ts</Code>) to a{" "}
+            excluded browsers, the retired URL slugs and the commission examples
+            (<Code>lib/backup.ts</Code>) to a{" "}
             <em>private</em> Blob store, which can&rsquo;t be read without its token, keeps a
             week, and emails the owner if a write fails. Six hours because that is exactly
             Neon&rsquo;s point-in-time window on the Free plan: past it, a snapshot is the only
@@ -1380,11 +1417,14 @@ export default function ArchitecturePage() {
   locations/  making-of/           map of where works were made · films
   gift-shop/                       calendar, card and postcard pack builders
   about/  faq/  contact/  book/    static and form pages
+  commissions/                     examples, terms and the quote request
   for-artists/  architecture/      the pitch · this page (+ /tests, the inventory)
   admin/                           Content Management System, Instagram queue,
-                                   analytics dashboard, security (passkeys)
-  actions/                         server actions: admin, passkey, instagram, analytics
-  api/                             buy · contact · book · track · og-image ·
+                                   analytics dashboard, commission examples,
+                                   security (passkeys)
+  actions/                         server actions: admin, passkey, instagram,
+                                   analytics, commissions
+  api/                             buy · contact · book · commissions · track · og-image ·
                                    csp-report · client-error · version ·
                                    health · cron/*
   home/p/[slug]/                   legacy Squarespace URLs: redirect, or 410 Gone
@@ -1416,6 +1456,7 @@ lib/
   instagram-publish.ts             two-step Graph API publish, reconciled by container
   blob-cleanup.ts                  reference counting before delete
   home-photo.ts                    re-encode collectors' photos (strips GPS)
+  commissions.ts                   commission kinds, terms, captions, field rules
   image-copyright.ts               stamp the artist's notice on uploads
   availability.ts · json-ld.ts     sold-out rules · structured data
 data/                              siteConfig, price table, seed catalogue, blurs
@@ -1429,7 +1470,7 @@ scripts/                           films, mockups, blurs, copyright, backups, ba
 __tests__/                         Vitest unit, component and source-scan tests
 e2e/                               Playwright specs, shared fixture (test.ts), axe scans, db-guard
 .github/workflows/e2e.yml          audit-ci, lint, build, E2E on every PR; + ZAP scan on main
-audit-ci.jsonc                     the audit's one named exception (Prisma CLI)
+audit-ci.jsonc                     the audit's settings (high and above; no exceptions)
 .github/workflows/static-analysis.yml  Gitleaks (history) + Semgrep (source), every PR
 data/test-inventory.json           every test by name, written by the build
 .github/workflows/smoke.yml        post-deploy check of production, opens an issue on failure

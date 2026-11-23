@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { siteConfig } from "@/data/siteConfig";
+import { hasMakingOfFilms } from "@/lib/making-of";
 
 export const metadata = {
   title: `About | ${siteConfig.brand}`,
@@ -8,7 +9,9 @@ export const metadata = {
     `${siteConfig.artist} has been painting ${siteConfig.locality} since 2008. Every piece is based on a real place, reproduced as a fine art print.`,
 };
 
-export default function AboutPage() {
+export default async function AboutPage() {
+  // The films can each be hidden in the admin; with none showing, don't point at an empty page.
+  const showMakingOf = await hasMakingOfFilms();
   return (
     <div className="max-w-3xl mx-auto px-4 py-12">
       <h1 className="text-3xl font-semibold text-gray-800 mb-10">About</h1>
@@ -45,11 +48,17 @@ export default function AboutPage() {
           </p>
           <p>
             Each painting starts as an original photograph, which he then paints digitally in
-            Rebelle. You can watch that happen on the{" "}
-            <Link href="/making-of" className="text-brand underline underline-offset-2 hover:no-underline">
-              Making Of
-            </Link>{" "}
-            page. Each is offered as a limited-edition fine art print. The goal is simple: to put
+            Rebelle.{" "}
+            {showMakingOf && (
+              <>
+                You can watch that happen on the{" "}
+                <Link href="/making-of" className="text-brand underline underline-offset-2 hover:no-underline">
+                  Making Of
+                </Link>{" "}
+                page.{" "}
+              </>
+            )}
+            Each is offered as a limited-edition fine art print. The goal is simple: to put
             a piece of the Bay on your wall that actually feels like being there.
           </p>
           <p>

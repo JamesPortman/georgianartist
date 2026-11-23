@@ -5,10 +5,13 @@
  * on one page.
  */
 
-export const FAQS = [
+import Link from "next/link";
+
+export const FAQS: { q: string; a: string; link?: { href: string; label: string } }[] = [
   {
     q: "Do you take commissions?",
-    a: "Yes, we can create a work based on your idea or photo. Contact us for a quote.",
+    a: "Yes: pets, portraits and places, each quoted individually. 50% deposit to start, typically 4 to 6 weeks.",
+    link: { href: "/commissions", label: "See examples and request a quote" },
   },
   {
     q: "How long does order processing take?",
@@ -35,7 +38,7 @@ export default function Faq() {
         Frequently Asked Questions
       </h2>
       <div className="space-y-2">
-        {FAQS.map(({ q, a }) => (
+        {FAQS.map(({ q, a, link }) => (
           <details
             key={q}
             className="group border border-gray-200 rounded overflow-hidden"
@@ -50,6 +53,15 @@ export default function Faq() {
             </summary>
             <div className="px-4 pb-4 pt-1 text-gray-600 leading-relaxed text-sm border-t border-gray-100">
               {a}
+              {link && (
+                <>
+                  {" "}
+                  <Link href={link.href} className="text-brand underline underline-offset-2 hover:no-underline">
+                    {link.label}
+                  </Link>
+                  .
+                </>
+              )}
             </div>
           </details>
         ))}

@@ -11,6 +11,7 @@ const db = vi.hoisted(() => ({
   }[],
   posts: [] as { imageUrl: string }[],
   films: [] as { videoUrl: string; posterUrl: string | null }[],
+  commissions: [] as { image: string }[],
 }));
 
 vi.mock("@vercel/blob", () => ({ del }));
@@ -19,6 +20,7 @@ vi.mock("@/lib/db", () => ({
     product: { findMany: async () => db.products },
     instagramPost: { findMany: async () => db.posts },
     makingOf: { findMany: async () => db.films },
+    commissionExample: { findMany: async () => db.commissions },
   },
 }));
 
@@ -36,6 +38,7 @@ beforeEach(() => {
   db.products = [];
   db.posts = [];
   db.films = [];
+  db.commissions = [];
 });
 
 /**
@@ -166,5 +169,20 @@ describe("the catalogue's own images", () => {
   it("count a product's mockup as a reference", async () => {
     db.products = [{ ...product("lora-bay"), mockupImage: MOCKUP }];
     expect(await countReferences(MOCKUP)).toBe(1);
+  });
+});
+
+describe("commission examples", () => {
+  const EXAMPLE = "/media/commissions/bailey-abc.jpg";
+
+  it("count as a reference, so a file an example shows is never deleted", async () => {
+    db.commissions = [{ image: EXAMPLE }];
+    expect(await countReferences(EXAMPLE)).toBe(1);
+    expect(await countReferences(`${EXAMPLE}?v=2`)).toBe(1);
+  });
+
+  it("don't count a different file", async () => {
+    db.commissions = [{ image: "/media/commissions/other.jpg" }];
+    expect(await countReferences(EXAMPLE)).toBe(0);
   });
 });

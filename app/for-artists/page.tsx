@@ -113,7 +113,11 @@ export default function ForArtistsPage() {
           <Link href="/making-of" className="text-brand underline underline-offset-2 hover:no-underline">
             &ldquo;making of&rdquo; films
           </Link>{" "}
-          on a work&rsquo;s own page, each linked to its spot on the map and back; an archive that keeps sold-out work on the site as
+          on a work&rsquo;s own page, each linked to its spot on the map and back; a{" "}
+          <Link href="/commissions" className="text-brand underline underline-offset-2 hover:no-underline">
+            commissions page
+          </Link>{" "}
+          with past pet and portrait commissions, your terms and a quote request; an archive that keeps sold-out work on the site as
           proof it sells, rather than deleting it; and full search, filter and sort.
         </li>
         <li>

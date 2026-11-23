@@ -151,6 +151,37 @@ model MakingOf {
   @@index([productId])
 }
 
+/// An example on /commissions: a painting made to order, of someone's pet or
+/// of a person. Its own table, not a Product type: every gallery, the sitemap,
+/// Buy Now, the Instagram queue and the engagement ranking read Product, and a
+/// commissioned portrait must never turn up for sale because one of them
+/// forgot to exclude it.
+///
+/// Named by the subject only ("Bailey"), never the client: that was the
+/// owner's decision (Nov 2026), so publishing needs only the client's OK, not
+/// their name. The painting is the artist's work, so its file carries the
+/// artist's copyright like any other upload.
+model CommissionExample {
+  id          String   @id @default(cuid())
+  /// "pet" | "portrait" (lib/commissions.ts)
+  kind        String
+  /// The subject's name, e.g. "Bailey"
+  name        String
+  /// What the subject is, e.g. "Golden retriever"
+  subject     String?
+  /// e.g. "Oil on canvas"
+  medium      String?
+  /// e.g. "12 x 16 in"
+  size        String?
+  /// /media/commissions/<file> (private store) or a public Blob URL
+  image       String
+  blurDataURL String?
+  visible     Boolean  @default(false)
+  sortOrder   Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
 /// Browsers whose traffic is not counted — the artist's own, mostly.
 ///
 /// Keyed on the anonymous analytics cookie rather than on city or IP. The
