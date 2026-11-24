@@ -9,7 +9,10 @@ export const dynamic = "force-dynamic";
 
 export default async function AdminFilmsPage() {
   await requireAuth();
-  const films = await prisma.makingOf.findMany({ orderBy: [{ sortOrder: "asc" }, { title: "asc" }] });
+  // Showing first, then by name. This page is for finding a film and switching
+  // it on or off, so the two groups matter more than the public order; that
+  // order is sortOrder, and /making-of still applies it (lib/making-of.ts).
+  const films = await prisma.makingOf.findMany({ orderBy: [{ visible: "desc" }, { title: "asc" }] });
   const ids = films.map((f) => f.productId).filter((v): v is string => !!v);
   const works = ids.length
     ? await prisma.product.findMany({ where: { id: { in: ids } }, select: { id: true, title: true } })
@@ -38,13 +41,13 @@ export default async function AdminFilmsPage() {
 
       <main className="max-w-4xl mx-auto px-4 py-8 space-y-4">
         <p className="text-sm text-gray-500">
-          The making-of films, in the order they appear on{" "}
+          The making-of films, the ones showing first and then by name. {shown} of {films.length}{" "}
+          showing. A hidden film leaves{" "}
           <Link href="/making-of" className="underline underline-offset-2 hover:no-underline">
             /making-of
           </Link>
-          . {shown} of {films.length} showing. A hidden film leaves that page, its work&apos;s own
-          page and its pin on the Locations map; it stays here, and its files are kept. When no
-          film is showing, the Making Of link leaves the menu too.
+          , its work&apos;s own page and its pin on the Locations map; it stays here, and its files
+          are kept. When no film is showing, the Making Of link leaves the menu too.
         </p>
         <FilmListClient
           films={films.map((f) => ({

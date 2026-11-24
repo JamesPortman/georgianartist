@@ -156,8 +156,11 @@ const FILMS: Film[] = [
     file: "Bruce Trail in the Grey Highlands - making of.mp4",
     productId: "bruce-trail",
     description:
-      "A cascade over moss-covered boulders in the Grey Highlands, the rocks massed in before the white water runs over them.",
+      "A cascade over moss-covered boulders in the Grey Highlands, painted one area at a time: the mossy rocks massed in first, then the white water run over them and the ferns and foreground stones last.",
     seconds: 56,
+    // Nov 2026: repainted with the D settings and re-filmed by hand.
+    replace: true,
+    version: 3,
   },
   {
     id: "bruce-trail-epping",
@@ -228,8 +231,13 @@ const FILMS: Film[] = [
     file: "Inglis Falls - making of.mp4",
     productId: "inglis-falls",
     description:
-      "The Sydenham River dropping off the escarpment south of Owen Sound: the rock staircase blocked in first, the white water last.",
+      "The Sydenham River dropping off the escarpment south of Owen Sound, worked one area at a time: the centre of the falls first, then the rock ledges and the foreground stones, ending on the raised texture of the print.",
     seconds: 56,
+    // Nov 2026: the Inglis Falls D painting (the one printed with texture), re-filmed.
+    replace: true,
+    // 3, not the default 2: other films already sit at -v2, and a reused path
+    // would be served from the CDN's cache.
+    version: 3,
   },
   {
     id: "top-of-blue-mountain",
