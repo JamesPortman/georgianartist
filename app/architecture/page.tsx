@@ -345,6 +345,7 @@ export default function ArchitecturePage() {
             <Field k="name · subject" v="the subject's name and what they are; never the client" />
             <Field k="medium · size" v="free text for the caption" />
             <Field k="image · blurDataURL" v="private store, commissions/; metadata stripped, artist's copyright" />
+            <Field k="filmUrl · filmPosterUrl" v="optional making-of film and its still; public store, commissions/; set by a script" />
             <Field k="visible · sortOrder" v="shown once the client agrees; admin order" />
           </Entity>
           <Entity name="AnalyticsEvent" note="One row per page view or action">
@@ -432,7 +433,10 @@ export default function ArchitecturePage() {
           <Code>/admin/commissions</Code>. Each image is re-encoded with sharp like a
           collector&rsquo;s photo (the client&rsquo;s own photo of their dog may carry their
           home&rsquo;s GPS) and then stamped with the artist&rsquo;s copyright, since the painting
-          is the artist&rsquo;s. An example names the subject, never the client. The quote request
+          is the artist&rsquo;s. An example names the subject, never the client. An example can
+          carry its making-of film (public store, <Code>commissions/</Code>, added by a script);
+          it then shows the click-to-load film player, whose still is the uncropped painting,
+          instead of its cropped image. The quote request
           takes no uploads: the reply asks for photos, so nothing a stranger sends is stored.
         </Flow>
         <Flow title="Attach a collector&rsquo;s photo">

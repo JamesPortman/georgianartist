@@ -115,6 +115,8 @@ export async function deleteCommissionAction(id: string) {
   if (!existing) return;
   await prisma.commissionExample.delete({ where: { id } });
   await releaseBlob(existing.image);
+  await releaseBlob(existing.filmUrl);
+  await releaseBlob(existing.filmPosterUrl);
   refresh();
 }
 

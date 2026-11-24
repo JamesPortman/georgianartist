@@ -122,7 +122,7 @@ async function collectReferences(): Promise<{ refs: Map<string, string[]>; count
     }),
     prisma.instagramPost.findMany({ select: { id: true, status: true, imageUrl: true } }),
     prisma.makingOf.findMany({ select: { id: true, videoUrl: true, posterUrl: true } }),
-    prisma.commissionExample.findMany({ select: { id: true, image: true } }),
+    prisma.commissionExample.findMany({ select: { id: true, image: true, filmUrl: true, filmPosterUrl: true } }),
   ]);
 
   const refs = new Map<string, string[]>();
@@ -143,7 +143,11 @@ async function collectReferences(): Promise<{ refs: Map<string, string[]>; count
     add(f.videoUrl, `MakingOf.video:${f.id}`);
     add(f.posterUrl, `MakingOf.poster:${f.id}`);
   }
-  for (const c of commissions) add(c.image, `CommissionExample.image:${c.id}`);
+  for (const c of commissions) {
+    add(c.image, `CommissionExample.image:${c.id}`);
+    add(c.filmUrl, `CommissionExample.film:${c.id}`);
+    add(c.filmPosterUrl, `CommissionExample.filmPoster:${c.id}`);
+  }
 
   // The repository counts too: a Blob URL typed into a page or a data file is
   // as live as one in a row. Tracked text files only; images can't hold one.

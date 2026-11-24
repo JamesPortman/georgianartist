@@ -176,6 +176,12 @@ model CommissionExample {
   /// /media/commissions/<file> (private store) or a public Blob URL
   image       String
   blurDataURL String?
+  /// Optional making-of film of the painting, and its still: public Blob URLs
+  /// under commissions/ (too large for the private store's /media route).
+  /// Set by a script, not the admin; the poster is the finished painting, so
+  /// an example with a film shows the film in place of its image.
+  filmUrl       String?
+  filmPosterUrl String?
   visible     Boolean  @default(false)
   sortOrder   Int      @default(0)
   createdAt   DateTime @default(now())

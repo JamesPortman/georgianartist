@@ -23,7 +23,7 @@ export default async function CommissionsPage() {
   const examples = await catalogue.commissionExample.findMany({
     where: { visible: true },
     orderBy: { sortOrder: "asc" },
-    select: { id: true, kind: true, name: true, subject: true, medium: true, size: true, image: true, blurDataURL: true },
+    select: { id: true, kind: true, name: true, subject: true, medium: true, size: true, image: true, blurDataURL: true, filmUrl: true, filmPosterUrl: true },
   });
 
   return (

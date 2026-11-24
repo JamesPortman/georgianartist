@@ -444,6 +444,12 @@
         },
         {
           "name": "commission examples › don't count a different file"
+        },
+        {
+          "name": "commission examples › count their film and its still, so neither is deleted while the example shows them"
+        },
+        {
+          "name": "commission examples › don't count a film nobody has"
         }
       ]
     },
@@ -758,6 +764,17 @@
       ]
     },
     {
+      "file": "__tests__/CommissionExamples.test.tsx",
+      "tests": [
+        {
+          "name": "CommissionExamples › shows an example without a film as its image and caption"
+        },
+        {
+          "name": "CommissionExamples › shows an example with a film as the film, two columns wide, with no <video> until played"
+        }
+      ]
+    },
+    {
       "file": "__tests__/commissions.test.ts",
       "tests": [
         {
@@ -795,6 +812,18 @@
         },
         {
           "name": "the terms › are the owner's: half up front, the rest before shipping, four to six weeks"
+        },
+        {
+          "name": "exampleFilm › is null when the example has no film"
+        },
+        {
+          "name": "exampleFilm › shapes the film for the shared player, keyed by the subject's name"
+        },
+        {
+          "name": "exampleFilm › slugs a name with spaces and punctuation, and falls back to the row id"
+        },
+        {
+          "name": "exampleFilm › has no still when none was given"
         }
       ]
     },

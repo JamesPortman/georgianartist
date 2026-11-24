@@ -11,7 +11,7 @@ const db = vi.hoisted(() => ({
   }[],
   posts: [] as { imageUrl: string }[],
   films: [] as { videoUrl: string; posterUrl: string | null }[],
-  commissions: [] as { image: string }[],
+  commissions: [] as { image: string; filmUrl?: string | null; filmPosterUrl?: string | null }[],
 }));
 
 vi.mock("@vercel/blob", () => ({ del }));
@@ -184,5 +184,18 @@ describe("commission examples", () => {
   it("don't count a different file", async () => {
     db.commissions = [{ image: "/media/commissions/other.jpg" }];
     expect(await countReferences(EXAMPLE)).toBe(0);
+  });
+  it("count their film and its still, so neither is deleted while the example shows them", async () => {
+    const FILM = "https://store.public.blob.vercel-storage.com/commissions/duncan-making-of.mp4";
+    const POSTER = "https://store.public.blob.vercel-storage.com/commissions/duncan-poster.jpg";
+    db.commissions = [{ image: EXAMPLE, filmUrl: FILM, filmPosterUrl: POSTER }];
+    expect(await countReferences(FILM)).toBe(1);
+    expect(await countReferences(POSTER)).toBe(1);
+    expect(await countReferences(EXAMPLE)).toBe(1);
+  });
+
+  it("don't count a film nobody has", async () => {
+    db.commissions = [{ image: EXAMPLE, filmUrl: null, filmPosterUrl: null }];
+    expect(await countReferences("https://store.public.blob.vercel-storage.com/commissions/x.mp4")).toBe(0);
   });
 });

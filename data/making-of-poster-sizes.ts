@@ -24,6 +24,8 @@ export type PosterSize = { width: number; height: number };
 export const FALLBACK_POSTER_SIZE: PosterSize = { width: 1920, height: 1440 };
 
 export const posterSizes: Record<string, PosterSize> = {
+  // Commission examples' films (lib/commissions.ts exampleFilm), keyed commission-<name>.
+  "commission-duncan": { width: 1920, height: 1392 },
   "local-farm-sunflowers": { width: 1920, height: 1440 },
   "manitoulin-island": { width: 1920, height: 1440 },
   "peasemarsh": { width: 1920, height: 1440 },

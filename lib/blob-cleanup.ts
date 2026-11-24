@@ -55,7 +55,7 @@ export async function countReferences(
     }),
     prisma.instagramPost.findMany({ select: { imageUrl: true } }),
     prisma.makingOf.findMany({ select: { videoUrl: true, posterUrl: true } }),
-    prisma.commissionExample.findMany({ select: { image: true } }),
+    prisma.commissionExample.findMany({ select: { image: true, filmUrl: true, filmPosterUrl: true } }),
   ]);
 
   let n = 0;
@@ -71,7 +71,11 @@ export async function countReferences(
     if (f.videoUrl && key(f.videoUrl) === target) n++;
     if (f.posterUrl && key(f.posterUrl) === target) n++;
   }
-  for (const c of commissions) if (key(c.image) === target) n++;
+  for (const c of commissions) {
+    if (key(c.image) === target) n++;
+    if (c.filmUrl && key(c.filmUrl) === target) n++;
+    if (c.filmPosterUrl && key(c.filmPosterUrl) === target) n++;
+  }
   return n;
 }
 

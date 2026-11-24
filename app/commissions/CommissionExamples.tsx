@@ -2,7 +2,8 @@
 
 import { useState } from "react";
 import Image from "next/image";
-import { altOf, captionOf, COMMISSION_KINDS, KIND_LABEL, type CommissionKind } from "@/lib/commissions";
+import MakingOfVideo from "@/components/MakingOfVideo";
+import { altOf, captionOf, COMMISSION_KINDS, exampleFilm, KIND_LABEL, type CommissionKind } from "@/lib/commissions";
 
 export type PublicExample = {
   id: string;
@@ -13,6 +14,8 @@ export type PublicExample = {
   size: string | null;
   image: string;
   blurDataURL: string | null;
+  filmUrl?: string | null;
+  filmPosterUrl?: string | null;
 };
 
 /** The examples, with a Pets / Portraits switch when there are both. */
@@ -46,7 +49,20 @@ export default function CommissionExamples({ examples }: { examples: PublicExamp
         )}
       </div>
       <ul className="grid gap-8 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
-        {shown.map((e) => (
+        {shown.map((e) => {
+          const film = exampleFilm(e);
+          // An example with a film shows the film: its still is the finished
+          // painting, uncropped, so it takes two columns rather than a 4:5 crop.
+          return film ? (
+          <li key={e.id} className="sm:col-span-2">
+            <figure>
+              <MakingOfVideo film={film} heading={null} />
+              <figcaption className="mt-2 text-sm text-gray-600">
+                {captionOf(e)}. Press play to watch it being painted.
+              </figcaption>
+            </figure>
+          </li>
+          ) : (
           <li key={e.id}>
             <figure>
               <div className="relative aspect-[4/5] bg-gray-100 rounded-sm overflow-hidden">
@@ -62,7 +78,8 @@ export default function CommissionExamples({ examples }: { examples: PublicExamp
               <figcaption className="mt-2 text-sm text-gray-600">{captionOf(e)}</figcaption>
             </figure>
           </li>
-        ))}
+          );
+        })}
       </ul>
     </section>
   );

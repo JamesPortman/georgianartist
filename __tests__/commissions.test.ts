@@ -3,6 +3,7 @@ import {
   altOf,
   captionOf,
   COMMISSION_TERMS,
+  exampleFilm,
   isCommissionKind,
   isRequestKind,
   parseExampleFields,
@@ -103,5 +104,38 @@ describe("the terms", () => {
   it("are the owner's: half up front, the rest before shipping, four to six weeks", () => {
     expect(COMMISSION_TERMS.deposit).toBe("50% deposit to start, balance before shipping.");
     expect(COMMISSION_TERMS.turnaround).toBe("Typically 4 to 6 weeks.");
+  });
+});
+
+describe("exampleFilm", () => {
+  const FILM = "https://store.public.blob.vercel-storage.com/commissions/duncan-making-of.mp4";
+  const POSTER = "https://store.public.blob.vercel-storage.com/commissions/duncan-poster.jpg";
+
+  it("is null when the example has no film", () => {
+    expect(exampleFilm({ id: "c1", name: "Bailey" })).toBeNull();
+    expect(exampleFilm({ id: "c1", name: "Bailey", filmUrl: null, filmPosterUrl: POSTER })).toBeNull();
+    expect(exampleFilm({ id: "c1", name: "Bailey", filmUrl: "  " })).toBeNull();
+  });
+
+  it("shapes the film for the shared player, keyed by the subject's name", () => {
+    expect(exampleFilm({ id: "c1", name: " Duncan ", filmUrl: ` ${FILM} `, filmPosterUrl: POSTER })).toEqual({
+      id: "commission-duncan",
+      title: "Duncan",
+      videoUrl: FILM,
+      posterUrl: POSTER,
+      description: null,
+      seconds: null,
+      productId: null,
+    });
+  });
+
+  it("slugs a name with spaces and punctuation, and falls back to the row id", () => {
+    expect(exampleFilm({ id: "c1", name: "Mr. Biscuit Jones", filmUrl: FILM })?.id).toBe("commission-mr-biscuit-jones");
+    expect(exampleFilm({ id: "c9", name: "!!!", filmUrl: FILM })?.id).toBe("commission-c9");
+  });
+
+  it("has no still when none was given", () => {
+    expect(exampleFilm({ id: "c1", name: "Duncan", filmUrl: FILM, filmPosterUrl: " " })?.posterUrl).toBeNull();
+    expect(exampleFilm({ id: "c1", name: "Duncan", filmUrl: FILM })?.posterUrl).toBeNull();
   });
 });

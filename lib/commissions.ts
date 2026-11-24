@@ -54,6 +54,35 @@ export function altOf(e: ExampleCaption & { kind: string }): string {
   return `Commissioned painting of ${e.name.trim()}, ${what.toLowerCase()}`;
 }
 
+/** The parts of an example that make up its film. */
+export type ExampleFilmFields = {
+  id: string;
+  name: string;
+  filmUrl?: string | null;
+  filmPosterUrl?: string | null;
+};
+
+/**
+ * An example's making-of film, shaped for the shared player
+ * (components/MakingOfVideo), or null when it has none. Its id is
+ * `commission-<name>` so data/making-of-poster-sizes.ts can hold the still's
+ * size; it is not a MakingOf row and never appears on /making-of.
+ */
+export function exampleFilm(e: ExampleFilmFields) {
+  const videoUrl = e.filmUrl?.trim();
+  if (!videoUrl) return null;
+  const slug = e.name.trim().toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
+  return {
+    id: `commission-${slug || e.id}`,
+    title: e.name.trim(),
+    videoUrl,
+    posterUrl: e.filmPosterUrl?.trim() || null,
+    description: null,
+    seconds: null,
+    productId: null,
+  };
+}
+
 /** Field limits for an example, as entered in the admin. */
 export const EXAMPLE_MAX = { name: 60, subject: 100, medium: 100, size: 60 } as const;
 
