@@ -140,11 +140,7 @@ const FILMS: Film[] = [
     description:
       "The lily-pad pool at the Beaver River access point, worked from the back forward: the trunks and far bank first, the sunlit grass along the shore after them, and the pads floated on the water in the last passes.",
     seconds: 56,
-    // Nov 2026: repainted and re-filmed by hand, the Inglis Falls D process.
-    replace: true,
-    // 3, not the default 2: other films already sit at -v2, and a reused path
-    // would be served from the CDN's cache.
-    version: 3,
+    // Nov 2026: repainted and re-filmed by hand; published at -v3.
   },
   {
     id: "blue-mountain-sunset",
@@ -163,9 +159,7 @@ const FILMS: Film[] = [
     description:
       "A cascade over moss-covered boulders in the Grey Highlands, painted one area at a time: the mossy rocks massed in first, then the white water run over them and the ferns and foreground stones last.",
     seconds: 56,
-    // Nov 2026: repainted with the D settings and re-filmed by hand.
-    replace: true,
-    version: 3,
+    // Nov 2026: repainted with the D settings and re-filmed by hand; published at -v3.
   },
   {
     id: "bruce-trail-epping",
@@ -173,8 +167,13 @@ const FILMS: Film[] = [
     file: "Bruce Trail at Epping - making of.mp4",
     productId: "bruce-trail-epping",
     description:
-      "Deep snow on the conifers along the Bruce Trail at Epping, the dark trunks set against the sky before the snow is heaped on.",
+      "Snow-laden cedars along the Bruce Trail at Epping, the dark trunks set down first, the snow built up over them bough by bough, and the long blue shadows swept across the open foreground last.",
     seconds: 56,
+    // Nov 2026: repainted and re-filmed by hand, the Inglis Falls D process.
+    replace: true,
+    // 3, not the default 2: other films already sit at -v2, and a reused path
+    // would be served from the CDN's cache.
+    version: 3,
   },
   {
     id: "local-farm-sunflowers",
@@ -229,9 +228,7 @@ const FILMS: Film[] = [
     description:
       "The wide curtain of Bridal Veil Falls at Kagawong, painted one area at a time: the dark limestone ledges massed in first, then the water drawn down over them in long strokes.",
     seconds: 56,
-    // Nov 2026: repainted with the D settings and re-filmed by hand.
-    replace: true,
-    version: 3,
+    // Nov 2026: repainted with the D settings and re-filmed by hand; published at -v3.
   },
   {
     id: "inglis-falls",
@@ -241,11 +238,7 @@ const FILMS: Film[] = [
     description:
       "The Sydenham River dropping off the escarpment south of Owen Sound, worked one area at a time: the centre of the falls first, then the rock ledges and the foreground stones, ending on the raised texture of the print.",
     seconds: 56,
-    // Nov 2026: the Inglis Falls D painting (the one printed with texture), re-filmed.
-    replace: true,
-    // 3, not the default 2: other films already sit at -v2, and a reused path
-    // would be served from the CDN's cache.
-    version: 3,
+    // Nov 2026: the Inglis Falls D painting (the one printed with texture), re-filmed; published at -v3.
   },
   {
     id: "top-of-blue-mountain",
@@ -255,11 +248,7 @@ const FILMS: Film[] = [
     description:
       "Autumn maple at the top of Blue Mountain, the canopy massed in orange and gold first, then the dark branches drawn back through it and the sky opened in the gaps.",
     seconds: 56,
-    // Nov 2026: repainted and re-filmed by hand, the Inglis Falls D process.
-    replace: true,
-    // 3, not the default 2: other films already sit at -v2, and a reused path
-    // would be served from the CDN's cache.
-    version: 3,
+    // Nov 2026: repainted and re-filmed by hand; published at -v3.
   },
   {
     id: "ravenna-canola",
@@ -267,8 +256,13 @@ const FILMS: Film[] = [
     file: "Ravenna Canola - making of.mp4",
     productId: "ravenna-canola-painting",
     description:
-      "A canola field rolling over the Grey Highlands, the field blocked in dark green first and the yellow laid on over it.",
+      "A canola field in full bloom near Ravenna, the sky and the far ridge laid in long sweeps, the dark green crop massed underneath, and the yellow broken over it stroke by stroke to the end.",
     seconds: 56,
+    // Nov 2026: repainted and re-filmed by hand, the Inglis Falls D process.
+    replace: true,
+    // 3, not the default 2: other films already sit at -v2, and a reused path
+    // would be served from the CDN's cache.
+    version: 3,
   },
   {
     id: "the-grotto",
@@ -278,11 +272,7 @@ const FILMS: Film[] = [
     description:
       "The limestone cliffs and turquoise water of the Grotto near Tobermory, painted one area at a time: the grey rock massed in first, the open lake laid over it in long bands, and the shallow green water inside the cove left until last.",
     seconds: 56,
-    // Nov 2026: repainted and re-filmed by hand, the Inglis Falls D process.
-    replace: true,
-    // 3, not the default 2: other films already sit at -v2, and a reused path
-    // would be served from the CDN's cache.
-    version: 3,
+    // Nov 2026: repainted and re-filmed by hand; published at -v3.
   },
   {
     id: "blue-mountain-sunrise",
@@ -319,11 +309,7 @@ const FILMS: Film[] = [
     description:
       "Spruce bent under deep fresh snow near Singhampton, the snow built up bough by bough over the dark trees and the bare saplings drawn in over it at the end, the field swept flat and empty in front.",
     seconds: 56,
-    // Nov 2026: repainted and re-filmed by hand, the Inglis Falls D process.
-    replace: true,
-    // 3, not the default 2: other films already sit at -v2, and a reused path
-    // would be served from the CDN's cache.
-    version: 3,
+    // Nov 2026: repainted and re-filmed by hand; published at -v3.
   },
   {
     id: "delphi-point",
