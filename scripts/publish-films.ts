@@ -222,8 +222,11 @@ const FILMS: Film[] = [
     file: "Bridal Veil Falls - making of.mp4",
     productId: "bridal-veil-falls-painting",
     description:
-      "The wide curtain of Bridal Veil Falls at Kagawong, laid in from the dark limestone behind and finished with the falling water.",
+      "The wide curtain of Bridal Veil Falls at Kagawong, painted one area at a time: the dark limestone ledges massed in first, then the water drawn down over them in long strokes.",
     seconds: 56,
+    // Nov 2026: repainted with the D settings and re-filmed by hand.
+    replace: true,
+    version: 3,
   },
   {
     id: "inglis-falls",

@@ -29,7 +29,7 @@ export const posterSizes: Record<string, PosterSize> = {
   "local-farm-sunflowers": { width: 1920, height: 1440 },
   "manitoulin-island": { width: 1920, height: 1440 },
   "peasemarsh": { width: 1920, height: 1440 },
-  "bridal-veil-falls": { width: 1920, height: 1358 },
+  "bridal-veil-falls": { width: 1920, height: 1440 },
   "inglis-falls": { width: 1358, height: 1358 },
   "top-of-blue-mountain": { width: 1920, height: 960 },
   "ravenna-canola": { width: 1920, height: 1358 },
