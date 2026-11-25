@@ -138,8 +138,13 @@ const FILMS: Film[] = [
     file: "Beaver River Access - making of.mp4",
     productId: "beaver-river-access",
     description:
-      "The lily pads and reeds at the Beaver River access point, the water laid in first and the pads floated on last.",
+      "The lily-pad pool at the Beaver River access point, worked from the back forward: the trunks and far bank first, the sunlit grass along the shore after them, and the pads floated on the water in the last passes.",
     seconds: 56,
+    // Nov 2026: repainted and re-filmed by hand, the Inglis Falls D process.
+    replace: true,
+    // 3, not the default 2: other films already sit at -v2, and a reused path
+    // would be served from the CDN's cache.
+    version: 3,
   },
   {
     id: "blue-mountain-sunset",
@@ -248,8 +253,13 @@ const FILMS: Film[] = [
     file: "Top of Blue Mountain - making of.mp4",
     productId: "top-of-blue-mountain",
     description:
-      "Autumn maple at the top of Blue Mountain, built from the trunks outward until the canopy closes over.",
+      "Autumn maple at the top of Blue Mountain, the canopy massed in orange and gold first, then the dark branches drawn back through it and the sky opened in the gaps.",
     seconds: 56,
+    // Nov 2026: repainted and re-filmed by hand, the Inglis Falls D process.
+    replace: true,
+    // 3, not the default 2: other films already sit at -v2, and a reused path
+    // would be served from the CDN's cache.
+    version: 3,
   },
   {
     id: "ravenna-canola",
@@ -266,8 +276,13 @@ const FILMS: Film[] = [
     file: "The Grotto - making of.mp4",
     productId: "the-grotto-painting",
     description:
-      "The limestone cliffs and turquoise water of the Grotto near Tobermory, the cave mouth held back until the final passes.",
-    seconds: 54,
+      "The limestone cliffs and turquoise water of the Grotto near Tobermory, painted one area at a time: the grey rock massed in first, the open lake laid over it in long bands, and the shallow green water inside the cove left until last.",
+    seconds: 56,
+    // Nov 2026: repainted and re-filmed by hand, the Inglis Falls D process.
+    replace: true,
+    // 3, not the default 2: other films already sit at -v2, and a reused path
+    // would be served from the CDN's cache.
+    version: 3,
   },
   {
     id: "blue-mountain-sunrise",
@@ -302,8 +317,13 @@ const FILMS: Film[] = [
     file: "Singhampton - making of.mp4",
     productId: "singhampton",
     description:
-      "Spruce bent under deep fresh snow near Singhampton, the field swept flat and empty in front of them.",
+      "Spruce bent under deep fresh snow near Singhampton, the snow built up bough by bough over the dark trees and the bare saplings drawn in over it at the end, the field swept flat and empty in front.",
     seconds: 56,
+    // Nov 2026: repainted and re-filmed by hand, the Inglis Falls D process.
+    replace: true,
+    // 3, not the default 2: other films already sit at -v2, and a reused path
+    // would be served from the CDN's cache.
+    version: 3,
   },
   {
     id: "delphi-point",
