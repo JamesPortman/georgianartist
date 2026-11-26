@@ -169,11 +169,7 @@ const FILMS: Film[] = [
     description:
       "Snow-laden cedars along the Bruce Trail at Epping, the dark trunks set down first, the snow built up over them bough by bough, and the long blue shadows swept across the open foreground last.",
     seconds: 56,
-    // Nov 2026: repainted and re-filmed by hand, the Inglis Falls D process.
-    replace: true,
-    // 3, not the default 2: other films already sit at -v2, and a reused path
-    // would be served from the CDN's cache.
-    version: 3,
+    // Nov 2026: repainted and re-filmed by hand; published at -v3.
   },
   {
     id: "local-farm-sunflowers",
@@ -190,8 +186,13 @@ const FILMS: Film[] = [
     file: "Peasemarsh - making of.mp4",
     productId: "peasemarsh",
     description:
-      "Autumn on the Georgian Bay shoreline near Craigleith, the first snow already down on the gravel.",
+      "The scrub and bare poplars at Peasemarsh in late autumn, the broken sky brushed in first, then the gold and olive thicket, with the one red bush in the middle of it left until the end.",
     seconds: 56,
+    // Nov 2026: repainted and re-filmed by hand, the Inglis Falls D process.
+    replace: true,
+    // 3, not the default 2: other films already sit at -v2, and a reused path
+    // would be served from the CDN's cache.
+    version: 3,
   },
   {
     id: "blue-mountain-trail",
@@ -199,8 +200,13 @@ const FILMS: Film[] = [
     file: "Blue Mountain Trail - making of.mp4",
     productId: "blue-mountain-trail-painting",
     description:
-      "A hardwood trail near the Alpine Ski Club turning gold: the trunks massed in first, the leaf litter and the path itself left until last.",
+      "The trail up Blue Mountain in October, the trunks set down as violet verticals first, the yellow-green canopy worked in between them, and the coral maple on the left arriving in the last passes.",
     seconds: 56,
+    // Nov 2026: repainted and re-filmed by hand, the Inglis Falls D process.
+    replace: true,
+    // 3, not the default 2: other films already sit at -v2, and a reused path
+    // would be served from the CDN's cache.
+    version: 3,
   },
   {
     id: "alpine-ski-fall",
@@ -208,8 +214,13 @@ const FILMS: Film[] = [
     file: "Alpine Ski Club in the Fall - making of.mp4",
     productId: "alpine-ski-fall",
     description:
-      "The slopes of the Alpine Ski Club before the first snow, the autumn trees blocked in first and the path and the sky opened up after them.",
+      "The lane into the Alpine Ski Club in autumn, the sky laid in long flat strokes, the greens massed underneath it, and the orange and red maples worked over them at the end.",
     seconds: 56,
+    // Nov 2026: repainted and re-filmed by hand, the Inglis Falls D process.
+    replace: true,
+    // 3, not the default 2: other films already sit at -v2, and a reused path
+    // would be served from the CDN's cache.
+    version: 3,
   },
   {
     id: "council-beach",
@@ -258,11 +269,7 @@ const FILMS: Film[] = [
     description:
       "A canola field in full bloom near Ravenna, the sky and the far ridge laid in long sweeps, the dark green crop massed underneath, and the yellow broken over it stroke by stroke to the end.",
     seconds: 56,
-    // Nov 2026: repainted and re-filmed by hand, the Inglis Falls D process.
-    replace: true,
-    // 3, not the default 2: other films already sit at -v2, and a reused path
-    // would be served from the CDN's cache.
-    version: 3,
+    // Nov 2026: repainted and re-filmed by hand; published at -v3.
   },
   {
     id: "the-grotto",
@@ -289,8 +296,13 @@ const FILMS: Film[] = [
     file: "Near Killarney - making of.mp4",
     productId: "near-killarney",
     description:
-      "A granite point on the Killarney shore, the pines massed in before the still water takes their reflection.",
+      "A quiet inlet near Killarney, the white quartzite shore massed in first, the pines set along it, and the green water and its reflections drawn across the foreground last.",
     seconds: 56,
+    // Nov 2026: repainted and re-filmed by hand, the Inglis Falls D process.
+    replace: true,
+    // 3, not the default 2: other films already sit at -v2, and a reused path
+    // would be served from the CDN's cache.
+    version: 3,
   },
   {
     id: "scenic-caves",
