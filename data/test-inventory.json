@@ -2267,6 +2267,23 @@
       ]
     },
     {
+      "file": "__tests__/making-of-order.test.ts",
+      "tests": [
+        {
+          "name": "the Making Of films' order › is alphabetical by title, whatever order the records come in"
+        },
+        {
+          "name": "the Making Of films' order › asks only for the films that are showing"
+        },
+        {
+          "name": "the Making Of films' order › ignores case and accents, and puts numbers in counting order"
+        },
+        {
+          "name": "the Making Of films' order › leaves the list it was given untouched"
+        }
+      ]
+    },
+    {
       "file": "__tests__/MakingOfVideo.test.tsx",
       "tests": [
         {

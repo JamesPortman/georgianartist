@@ -29,11 +29,23 @@ export async function hasMakingOfFilms(): Promise<boolean> {
   return (await catalogue.makingOf.findFirst({ where: { visible: true }, select: { id: true } })) !== null;
 }
 
-/** Every published film, in the order set on the records. */
+/**
+ * Titles A to Z, ignoring case and accents, the way a reader expects. Sorted
+ * here rather than by the query: a database orders text by its collation,
+ * which differs between CI's Postgres and Neon.
+ */
+export function byTitle<T extends { title: string }>(films: T[]): T[] {
+  return [...films].sort((a, b) =>
+    a.title.localeCompare(b.title, "en", { sensitivity: "base", numeric: true })
+  );
+}
+
+/** Every published film, alphabetically by title (owner's choice, Nov 2026). */
 export async function getMakingOfFilms(): Promise<MakingOfFilm[]> {
-  return catalogue.makingOf.findMany({
-    where: { visible: true },
-    orderBy: [{ sortOrder: "asc" }, { title: "asc" }],
-    select,
-  });
+  return byTitle(
+    await catalogue.makingOf.findMany({
+      where: { visible: true },
+      select,
+    })
+  );
 }

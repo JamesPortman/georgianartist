@@ -10,8 +10,8 @@ export const dynamic = "force-dynamic";
 export default async function AdminFilmsPage() {
   await requireAuth();
   // Showing first, then by name. This page is for finding a film and switching
-  // it on or off, so the two groups matter more than the public order; that
-  // order is sortOrder, and /making-of still applies it (lib/making-of.ts).
+  // it on or off. /making-of lists the showing ones A to Z too (lib/making-of.ts,
+  // byTitle); sortOrder no longer decides the public order.
   const films = await prisma.makingOf.findMany({ orderBy: [{ visible: "desc" }, { title: "asc" }] });
   const ids = films.map((f) => f.productId).filter((v): v is string => !!v);
   const works = ids.length

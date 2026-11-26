@@ -45,15 +45,13 @@ export default async function MakingOfPage() {
         Georgian Bay, one brushstroke at a time.
       </p>
 
-      <p className="text-gray-700 leading-relaxed mb-10">
-        Each of these is a painting building itself up from a blank canvas to the finished work.
-        They run under a minute each, and nothing downloads until you press play.
-      </p>
-
       <div className="text-gray-700 leading-relaxed mb-10 space-y-4">
         <p>
-          Every piece starts from a photograph {siteConfig.artist} took of a real place around
-          Georgian Bay.
+          Each of these is a painting building itself up from a blank canvas to the finished work.
+          They run under a minute each, and nothing downloads until you press play.
+        </p>
+        <p>
+          Every piece starts from a photograph taken of a real place around Georgian Bay.
         </p>
         <p>
           The style owes a debt to the Post-Impressionists, with directional strokes that follow
@@ -63,8 +61,8 @@ export default async function MakingOfPage() {
         <p>
           The painting itself is made in Rebelle, digital painting software that reproduces how
           real paint behaves: oil that thickens and holds the mark of the bristles, wet colour that
-          blends where strokes meet, and layers that dry and build on one another. The strokes
-          usually go down the way an oil painter works, with a thin dark ground, the dark masses
+          blends where strokes meet, and layers that dry and build on one another. The strokes go
+          down the way an oil painter works, with a thin dark ground, the dark masses
           laid in first and the brightest accents last. A time-lapse recording captures the whole
           process, and after a final finishing pass, the last frame of each film is the finished
           print.
