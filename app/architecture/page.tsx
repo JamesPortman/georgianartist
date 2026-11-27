@@ -944,7 +944,11 @@ export default function ArchitecturePage() {
           to save Actions minutes, since passive findings come from headers and markup that rarely
           change. Any finding fails the job unless{" "}
           <Code>.zap/rules.tsv</Code>{" "}records it as triaged, with the reason; the report is
-          attached to the run.
+          attached to the run. One such line covers the gallery search: it puts the{" "}
+          <Code>?q=</Code>{" "}query back into the search box, which ZAP flags as a possible
+          reflected attack. React escapes it, and our own abuse test proves a script payload
+          stays text. The crawler only finds those URLs because the test inventory lists that
+          test by name. The exception covers only a search on those two pages.
         </p>
         <Story title="Why the gate reads ZAP&rsquo;s report">
         <p>

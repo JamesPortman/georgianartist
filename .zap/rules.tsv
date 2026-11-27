@@ -38,3 +38,13 @@
 # fails if a product title or analytics figure appears. Scoped to /admin, so
 # a big redirect anywhere else still fails the scan. First seen 18 Oct 2026 (#273).
 10044	OUTOFSCOPE	^http://localhost:3000/admin(/.*)?$
+
+# Rule 10031 (User Controllable HTML Element Attribute): the gallery and the
+# photographs page put their ?q= search into the search box's value, which
+# React escapes; e2e/abuse.spec.ts ("reflected input stays text") loads both
+# with an <img onerror> payload and fails if it runs or becomes markup. The
+# spider reaches those very URLs from /architecture/tests, which lists that
+# test by name. Scoped to a q search on those two pages, so a reflected
+# attribute anywhere else still fails the scan. First seen on the public copy,
+# 24 Nov 2026; /commissions' 10031 (#302) was fixed rather than accepted.
+10031	OUTOFSCOPE	^http://localhost:3000/(photographs)?\?(.*&)?q=.*$
