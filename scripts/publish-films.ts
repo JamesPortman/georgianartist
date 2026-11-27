@@ -158,8 +158,13 @@ const FILMS: Film[] = [
     file: "Blue Mountain Sunset - making of.mp4",
     productId: "blue-mountain-sunset-painting",
     description:
-      "A bank of altocumulus catching the last light over Blue Mountain, worked from the orange cloud bank down into the pale sky beneath it.",
+      "A bank of altocumulus catching the last light over Blue Mountain, begun in two places at once — the burning cloud above and the pale band beneath it — and worked toward each other, the dark cloud bodies and their lit edges built up in the last passes.",
     seconds: 56,
+    // Nov 2026: repainted and re-filmed by hand, the Inglis Falls D process.
+    replace: true,
+    // 3, not the default 2: other films already sit at -v2, and a reused path
+    // would be served from the CDN's cache.
+    version: 3,
   },
   {
     id: "bruce-trail-grey-highlands",
@@ -297,8 +302,13 @@ const FILMS: Film[] = [
     file: "Blue Mountain Sunrise - making of.mp4",
     productId: "blue-mountain-sunrise-painting",
     description:
-      "A winter sunrise over the Blue Mountains, the sky worked from the darks upward into pink and gold.",
+      "Sunrise over Blue Mountain, opened as a single column of sky — deep blue at the top, through red, to the yellow band on the horizon — then widened left and right until the whole sky is in, with the dark ridgeline and the treetops cut in at the end.",
     seconds: 56,
+    // Nov 2026: repainted and re-filmed by hand, the Inglis Falls D process.
+    replace: true,
+    // 3, not the default 2: other films already sit at -v2, and a reused path
+    // would be served from the CDN's cache.
+    version: 3,
   },
   {
     id: "near-killarney",
@@ -348,8 +358,13 @@ const FILMS: Film[] = [
     file: "Lora Bay - making of.mp4",
     productId: "lora-bay",
     description:
-      "Winter light on the hard blue water at Lora Bay, the open water laid in first, the escarpment behind it next, and the snow-covered spit after both.",
+      "The shore at Lora Bay in winter, the sky and the snowbank opened at the left and the blue water spread out from them, with the bare tree and the dark ripples across the foreground left until last.",
     seconds: 56,
+    // Nov 2026: repainted and re-filmed by hand, the Inglis Falls D process.
+    replace: true,
+    // 3, not the default 2: other films already sit at -v2, and a reused path
+    // would be served from the CDN's cache.
+    version: 3,
   },
 ];
 
