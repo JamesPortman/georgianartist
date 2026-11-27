@@ -120,8 +120,13 @@ const FILMS: Film[] = [
     file: "Manitoulin Island - making of.mp4",
     productId: "manitoulin-island",
     description:
-      "The long view over the North Channel from the Manitoulin escarpment, the green foreground laid in first, the water and the far hills brought up behind it.",
+      "The long view over the North Channel from the Manitoulin escarpment, opened from one patch of the middle and worked outward area by area, the blue channel and the far hills filled in behind, and the dark treeline and the foreground scrub left to the last passes.",
     seconds: 56,
+    // Nov 2026: repainted and re-filmed by hand, the Inglis Falls D process.
+    replace: true,
+    // 3, not the default 2: other films already sit at -v2, and a reused path
+    // would be served from the CDN's cache.
+    version: 3,
   },
   {
     id: "northwinds-beach",
@@ -129,8 +134,13 @@ const FILMS: Film[] = [
     file: "Northwinds Beach - making of.mp4",
     productId: "northwinds-beach",
     description:
-      "A wave breaking on the wet sand at Northwinds Beach at dusk: the whole scene washed in pale first, the dark water worked over it, and the foam left until last.",
+      "A wave breaking on the wet sand at Northwinds Beach at dusk, the crest set down first and the shore worked out from it, the open water filled in behind, and the dark face of the wave and its foam held back until the end.",
     seconds: 56,
+    // Nov 2026: repainted and re-filmed by hand, the Inglis Falls D process.
+    replace: true,
+    // 3, not the default 2: other films already sit at -v2, and a reused path
+    // would be served from the CDN's cache.
+    version: 3,
   },
   {
     id: "beaver-river-access",
